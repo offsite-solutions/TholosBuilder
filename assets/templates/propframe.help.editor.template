@@ -1,0 +1,7 @@
+<div style="text-align: center; margin: 20px 0 20px 0;"><%FUNC%
+funcjob=eqs
+param=sqlhelp_id
+value=
+true=<a href="javascript:EditHelp($sqlid,$p_component_id);"><i class="fa fa-edit"></i> <b>#$sqlid</b>, last saved: $sqllast_update_date</a><br/>or<br/><a href="javascript:copyHelp($sqlid);"><i class="fa fa-copy"></i> Copy as reference</a><p style="margin-top: 20px; text-align: left;"><b>Referencing objects to this help section</b></p>
+false=<a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node','#$sqlcomponent_id');"><i class="fa fa-link"></i> Open referenced help</a><br/><br/>or<br/><br/><a href="javascript:deleteHelp($sqlid,$sqlversion,$p_component_id);" style="color: #cc0000;"><i class="fa fa-trash"></i> Delete</a>
+%FUNC%></div>

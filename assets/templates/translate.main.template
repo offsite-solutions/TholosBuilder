@@ -1,0 +1,17 @@
+<h1 class="text-center">Tholos :: Translate language tags</h1>
+
+<pre>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/translate.row;
+SQL=
+select value as text
+  from app_component_properties_v cpv
+ where value like '%[:%'
+union all 
+select value as text
+  from app_component_events_v cpv
+ where value like '%[:%'
+  order by 1
+%SQL%>
+</pre>

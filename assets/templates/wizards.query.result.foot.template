@@ -1,0 +1,5 @@
+<div class="row" style="margin-top: 10px;">
+  <div class="col-xs-12 text-center">
+    <button class="button" onclick="QueryWizardRun($p_component_id,'$p_trans_root','$p_skip_label','save');">Save changes</button>
+  </div>
+</div>

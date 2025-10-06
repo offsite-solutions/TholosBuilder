@@ -1,0 +1,13 @@
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/propframe.property.row;
+SQL=
+select cp.component_id, cp.name, cp.l_name, cp.type, cp.type_desc, cp.value,
+       cp.value_component_id, cp.property_id, cp.link_id, cp.version, cp.mandatory, cp.runtime,
+       tp.short_path
+  from app_component_properties_v cp
+       left outer join app_tree_short_path_v tp on tp.id=cp.value_component_id
+ where cp.component_id=$p_component_id~='-1';
+       and ('$p_property_id~='-1';'='-1' or cp.property_id=$p_property_id~='-1';)
+ order by 3
+%SQL%>

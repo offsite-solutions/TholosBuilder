@@ -1,0 +1,23 @@
+<h1 class="text-center">Tholos :: Commit history</h1>
+<table class="redmine-issues">
+  <tr>
+    <th width="10%">Committed on</th>
+    <th width="10%">Issue #</th>
+    <th width="40%">Issue</th>
+    <th width="30%">Route</th>
+    <th width="10%">Owner</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.commit.history.row;
+SQL=
+select distinct to_char(at.committed,'YYYY.MM.DD. hh24:mi:ss') as committed, at.task_number, at.subject, au.code, atp.route
+  from app_tasks at
+  join app_users au on au.id=at.created_by
+  join app_changes ac on at.id=ac.task_id
+  join app_tree_path_v atp on ac.component_id=atp.id
+ where at.committed is not null
+       and atp.route is not null
+ order by 1 desc, 2, 5
+%SQL%>
+</table>

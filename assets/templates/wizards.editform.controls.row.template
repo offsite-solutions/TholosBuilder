@@ -1,0 +1,26 @@
+<div class="row" style="margin-top: 5px;">
+  <div class="col-xs-4 text-right"><b>$sqlname</b></div>
+  <div class="col-xs-8"><select name="option$sqlid">
+<option value="">Skip</option>
+<option value="TEdit"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TEdit;true=selected;false=%]>Edit</option>
+<option value="TDateTimePicker"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TDateTimePicker;true=selected;false=%]>Date/time picker</option>
+<option value="TCheckbox"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TCheckbox;true=selected;false=%]>Checkbox</option>
+<option value="TLOV"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TLOV;true=selected;false=%]>LOV</option>
+<option value="TText"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TText;true=selected;false=%]>Text</option>
+<option value="THTMLEdit"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=THTMLEdit;true=selected;false=%]>HTML Editor</option>
+<option value="TLabel"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TLabel;true=selected;false=%]>Label</option>
+<option value="TRadio"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TRadio;true=selected;false=%]>Radio group</option>
+<option value="TStatic"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=TStatic;true=selected;false=%]>Static</option>
+<option value="THidden"
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlpreferred_component;value=THidden;true=selected;false=%]>Hidden field</option>
+</select></div>
+</div>

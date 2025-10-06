@@ -1,0 +1,55 @@
+<form id="editformForm" style="margin-top: 20px;">
+<input type="hidden" name="p_form_id" value="$p_form_id">
+<input type="hidden" name="p_query_id" value="$p_query_id">
+<input type="hidden" name="action" value="EditFormWizardRun">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.editform.controls.row;
+SQL=
+SELECT atp.id, atp.name||':'||acp_datatype.value||case when acp_size.value is null then '' else '('||acp_size.value||')' end as name,
+       CASE
+         WHEN atp.name = 'ID' or atp.name = 'VERSION' THEN
+          'THidden'
+         WHEN acp_datatype.value = 'integer' THEN
+          'TEdit'
+         WHEN acp_datatype.value = 'bool' THEN
+          'TCheckbox'
+         WHEN acp_datatype.value = 'string' and acp_size.value='30' THEN
+          'TLOV'
+         WHEN acp_datatype.value = 'string' THEN
+          'TEdit'
+         WHEN acp_datatype.value = 'text' THEN
+          'TText'
+         WHEN acp_datatype.value = 'date' THEN
+          'TDateTimePicker'
+         WHEN acp_datatype.value = 'datetime' THEN
+          'TDateTimePicker'
+         WHEN acp_datatype.value = 'float' THEN
+          'TEdit'
+         ELSE
+          NULL
+       END AS preferred_component
+  FROM app_tree_path_v atp
+  LEFT OUTER JOIN app_component_properties_v acp_datatype ON acp_datatype.component_id = atp.id
+                                                         AND acp_datatype.l_name = 'datatype'
+  LEFT OUTER JOIN app_component_properties_v acp_size ON acp_size.component_id = atp.id
+                                                     AND acp_size.l_name = 'size'
+ WHERE parent_id = $p_query_id~='-1';
+   AND atp.class_name = 'TDBField'
+   AND atp.id NOT IN
+       (SELECT value_component_id
+          FROM app_component_properties_v acp
+         WHERE acp.component_id IN (SELECT atp.id
+                                      FROM app_tree_path_v atp
+                                     WHERE parent_id = $p_form_id)
+           AND acp.name = 'DBField'
+           AND VALUE IS NOT NULL)
+   AND NOT exists(SELECT 1 FROM table(SPLIT('$p_editformwizardblacklist')) WHERE atp.name LIKE COLUMN_VALUE)
+ ORDER BY atp.component_order
+%SQL%>
+</form>
+<div class="row" style="margin-top: 20px">
+  <div class="col-xs-12 text-center" id="editformFormPost">
+    <button onclick="EditFormWizardRun();">Create form controls</button>
+  </div>
+</div>

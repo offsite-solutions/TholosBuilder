@@ -1,0 +1,1 @@
+<input type="checkbox" name="filter_route_$id" $checked value="T"> $name<br/>

@@ -1,0 +1,10 @@
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/propframe.method.row;
+SQL=
+select ctm.id, ctm.name||'()' as method_name
+  from app_tree_path_v c
+       join def_component_type_method_v ctm on ctm.root_component_id=c.component_type_id
+ where c.id=$p_component_id~='-1';
+ order by 2
+%SQL%>

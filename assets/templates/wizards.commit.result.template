@@ -1,0 +1,9 @@
+<h1 class="text-center">Tholos :: Commit result</h1>
+
+<div id="wizard_result" style="margin-top: 20px;">
+$result
+</div>
+
+<script type="text/javascript">
+  reloadTaskFrame();
+</script>

@@ -1,0 +1,12 @@
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.commit.row;
+SQL=
+select distinct at.task_number, au.code, atp.route
+  from app_changes ac, app_tree_path_v atp, app_tasks at, app_users au
+ where ac.component_id=atp.id
+       and at.id=ac.task_id
+       and au.id=at.created_by
+       and at.committed is null
+       and au.id=app_session_pkg.user_id
+%SQL%>

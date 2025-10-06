@@ -1,0 +1,31 @@
+<%FUNC%
+funcjob=eqs
+param=p_event_id
+value=
+true>>=
+<%FUNC%
+funcjob=eqs
+param=sqltype
+value=^oldtype
+true=
+false=<tr><td colspan="2" class="event_type">$sqltype</td></tr>
+%FUNC%>
+<<
+false=
+%FUNC%>
+<tr id="event_row_$sqlevent_id">
+  <td nowrap class="prop_name">$sqlname</td>
+  <td class="prop_value" id="event_$sqlevent_id">
+    <button class="btn btn-default btn-xs pull-right" onclick="editEvent($sqlcomponent_id,$sqlevent_id,'$sqllink_id','$sqlversion');" title="Edit"><i class="fa fa-edit"></i></button>
+    <button class="btn btn-default btn-xs pull-right"
+     onclick="if (clipboardMethodID!='') saveEvent($sqlcomponent_id, $sqlevent_id, '$sqllink_id', '$sqlversion', '', clipboardMethodComponentID, clipboardMethodID, $('#event_parameters_$sqlevent_id').val());" title="Paste"><i class="fa fa-clipboard saveIcon"></i></button>$sqlvalue<%FUNC%
+funcjob=eqs
+param=sqlmethod_name
+value=
+true=
+false=$sqlmethod_name()<br/><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node','#$sqlvalue_component_id');" class="method_path">$sqlshort_path</a>
+%FUNC%>
+[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlparameters;value=;true=;false=<pre>$sqlparameters</pre>%]
+  </td>
+</tr>
+$oldtype:='^sqltype';

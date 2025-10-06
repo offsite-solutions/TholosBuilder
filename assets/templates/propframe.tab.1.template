@@ -1,0 +1,13 @@
+<table class="table table-condensed table_props">
+  <thead>
+    <tr>
+      <th style="width: 40%;">Name</th>
+      <th style="width: 60%;">Value</th>
+    <tr>
+  <thead>
+  <tbody>
+$templateabs_tholosbuilder__propframe_event_sql
+  </tbody>
+</table>
+
+$templateabs_tholosbuilder__propframe_form_title_js

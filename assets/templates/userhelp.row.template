@@ -1,0 +1,8 @@
+<!-- help-$sqlhelp_id --><div class="user-guide-section">
+<a name="$sqlhelp_id"></a>
+<%FUNC%
+funcjob=userhelp_convert
+param=sqltext
+%FUNC%>
+<div class="user-guide-section-footer"><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node','#$sqlcomponent_id');">Edit</a> | Utolsó módosítás: $sqlhelp_date</div>
+</div><!-- /help-$sqlhelp_id -->

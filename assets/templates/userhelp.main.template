@@ -1,0 +1,15 @@
+<div id="userguide">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/userhelp.row;
+SQL=
+select atp.name, ah.text,
+       ah.id as help_id,
+       to_char(ah.last_update_date,'YYYY.MM.DD. hh24:mi') as help_date,
+       ah.component_id
+  from app_tree_path_v atp, app_help ah
+ where atp.id=ah.component_id
+       and ah.help_id is null
+ order by atp.component_order
+%SQL%>
+</div>

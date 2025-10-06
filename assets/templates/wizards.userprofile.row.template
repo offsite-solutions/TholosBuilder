@@ -1,0 +1,5 @@
+<p><label>SVN Username</label><input type="text" name="p_svn_username" value="$sqlsvn_username"></p>
+<p><label>SVN Password</label><input type="text" name="p_svn_password" value="$sqlsvn_password"></p>
+<p><label>Redmine secretkey</label><input type="text" name="p_rm_secretkey" value="$sqlrm_secretkey"></p>
+<p><label>Redmine Project ID</label><input type="text" name="p_rm_project_id" value="$sqlrm_project_id"></p>
+<p><label>Redmine Subprojects</label><input type="text" name="p_rm_subprojects" value="$sqlrm_subprojects"></p>

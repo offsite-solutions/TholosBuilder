@@ -1,0 +1,15 @@
+<table class="table table-condensed table_props">
+  <thead>
+    <tr>
+      <th style="width: 30%;">Name</th>
+      <th style="width: 70%;"><span $templateabs_tholosbuilder__propframe_form_title_main>Value</span></th>
+    <tr>
+  <thead>
+  <tbody>
+<tr>
+  <td nowrap class="prop_name">ID</td>
+  <td class="prop_value">#$p_component_id</td>
+</tr>
+$templateabs_tholosbuilder__propframe_property_sql
+  </tbody>
+</table>

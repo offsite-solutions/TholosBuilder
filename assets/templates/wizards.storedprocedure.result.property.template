@@ -1,0 +1,6 @@
+<tr class="$status">
+  <td>$prop_name</td>
+  <td>$origvalue</td>
+  <td>$value</td>
+  <td>$status</td>
+</tr>

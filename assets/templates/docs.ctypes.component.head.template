@@ -1,0 +1,91 @@
+<h2 class="ctdoc_$sqlclass_name">$sqlclass_name</h2>
+<p>$sqlpath</p>
+<p>Parent must be: $sqlparent_class_name</p>
+<p style="border-bottom: 1px solid #ddd; border-top: 1px solid #ddd; padding: 10px;">$sqldescription</p>
+<h3 class="text-muted">$sqlclass_name properties</h3>
+<table class="table">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Mandatory</th>
+    <th>Runtime</th>
+    <th>Hidden data</th>
+    <th>Default value</th>
+    <th>Ancestor</th>
+    <th>Description</th>
+  </tr>
+<thead>
+<tbody>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/docs.ctypes.component.properties;
+SQL=
+select v.name,
+       case when v.component_type_name is not null then '<a href="javascript:jumpToDoc('''||v.component_type_name||''');">'||v.component_type_name||'</a>' else v.type_desc end as type_desc,
+       case when ancestor_class_name is not null then '<a href="javascript:jumpToDoc('''||v.ancestor_class_name||''');">'||v.ancestor_class_name||'</a>' else null end as ancestor_class_name,
+       p.description,
+       p.value_list,
+       v.mandatory,
+       v.default_value,
+       v.runtime,
+       v.nodata
+  from def_component_type_prop_v v
+       join tholos.def_properties p on p.id=v.id
+ where root_class_name='$sqlclass_name'
+       and v.disabled='N'
+ order by v.name
+%SQL%>
+</tbody>
+</table>
+
+<h3 class="text-muted">$sqlclass_name events</h3>
+<table class="table">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Ancestor</th>
+    <th>Description</th>
+  </tr>
+<thead>
+<tbody>
+<%SQL%
+ROW=tholosbuilder/docs.ctypes.component.events;
+SQL=
+select v.name,
+       v.type,
+       '<a href="javascript:jumpToDoc('''||v.ancestor_class_name||''');">'||v.ancestor_class_name||'</a>' as ancestor_class_name,
+       e.description
+  from tholos.def_component_type_event_v v
+       join tholos.def_events e on e.id=v.id
+ where root_class_name='$sqlclass_name'
+ order by v.type,v.name
+%SQL%>
+</tbody>
+</table>
+
+<h3 class="text-muted">$sqlclass_name methods</h3>
+<table class="table">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Ancestor</th>
+    <th>Description</th>
+  </tr>
+<thead>
+<tbody>
+<%SQL%
+ROW=tholosbuilder/docs.ctypes.component.methods;
+SQL=
+select v.name||'()' as name,
+       '<a href="javascript:jumpToDoc('''||v.ancestor_class_name||''');">'||v.ancestor_class_name||'</a>' as ancestor_class_name,
+       m.description
+  from tholos.def_component_type_method_v v
+       join tholos.def_methods m on m.id=v.id
+ where root_class_name='$sqlclass_name'
+ order by v.name
+%SQL%>
+</tbody>
+</table>
+<hr>

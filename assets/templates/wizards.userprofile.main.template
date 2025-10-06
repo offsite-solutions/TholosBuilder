@@ -1,0 +1,17 @@
+<h1 class="text-center">User profile</h1>
+<form onsubmit="javascript:void();" id="userprofile">
+<input type="hidden" name="action" value="saveUserProfile">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.userprofile.row;
+SQL=
+select au.svn_username,
+       au.svn_password,
+       au.rm_secretkey,
+       au.rm_project_id,
+       au.rm_subprojects
+  from app_users au
+ where au.id=app_session_pkg.user_id
+%SQL%>
+</form>
+<p style="text-align: center"><button onclick="saveUserProfile();">Save</button></p>

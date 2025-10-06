@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-xs-8">
+    <select id="prop_edit_$p_property_id" style="width: 100%;">
+<option value=""></option>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.select;
+SQL=
+select id, path as text,
+       case when q.value_component_id=atp.id then 'selected' else '' end as selected
+  from app_tree_path_v atp
+  left outer join (select value_component_id from app_component_properties ap where ap.id=$p_link_id~='-1';) q on 1=1
+where atp.component_type_id in ( select ct.id
+                                    from def_component_types ct
+                                    connect by prior  ct.id = ct.ancestor_id
+                                    start with ct.id=(select component_type_id from def_properties p where p.id=$p_property_id)
+                                 )
+      and (atp.route=(select route from app_tree_path_v atp2 where atp2.id=$p_component_id)
+           or atp.id=q.value_component_id)
+order by component_order
+%SQL%>
+<!-- <option value="">------------------------------------------</option>
+%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.select;
+SQL=
+select id, path as text,
+       case when (select value_component_id from app_component_properties ap where ap.id=$p_link_id~='-1';)=atp.id then 'selected' else '' end as selected
+  from app_tree_path_v atp
+where atp.component_type_id in ( select ct.id
+                                    from def_component_types ct
+                                    connect by prior  ct.id = ct.ancestor_id
+                                    start with ct.id=(select component_type_id from def_properties p where p.id=$p_property_id)
+                                 )
+      and atp.route!=(select route from app_tree_path_v atp2 where atp2.id=$p_component_id)
+order by component_order
+%SQL% -->
+    <select>
+  </div>
+  <div class="col-xs-4">
+    <button id="prop_button_$p_property_id" class="btn btn-default btn-xs pull-right" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val(),$('#prop_edit_$p_property_id').val());" title="Save"><i class="fa fa-check saveIcon"></i></button>
+    <button class="btn btn-default btn-xs pull-right" onclick="if (clipboardComponentID!='') saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version','',clipboardComponentID); else alert('Nothing to paste!');" title="Paste"><i class="fa fa-clipboard"></i></button>
+  </div>
+  <div class="col-xs-10">
+    Selector:<br/>
+    <input id="prop_edit_2_$p_property_id" style="width: 100%;" value="$p_value2" onchange="$('#prop_edit_$p_property_id').val('');">
+  </div>
+</div>

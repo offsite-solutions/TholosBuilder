@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-xs-10">
+    <textarea id="prop_edit_$p_property_id" style="width: 100%; font-family: Menlo,Monaco,Consolas,\"Courier New\",monospace;" spellcheck="false">$p_value</textarea>
+  </div>
+  <div class="col-xs-2">
+    <button id="prop_button_$p_property_id" class="btn btn-default btn-xs pull-right" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_$p_property_id').val(),'');"><i class="fa fa-check saveIcon"></i></button>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#prop_edit_$p_property_id').textareafullscreen({
+        overlay: true, // Overlay
+        maxWidth: '90%', // Max width
+        maxHeight: '90%' // Max height
+    });
+});
+</script>

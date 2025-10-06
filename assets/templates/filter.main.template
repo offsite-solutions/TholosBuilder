@@ -1,0 +1,14 @@
+<p style="text-align: center"><button type="button" onclick="setFilterRoute()"><i class="fa fa-filter"></i> Show selected routes</button></p>
+<form id="setFilterRoute">
+<input type="hidden" name="action" value="showRoutes">
+<input type="hidden" name="todo" value="save">
+<div style="-moz-column-count: 2;
+-moz-column-gap: 20px;
+-webkit-column-count: 2;
+-webkit-column-gap: 20px;
+column-count: 2;
+column-gap: 20px;">
+$ROWS
+</div>
+</form>
+<p style="text-align: center"><button type="button" onclick="setFilterRoute()"><i class="fa fa-filter"></i> Show selected routes</button></p>

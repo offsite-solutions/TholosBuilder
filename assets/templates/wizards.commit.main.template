@@ -1,0 +1,40 @@
+<h1 class="text-center">Tholos :: Committing changes</h1>
+
+<form id="issues">
+  <input type="hidden" name="action" value="saveCommitChanges">
+  <input type="hidden" name="p_routes" value="$routes">
+  <p>Committing routes: $routes</p>
+  <p><b>Commit message:</b></p>
+  <textarea style="width: 100%; height: 100px;" name="p_message">$tasks
+  </textarea>
+
+<h3>Redmine options</h3>
+
+  <table>
+    <tr>
+      <td><p><label>Issue new status</label><select name="p_rm_status">
+      $rmstatuses</select></p></td>
+      <td><p><label>Assign to</label><select name="p_rm_assigned_to">
+      $rmmembers</select></p></td>
+    </tr>
+  </table>
+
+  <input type="hidden" name="p_rm_current_status" value="$rmstatus">
+  <input type="hidden" name="p_rm_current_assigned_to" value="$rmassigned_to">
+
+  <p><b>Note:</b></p>
+  <textarea style="width: 100%; height: 100px;" name="p_rm_note"></textarea>
+  
+<h3>Time tracking</h3>
+
+  <table>
+    <tr>
+      <td><p><label>Time spent (hour)</label><input name="p_rm_time_spent" value=""></p></td>
+      <td><p><label>Activity</label><select name="p_rm_time_activity">
+      $rmactivities</select></p></td>
+    </tr>
+  </table>
+
+</form>
+
+<p class="text-center"><button onclick="saveCommitChanges();">Commit changes</button></p>

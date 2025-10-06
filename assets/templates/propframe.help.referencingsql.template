@@ -1,0 +1,10 @@
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/propframe.help.referencingrow;
+SQL=
+select tp.short_path,tp.class_name,ah2.component_id
+  from app_tree_path_v tp, app_help ah1, app_help ah2
+ where ah1.component_id=$p_component_id~='-1';
+       and ah2.help_id=ah1.id
+       and tp.id=ah2.component_id
+%SQL%>

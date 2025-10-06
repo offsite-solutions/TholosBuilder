@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tholos Application Builder</title>
+    <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/bower-asset/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/bower-asset/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/bower-asset/jstree/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/bower-asset/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/bower-asset/toastr/toastr.min.css" />
+    <link rel="stylesheet" href="/assets/css/textareafullscreen.css" />
+    <link rel="stylesheet" href="/assets/css/TholosBuilder.css" />
+  </head>
+  <body>
+    <div id="login">
+      <h1>Tholos Builder :: Login</h1>
+[%funcjob=eqs;param=errormsg;value=;true=;false=<p style="color: #ff0000">$errormsg</p>%]
+      <form action="$CGI" method="POST">
+        <input type="hidden" name="action" value="login">
+        <p><label>Username:<label><input type="text" name="p_user"></p>
+        <p><label>Password:<label><input type="password" name="p_password"></p>
+        <p style="text-align: center"><button type="submit"><i class="fa fa-key"></i> Login</button></p>
+      </form>
+    </div>
+
+	<script type="text/javascript">var __editorURL='$tholos_builderURL';</script>
+
+    <script src="/bower-asset/jquery/dist/jquery.min.js"></script>
+    <script src="/bower-asset/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/bower-asset/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower-asset/jstree/dist/jstree.min.js"></script>
+    <script src="/bower-asset/dynamic-bootstrap-responsive-tabs/dist/dynamic-bootstrap-responsive-tabs.js"></script>
+    <script src="/bower-asset/bootbox/dist/bootbox.min.js"></script>
+    <script src="/bower-asset/toastr/toastr.min.js"></script>
+    <script src="/assets/js/jquery.textareafullscreen.js"></script>
+
+    <script type="text/javascript">const skipframeloading=true;</script>
+    <script src="/assets/js/TholosBuilder.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<tr id="prop_row_$sqlproperty_id" class="[%funcjob=eqs;param=sqlmandatory;value=Y;true=prop_mandatory;false=%]">
+  <td nowrap class="prop_name"><%FUNC%
+funcjob=eqs
+param=sqlvalue
+value=
+true>>=
+<span style="[%funcjob=eqs;param=sqlmandatory;value=Y;true=color:#cc0000;false=%];">$sqlname</span>
+<<
+false=$sqlname
+%FUNC%></td>
+  <td class="prop_value" id="prop_$sqlproperty_id">
+<%FUNC%
+funcjob=eqs
+param=sqlruntime
+value=Y
+true=<span class="prop_type">$sqltype_desc (runtime) $sqlvalue</span>
+false>>=<button class="btn btn-default btn-xs pull-right" onclick="editProperty($sqlcomponent_id,$sqlproperty_id,'$sqltype','$sqllink_id','$sqlversion');" title="Edit"><i class="fa fa-edit"></i></button>
+<%FUNC%
+funcjob=eqs
+param=sqltype
+value=COMPONENT
+false=
+true=<button class="btn btn-default btn-xs pull-right" onclick="if (clipboardComponentID!='') saveProperty($sqlcomponent_id,$sqlproperty_id,'$sqllink_id','$sqlversion','',clipboardComponentID); else alert('Nothing to paste!');" title="Paste"><i class="fa fa-clipboard"></i></button>
+%FUNC%>
+<%FUNC%
+funcjob=eqs
+param=sqlvalue_component_id
+value=
+true=
+false=<button class="btn btn-default btn-xs pull-right" onclick="clipboardComponentID='$sqlvalue_component_id';" title="Copy"><i class="fa fa-copy"></i></button>
+%FUNC%>
+<%FUNC%
+funcjob=eqs
+param=sqlvalue
+value=
+true=<span class="prop_type">$sqltype_desc</span>
+false>>>=
+[%_include=tholos/tholos_callback.php;_function_name=_safehtml;param=sqlvalue%]
+<%FUNC%
+funcjob=eqs
+param=sqltype
+value=COMPONENT
+false=
+true=<br/><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node','#$sqlvalue_component_id');"><small>$sqlshort_path</small></a>
+%FUNC%>
+<<<
+%FUNC%>
+<<
+%FUNC%>
+  </td>
+</tr>

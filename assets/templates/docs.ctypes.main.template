@@ -1,0 +1,76 @@
+<h1 class="text-center">Tholos :: Component Type documentation</h1>
+
+<div class="row">
+  <div class="col-xs-5 col-xs-offset-1" style="border: 1px solid #eee; border-radius: 10px; margin-right: 10px;">
+<h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Component Type structure</h4>
+<p style="font-family: monospace; white-space: pre;">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.text;
+SQL=
+SELECT lpad('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>',length('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>')+(level-1)*4,' ') as text
+  FROM tholos.def_component_types ct
+       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+ connect by prior ct.id = ct.ancestor_id
+ start with ct.ancestor_id is null
+ order siblings by ct.class_name
+%SQL%>
+</p>
+</div>
+<div class="col-xs-5" style="border: 1px solid #eee; border-radius: 10px;">
+<h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Application structure</h4>
+<p style="font-family: monospace; white-space: pre;">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.text;
+SQL=
+SELECT lpad('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>',length('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>')+(level-1)*4,' ') as text
+  FROM tholos.def_component_types ct
+       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+ connect by prior ct.id = ct.parent_component_type_id
+ start with ct.class_name='TApplication'
+ order siblings by ct.class_name
+%SQL%>
+</p>
+<h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Visual components</h4>
+<p style="font-family: monospace; white-space: pre;">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.text;
+SQL=
+SELECT lpad('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>',length('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>')+(level-1)*4,' ') as text
+  FROM tholos.def_component_types ct
+       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+ connect by prior ct.id = ct.parent_component_type_id and ct.id!=ct.parent_component_type_id
+ start with ct.class_name='TComponent'
+ order siblings by ct.class_name
+%SQL%>
+</p>
+</div>
+</div>
+
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/docs.ctypes.component.head;
+SQL=
+SELECT ct.id,
+       ct.class_name,
+       case
+         when ct.id=ct2.id then '<i>only inherited types can be placed</i>'
+         when ct2.id is not null then '<a href="javascript:jumpToDoc('''||ct2.class_name||''');">'||ct2.class_name||'</a>'
+         else '<i>must be a root element of application structure</i>'
+       end as parent_class_name,
+       ct.description,
+       substr(sys_connect_by_path('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a>',' / '),4) as path
+  FROM tholos.def_component_types ct
+       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+ connect by prior ct.id = ct.ancestor_id
+ start with ct.ancestor_id is null
+ order siblings by ct.class_name
+%SQL%>
+
+<script type="text/javascript">
+function jumpToDoc(anchor_) {
+  $('#edit_frame>.content').scrollTop($('#edit_frame>.content').scrollTop() + $('.ctdoc_'+anchor_).position().top);
+}
+</script>

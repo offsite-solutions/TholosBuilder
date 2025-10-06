@@ -1,0 +1,10 @@
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/propframe.event.row;
+SQL=
+select component_id, name, l_name, type, value, value_component_id, method_name, short_path, event_id, link_id, version, parameters
+  from app_component_events_v ce
+ where ce.component_id=$p_component_id~='-1';
+       and ('$p_event_id~='-1';'='-1' or ce.event_id=$p_event_id~='-1';)
+ order by 4,3
+%SQL%>

@@ -1,0 +1,65 @@
+<div class="container" style="width: 100%;">
+<h1 class="text-center">Tholos :: Redmine issues</h1>
+<form id="issues" onsubmit="return false;">
+<input type="hidden" name="action" value="chooseTask">
+<div class="row">
+  <div class="col-sm-2">
+    Task ID
+  </div>
+  <div class="col-sm-2">
+    Project
+  </div>
+  <div class="col-sm-2">
+    Subprojects
+  </div>
+  <div class="col-sm-2">
+    Assigned to
+  </div>
+  <div class="col-sm-2">
+    Status
+  </div>
+  <div class="col-sm-2">
+    Target version
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2">
+    <input type="text" name="p_rm_task_id" value="" style="width: 50px;">
+  </div>
+  <div class="col-sm-2">
+    <select name="p_rm_project_id" onchange="chooseTask($('#issues'));" style="width: 100%;">$rmprojects</select>
+  </div>
+  <div class="col-sm-2">
+    <input type="text" name="p_rm_subprojects" value="$p_rm_subprojects~='$rm_subprojects';" style="width: 50px;"></p></td>
+  </div>
+  <div class="col-sm-2">
+    <select name="p_rm_assigned_to_id" style="width: 100%;">
+<option value="">Anybody</option>
+<option value="me" [:funcjob=eqs;param=p_rm_assigned_to;value=me;true=selected;false=:]>Me</option>
+$rmmembers</select>
+  </div>
+  <div class="col-sm-2">
+    <select name="p_rm_status" style="width: 100%;">
+<option value="">Any</option>
+<option value="open" [:funcjob=eqs;param=p_rm_status;value=open;true=selected;false=:]>Open</option>
+$rmstatuses</select>
+  </div>
+  <div class="col-sm-2">
+    <select name="p_rm_version" style="width: 100%;">
+<option value="">Any</option>
+$rmversions</select>
+  </div>
+</div>
+
+</form>
+<p style="text-align: center"><button onclick="chooseTask($('#issues'));">Filter</button></p>
+<table class="redmine-issues">
+<tr>
+  <th width="10%">#</th>
+  <th width="40%">Tracker</th>
+  <th width="20%">Status</th>
+  <th width="30%">Assigned to</th>
+</tr>
+  $issues
+</table>
+</div>

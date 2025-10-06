@@ -1,0 +1,2 @@
+<div style="text-align: center; margin: 20px 0 20px 0;"><a href="javascript:EditHelp('',$p_component_id);"><i class="fa fa-plus-circle"></i> No help defined, create one</a><br/>or<br/>
+<a href="javascript:pasteHelp($p_component_id);"><i class="fa fa-clipboard"></i> Paste reference</a></div>

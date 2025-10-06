@@ -1,0 +1,31 @@
+<h1 class="text-center">Tholos :: Grid wizard</h1>
+
+<div class="row" style="margin-top: 20px;">
+  <div class="col-xs-2 text-right">
+    Query:
+  </div>
+  <div class="col-xs-10">
+	<select id="GridWizardComponentId">
+      <option value="">--- Please select TGrid component ---</option>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.select;
+SQL=
+select id, path as text, case when $p_grid_id~='-1';=id then 'selected' else '' end as selected
+from app_tree_path_v atp
+where atp.class_name='TGrid'
+order by component_order
+%SQL%>
+    </select>
+  </div>
+</div>
+<div class="row" style="margin-top: 10px;">
+  <div class="col-xs-12 text-center">
+    <button class="button" onclick="showGridWizard($('#GridWizardComponentId').val(),'');">Generate/Update TGridColumns</button>
+  </div>
+</div>
+
+[%funcjob=eq;param=p_grid_id;value=;true=;false=tholosbuilder/wizards.grid.columns.main%]
+
+<div id="wizard_result" style="margin-top: 20px;">
+</div>

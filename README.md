@@ -1,2 +1,1 @@
-# TholosBuilder
-Tholos Application Builder
+# Tholos Application Builder

@@ -1,0 +1,30 @@
+<h1 class="text-center">Tholos :: StoredProcedure wizard</h1>
+
+<div class="row" style="margin-top: 20px;">
+  <div class="col-xs-4 text-right">
+    Stored procedure:
+  </div>
+  <div class="col-xs-8">
+	<select id="SPWizardComponentId">
+      <option value="">--- Please select TStoredProcedure component ---</option>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.select;
+SQL=
+select id, path as text, case when id=$p_id~='-1'; then 'selected' else '' end as selected
+from app_tree_path_v atp
+where atp.class_name='TStoredProcedure'
+      and atp.route_id in ($route_filter~='-1';)
+order by path
+%SQL%>
+    </select>
+  </div>
+</div>
+<div class="row" style="margin-top: 10px;">
+  <div class="col-xs-12 text-center">
+    <button class="button" onclick="StoredProcedureWizardRun($('#SPWizardComponentId').val(),'');">Generate/Update TDBParams</button>
+  </div>
+</div>
+
+<div id="wizard_result" style="margin-top: 20px;">
+</div>

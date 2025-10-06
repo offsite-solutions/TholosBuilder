@@ -1,0 +1,6 @@
+<tr>
+  <td><a href="$RedmineURL/issues/$sqltask_number" target="_blank">#$sqltask_number</a></td>
+  <td><a href="$RedmineURL/issues/$sqltask_number" target="_blank">$sqlsubject</a>
+  <td>$sqlroute</td>
+  <td>$sqlcode</td>
+</tr>

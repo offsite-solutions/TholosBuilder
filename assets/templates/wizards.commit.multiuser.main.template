@@ -1,0 +1,48 @@
+<h3>Parallel edited uncommitted routes</h3>
+<table class="redmine-issues">
+  <tr>
+    <th width="20%">Issue #</th>
+    <th width="50%">Route</th>
+    <th width="30%">Owner</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.commit.multiuser.row;
+SQL=
+select route,
+       owner as code,
+       (select listagg('#'||task_number, ', ') within group (order by task_number)
+          from
+       (SELECT distinct at.task_number
+          FROM app_changes     ac,
+               app_tree_path_v atp,
+               app_tasks       at,
+               app_users       au
+         WHERE ac.component_id = atp.id
+           AND at.id = ac.task_id
+           AND au.id = at.created_by
+           AND at.committed IS NULL
+           AND at.closed='N'
+           AND atp.route = tt.route)
+         ) as task_number
+  from (
+SELECT route,
+       listagg(code,
+               ', ') within GROUP(ORDER BY route) AS owner
+  FROM (SELECT DISTINCT atp.route,
+                        au.code
+          FROM app_changes     ac,
+               app_tree_path_v atp,
+               app_tasks       at,
+               app_users       au
+         WHERE ac.component_id = atp.id
+           AND at.id = ac.task_id
+           AND au.id = at.created_by
+           AND at.committed IS NULL
+           AND at.closed='N') t
+ GROUP BY route
+ ) tt
+ where instr(owner,',')>0
+ ORDER BY 1
+%SQL%>
+</table>

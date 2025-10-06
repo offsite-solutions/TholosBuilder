@@ -1,0 +1,27 @@
+<h1 class="text-center">Tholos :: User help editor</h1>
+
+<div class="row" style="margin: 20px 10px 10px 10px;">
+  <form id="helpForm" action="javascript:saveHelp();">
+    <input type="hidden" name="action" value="saveHelp">
+    <input type="hidden" name="p_component_id" id="p_component_id" value="$p_component_id">
+    <input type="hidden" name="p_id" id="p_id" value="$id">
+    <input type="hidden" name="p_version" id="p_version" value="$version">
+    <textarea name="p_text" id="helpHTML" style="width: 95%; height: 600px;">$text</textarea>
+  </form>
+</div>
+
+<div style="text-align: right; margin: 0px 10px 10px 10px;"><a href="javascript:deleteHelp($('#helpForm').find('#p_id').val(),$('#helpForm').find('#p_version').val(),$('#helpForm').find('#p_component_id').val());" style="color: #cc0000;"><i class="fa fa-trash"></i> Delete</a></div>
+
+<script type="text/javascript">
+  CKEDITOR.replace('helpHTML', {
+    language: 'hu',
+    entities_latin: false,
+    disableNativeTableHandles: false,
+    enterMode: CKEDITOR.ENTER_P,
+    forcePasteAsPlainText: true,
+    pasteFromWordPromptCleanup: true,
+    shiftEnterMode: CKEDITOR.ENTER_BR,
+    undoStackSize: 50,
+    stylesSet: '/tholos/assets/js/ckeditor-assets/help_styles.js'
+  });
+</script>

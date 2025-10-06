@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-xs-12">
+    <p class="title">Add new component</p>
+    <form class="form-horizontal" method="post" role="form" onsubmit="return false;" id="form_addComponent">
+<!-- common fields start -->
+<input type="hidden" name="action" value="saveComponent">
+<input type="hidden" name="p_id" value="">
+<input type="hidden" name="p_parent_id" value="$p_parent_id">
+<input type="hidden" name="p_version" value="">
+<input type="hidden" name="p_enabled" value="Y">
+<!-- common fields end -->
+
+<div class="form-group">
+  <div class="col-sm-2 text-right"><strong>Parent</strong></div>
+  <div class="col-sm-10">
+    <%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.text;
+SQL=
+select cp.name||':'||cp.class_name as text
+  from app_tree_v cp
+ where cp.id=$p_parent_id~='-1';
+%SQL%>
+  </div>
+</div>
+
+<div class="form-group">
+  <label for="p_component_type_id" class="col-sm-2 control-label no-padding-right">Component type</label>
+  <div class="col-sm-10">
+    <select class="form-control" name="p_component_type_id" id="p_component_type_id">
+<option value=""></option>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/sqls.select;
+SQL=
+select id, class_name as text
+  from def_component_types
+ where (parent_component_type_id in (select ct.id
+                                      from def_component_types ct
+                                    connect by ct.id = prior ct.ancestor_id
+                                      start with ct.id=(select component_type_id
+                                                          from app_components c where c.id=$p_parent_id~='-1';
+                                                       )
+                                   )
+       or parent_component_type_id is null)
+       and parent_component_type_id!=id
+ order by 2
+%SQL%>
+    </select>
+  </div>
+</div>
+
+<div class="form-group">
+  <label for="p_name" class="col-sm-2 control-label no-padding-right">Name</label>
+  <div class="col-sm-10">
+    <input class="form-control" name="p_name" id="p_name" value="_%ID%">
+  </div>
+</div>
+
+      <hr>
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <button class="btn btn-primary" onclick="saveComponent();">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,5 @@
+<script type="text/javascript">
+$('body').tooltip({
+  selector: "[rel=tooltip]"
+});
+</script>

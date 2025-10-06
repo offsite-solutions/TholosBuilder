@@ -1,0 +1,87 @@
+<h1 class="text-center">Tholos :: Search result</h1>
+
+<div id="search_result">
+<p>Search term: <b>$searchfor</b></p>
+
+<h4>Component</h4>
+<table style="width: auto;">
+  <tr>
+    <th style="padding: 2px;">Component</th>
+    <th style="padding: 2px;">Route</th>
+    <th style="padding: 2px;">Path</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/search.rowcomponent;
+ROWNULL=tholosbuilder/search.rownull;
+SQL=
+select tpv.id, tpv.name_with_type, tpv.path, null as component_name, null as value,
+       tpv.route_id, tpv.route
+  from app_tree_path_v tpv
+ where lower(tpv.name_with_type) like lower('%$searchFor%')
+ order by tpv.route, tpv.path
+%SQL%>
+</table>
+
+<h4>Properties</h4>
+<table style="width: 100%;">
+  <tr>
+    <th>Property</th>
+    <th>Component</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/search.row;
+ROWNULL=tholosbuilder/search.rownull;
+SQL=
+select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'||cpv.value||'</pre>' as value,
+       tpv.route_id, tpv.route
+  from app_component_properties_v cpv,
+       app_tree_path_v tpv
+ where lower(cpv.value) like lower('%$searchFor%')
+       and tpv.id=cpv.component_id
+ order by tpv.route, tpv.path, cpv.name
+%SQL%>
+</table>
+
+<h4>Event values</h4>
+<table style="width: 100%;">
+  <tr>
+    <th>Event</th>
+    <th>Component</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/search.row;
+ROWNULL=tholosbuilder/search.rownull;
+SQL=
+select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'||cpv.value||'</pre>' as value,
+       tpv.route_id, tpv.route
+  from app_component_events_v cpv,
+       app_tree_path_v tpv
+ where lower(cpv.value) like lower('%$searchFor%')
+       and tpv.id=cpv.component_id
+ order by tpv.route, tpv.path, cpv.name
+%SQL%>
+</table>
+
+<h4>Event parameters</h4>
+<table style="width: 100%;">
+  <tr>
+    <th>Event</th>
+    <th>Component</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/search.row;
+ROWNULL=tholosbuilder/search.rownull;
+SQL=
+select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'||cpv.parameters||'</pre>' as value,
+       tpv.route_id, tpv.route
+  from app_component_events_v cpv,
+       app_tree_path_v tpv
+ where lower(cpv.parameters) like lower('%$searchFor%')
+       and tpv.id=cpv.component_id
+ order by tpv.route, tpv.path, cpv.name
+%SQL%>
+</table>

@@ -1,0 +1,5 @@
+<tr style="border-top: 1px solid #ccc;">
+  <td><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node', '#$sqlid').trigger('select_node.jstree');">$sqlname_with_type</a><br/>
+  <small>$sqlpath</small></td>
+  <td><span style="color:#aa0000;font-weight: bold;">$sqlcomponent_name</span></td>
+</tr>

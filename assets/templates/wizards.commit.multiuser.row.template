@@ -1,0 +1,5 @@
+<tr>
+  <td>$sqltask_number</td>
+  <td>$sqlroute</td>
+  <td>$sqlcode</td>
+</tr>

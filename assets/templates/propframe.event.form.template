@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-xs-10">
+    <input id="event_edit_$p_event_id" style="width: 100%;" value="$p_value">
+  </div>
+  <div class="col-xs-2">
+    <button id="event_button_$p_event_id" class="btn btn-default btn-xs pull-right" onclick="saveEvent($p_component_id, $p_event_id, '$p_link_id', '$p_version', $('#event_edit_$p_event_id').val(),$('#event_component_$p_event_id').val(), ($('#event_component_$p_event_id').val()==''?'':$('#event_method_$p_event_id').val()), $('#event_parameters_$p_event_id').val());" title="Save"><i class="fa fa-check saveIcon"></i></button>
+  </div>
+  <div class="col-xs-10">
+    <small>Component</small>:<br/>
+    <select id="event_component_$p_event_id" style="width: 100%;" onchange="loadMethods($p_event_id,this.value);">
+$components
+    <select>
+  </div>
+  <div class="col-xs-2"><button class="btn btn-default btn-xs pull-right"
+     onclick="if (clipboardMethodID!='') saveEvent($p_component_id, $p_event_id, '$p_link_id', '$p_version', '', clipboardMethodComponentID, clipboardMethodID, $('#event_parameters_$p_event_id').val());" title="Paste"><i class="fa fa-clipboard saveIcon"></i></button></div>
+  <div class="col-xs-10" id="event_methods_$p_event_id">
+    $methodlist
+  </div>
+  <div class="col-xs-2">&nbsp;</div>
+  <div class="col-xs-12">
+    Parameters (JSON):
+    <textarea id="event_parameters_$p_event_id" style="width: 100%; min-height: 150px; font-family: Menlo,Monaco,Consolas,\"Courier New\",monospace;">$p_parameters</textarea>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+$("#event_comp_search_$p_event_id").keyup(function (e) {
+    if (e.keyCode == 13 || e.keyCode == 32) loadEventComponents($p_event_id,$p_component_id,$('#event_comp_search_$p_event_id').val());
+});
+</script>

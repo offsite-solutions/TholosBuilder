@@ -1,0 +1,5 @@
+<tr>
+  <td><strong>$sqlname</strong></td>
+  <td>$sqlancestor_class_name</td>
+  <td>$sqldescription</td>
+</tr>

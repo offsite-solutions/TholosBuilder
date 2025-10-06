@@ -1,0 +1,39 @@
+<form id="gridForm" style="margin-top: 20px;">
+<input type="hidden" name="p_grid_id" value="$p_grid_id">
+<input type="hidden" name="action" value="GridWizardRun">
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.grid.columns.row;
+SQL=
+SELECT atp.id, atp.name
+  FROM app_tree_path_v atp
+ WHERE parent_id = (SELECT value_component_id
+                      FROM app_component_properties_v acp
+                     WHERE acp.component_id = $p_grid_id
+                       AND acp.name = 'ListSource')
+   AND atp.class_name = 'TDBField'
+   AND atp.id NOT IN
+       (SELECT value_component_id
+          FROM app_component_properties_v acp
+         WHERE acp.component_id IN (SELECT atp.id
+                                      FROM app_tree_path_v atp
+                                     WHERE parent_id = $p_grid_id
+                                       AND atp.class_name = 'TGridColumn')
+           AND acp.name = 'DBField'
+           AND VALUE IS NOT NULL)
+ ORDER BY atp.component_order
+%SQL%>
+<div class="row" style="margin-top: 10px;">
+  <div class="col-xs-4 text-right">
+    &nbsp;
+  </div>
+  <div class="col-xs-8">
+    <input type="checkbox" name="GridWizardSkipIDs" id="GridWizardSkipIDs" value="T" checked> Skip empty DBField's assign to ID column
+  </div>
+</div>
+</form>
+<div class="row" style="margin-top: 20px">
+  <div class="col-xs-12 text-center" id="gridFormPost">
+    <button onclick="GridWizardRun();">Create grid columns and filters</button>
+  </div>
+</div>

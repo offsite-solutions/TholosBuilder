@@ -1,0 +1,22 @@
+<h3>Uncommitted issues - Your issues</h3>
+<table class="redmine-issues">
+  <tr>
+    <th width="10%">Issue #</th>
+    <th width="50%">Issue</th>
+    <th width="30%">Route</th>
+    <th width="10%">Owner</th>
+  </tr>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/wizards.commit.row;
+SQL=
+select distinct at.task_number, at.subject, au.code, atp.route
+  from app_tasks at
+  join app_users au on au.id=at.created_by and au.id=app_session_pkg.user_id
+  left outer join app_changes ac on at.id=ac.task_id
+  left outer join app_tree_path_v atp on ac.component_id=atp.id
+ where at.committed is null
+       and at.closed='N'
+ order by 3,1
+%SQL%>
+</table>

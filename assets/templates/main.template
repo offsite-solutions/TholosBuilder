@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tholos Application Builder</title>
+    <link rel="shortcut icon" href="/tholos_builder/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/tholos_builder/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/tholos_builder/jquery-ui-1.12.1/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/tholos_builder/jstree-3.3.3/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/tholos_builder/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/tholos_builder/toastr-2.1.1/toastr.min.css" />
+    <link rel="stylesheet" href="/tholos_builder/textareafullscreen-1.0.1/textareafullscreen.css" />
+    <link rel="stylesheet" href="/tholos_builder/tholos_builder.css" />
+  </head>
+  <body>
+    <div id="wrapper" class="container-fluid">
+      <div id="container">
+          <div id="task_frame"></div>
+          <div id="nav_frame" class="resizable"><div class="content"></div></div>
+          <div id="prop_frame" class="resizable"><div class="content"></div></div>
+          <div id="edit_frame" class="resizable"><div class="content"></div></div>
+      </div>
+    </div>
+
+	<script type="text/javascript">var __editorURL='$tholos_builderURL';</script>
+
+    <script src="/tholos_builder/jquery/jquery-2.1.4.min.js"></script>
+    <script src="/tholos_builder/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script src="/tholos_builder/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="/tholos_builder/jstree-3.3.3/jstree.min.js"></script>
+    <script src="/tholos_builder/bootstrap-tabs-dynamic/bootstrap-tabs-dynamic.js"></script>
+    <script src="/tholos_builder/bootbox-4.4.0/bootbox.min.js"></script>
+    <script src="/tholos_builder/toastr-2.1.1/toastr.min.js"></script>
+    <script src="/tholos_builder/backspace-disabler-1.0.0/index.js"></script>
+    <script src="/tholos_builder/textareafullscreen-1.0.1/jquery.textareafullscreen.js"></script>
+    <script src="/tholos_builder/ckeditor-4.7/ckeditor.js"></script>
+
+    <script type="text/javascript">const skipframeloading=false;</script>
+    <script src="/tholos_builder/tholos_builder.js"></script>
+
+  </body>
+</html>

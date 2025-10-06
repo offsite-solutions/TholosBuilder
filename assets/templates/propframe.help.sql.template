@@ -1,0 +1,15 @@
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/propframe.help.editor;
+ROWNULL=tholosbuilder/propframe.help.empty;
+SQL=
+select ah.id,
+       to_char(ah.last_update_date,'YYYY.MM.DD. hh24:mi') as last_update_date,
+       ah.help_id,
+       ah2.component_id,
+       ah.version
+  from app_help ah
+ left outer join app_help ah2 on ah2.id=ah.help_id
+ where ah.component_id=$p_component_id~='-1';
+       and ah.enabled='Y'
+%SQL%>

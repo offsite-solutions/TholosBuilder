@@ -1,0 +1,493 @@
+html,body {
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    overflow: hidden;
+}
+
+html,body,td,th {
+  font-size: 9pt;
+}
+
+#login {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 300px;
+  margin-left: -150px;
+  margin-top: -150px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 10px;
+  background: #f6f6f6;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,f9f9f9+100 */
+  background: rgb(239,239,239); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(239,239,239,1) 0%, rgba(249,249,249,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(239,239,239,1) 0%,rgba(249,249,249,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(239,239,239,1) 0%,rgba(249,249,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#f9f9f9',GradientType=0 ); /* IE6-9 */
+  -webkit-box-shadow: 5px 5px 10px 0px rgba(230,230,230,0.5);
+  -moz-box-shadow: 5px 5px 10px 0px rgba(230,230,230,0.5);
+  box-shadow: 5px 5px 10px 0px rgba(230,230,230,0.5);
+}
+
+#login h1 {
+  color: #0b58a2;
+  font-size: 12pt;
+  text-align: center;
+  margin: 5px 5px 10px 5px;
+}
+
+#login p {
+  display: block;
+}
+
+#login p label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#login p input {
+  margin-left: 40px;
+  width: 240px;
+  border: 1px solid lightgrey;
+  background-color: white;
+  padding: 3px;
+}
+
+#login button {
+  background-color: #0b58a2;
+  color: white;
+  border-style: none;
+}
+
+#wrapper {
+  height: 100%; 
+  margin: 0px; 
+  padding: 0px;
+  position: absolute;
+  width: 100%;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+}
+
+#task_frame {
+  position: absolute;
+  background-color: #8cb0cb;;
+  border:1px solid #3d6c91;
+  border-radius: 5px;
+  padding: 3px;
+  right: 5px;
+  top: 5px;
+  width: auto;
+  height: auto;
+  color: #fff;
+  font-size: 8pt;
+  opacity: 0.5;
+}
+
+#task_frame:hover {
+  opacity: 1;
+  z-index: 999;
+}
+
+#task_frame a {
+  font-size: 8pt;
+  color: #fff;
+  text-decoration: none;
+}
+
+#task_frame p {
+  margin: 2px;
+}
+
+#nav_frame, #prop_frame {
+  width: 22%;
+}
+
+#edit_frame {
+  width: 56%;
+}
+
+.resizable {
+  height: 100%;
+  padding: 0px;
+  display: inline-block;
+  float:left;
+}
+
+#nav_frame .content, #prop_frame .content, #edit_frame .content{
+  padding: 0px;
+  height: 100%;
+  overflow: auto;
+}
+
+#nav_frame .content {
+  overflow-x: hidden;
+}
+
+#prop_frame .content, #edit_frame .content, #edit_frame .content {
+  padding-left: 3px;
+}
+
+#edit_frame .content {
+  padding: 10px;
+}
+
+.ui-resizable-e { 
+  cursor: ew-resize; 
+  width: 3px; 
+  right: -3px; 
+  top: 0; 
+  bottom: 0; 
+  background-color: #c0d7e8;
+}
+
+/* left frame */
+
+#portalinfo_container { position:absolute; width: 100%; }
+#portalinfo_container .logo { background-color: #3d6c91; color: #fff; font-size: 14pt; padding-left: 5px; }
+#portalinfo_container .portal-info { background-color: #8cb0cb; color: #fff; font-size: 10px; padding-left: 5px; }
+
+#options_container { margin-bottom: 0px; position:absolute; top: 0px; width: 100%; height: 23px; z-index: 500; overflow: hidden; padding-top: 3px;}
+#options_container:hover { height: auto; }
+#options_container .info { font-size: 8pt; }
+#options_container .hovered {display: none; }
+#options_container:hover .hovered {display: block; }
+#options_container .dropdown-menu { position: relative; }
+
+/* template tree */
+
+#app_tree_container { position: absolute; top: 23px; height: calc(100% - 23px); width: 100%; padding: 0px; background-color: #fff;}
+#apps { height: 100%; width: 100%; overflow: auto; padding: 0px; }
+
+#app_tree { height: 100%; width: 100%; overflow: auto; padding-left: 0px;}
+#app_tree .folder { background:url('/tholos_builder/images/file_sprite.png') right bottom no-repeat; }
+#app_tree .file { background:url('/tholos_builder/images/file_sprite.png') 0 0 no-repeat; }
+
+#search_result_tree { height: 100%; width: 100%; overflow: auto; padding-left: 0px;}
+#search_result_tree .folder { background:url('/tholos_builder/images/file_sprite.png') right bottom no-repeat; }
+#search_result_tree .file { background:url('/tholos_builder/images/file_sprite.png') 0 0 no-repeat; }
+
+/* .nav-tabs > li > a {
+  padding: 5px !important;
+  font-size: 12px !important;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus{
+    color: #fff !important;
+    background-color: #8cb0cb !important;
+} */
+
+#prop_frame .ui-tabs-nav {
+  padding-left: 0px;
+  background: transparent;
+  border-width: 0px 0px 1px 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+}
+#prop_frame .ui-tabs-panel {
+  background: #fff;
+  border: 0;
+  padding: 0;
+}
+
+#prop_frame .ui-tabs-anchor {
+  padding: 5px;
+  font-size: 12px;
+}
+
+#prop_frame .ui-state-focus {
+  border: 0;
+}
+
+#prop_frame .ui-tabs-active {
+  background-color: #8cb0cb;
+  border-style: none;
+}
+
+.tab-content {
+  height: 100%;
+}
+
+#prop_frame .tab-content {
+  height: calc(100% - 35px);
+}
+
+#prop_frame a:focus {
+  outline: none;
+}
+
+.tab-pane {
+  height: 100%;
+}
+
+p.title {
+  font-weight: bold;
+  background-color: #bbb;
+  color: #fff;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.ancestor {
+  font-size: 9px;
+}
+
+div.checkbox {
+  margin: 0px;
+}
+
+.tree_class_name {
+  font-size: 9px;
+  color: #fff;
+  background-color: #999;
+  padding: 1px 2px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+#prop_tree, #event_tree {
+  padding: 0px;
+}
+
+table.table_props {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+table.table_props tbody td {
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+table.table_props thead tr {
+  background-color: #999;
+  color: #fff;
+}
+
+.prop_type {
+  color: #ddd;
+}
+
+.method_path {
+  color: #aaa;
+  font-style: italic;
+}
+
+.prop_name {
+  border-right: 1px solid #eee;
+}
+
+table.table_props tbody tr {
+  background-color: #f7f7f7;
+}
+
+table.table_props tbody tr:hover .prop_value {
+  background-color: #fff;
+}
+
+table.table_props td.event_type {
+  background-color: #fff;
+  font-weight: bold;
+}
+
+table.table_props tbody tr.prop_mandatory td {
+  font-weight: bold;
+}
+
+/* icon colors */
+.color-grey {
+  color: #c8c8c8;
+}
+
+.color-green {
+  color: green;
+}
+
+.color-lightgreen {
+  color: limegreen;
+}
+
+.color-green3 {
+  color: mediumseagreen;
+}
+
+.color-blue {
+  color: dodgerblue;
+}
+
+.color-lightblue {
+  color: deepskyblue;
+}
+
+.color-maroon {
+  color: maroon;
+}
+
+.color-purple {
+  color: purple;
+}
+
+.color-purple2 {
+  color: mediumpurple;
+}
+
+.color-brown {
+  color: sandybrown;
+}
+
+.color-red {
+  color: red;
+}
+
+.color-control {
+   color: #ca7841;
+ }
+
+.color-grid {
+  color: goldenrod;
+}
+
+.color-gridcolumn {
+  color: darkgoldenrod;
+}
+
+/* wizard */
+
+.uptodate {}
+.modify { color: green; }
+.new { color: #00c4ff; }
+.delete { color: red; }
+
+tr.modify td { background-color: palegreen; color: #000; }
+tr.new td { background-color: lightblue; color: #000; }
+tr.skip td {background-color: lightyellow; color: #000; }
+
+div.tooltip-inner {
+    max-width: 600px;
+    text-align: left;
+}
+
+.tooltip-inner {
+    background-color: #8cb0cb;
+    color: #fff;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: #8cb0cb;
+}
+
+.tooltip.right .tooltip-arrow {
+    border-right-color: #8cb0cb;
+}
+
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: #8cb0cb;
+}
+
+.tooltip.left .tooltip-arrow {
+    border-left-color: #8cb0cb;
+}
+
+#userguide, #userguide td {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+}
+
+#userguide td {
+  vertical-align: top;
+}
+
+#userguide tr {
+  border-bottom: 1px solid #eee;
+}
+
+#userguide table tr td:first-child {
+  font-weight: bold;
+}
+
+#userguide h2 {
+  font-size: 16pt;
+  font-weight: bold;
+}
+
+#userguide h3 {
+  font-size: 14pt;
+  font-weight: bold;
+}
+
+#userguide h4 {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+#userguide table {
+  width: 100%;
+}
+
+#userguide table th {
+  background-color: lightgrey;
+}
+
+#userguide div.user-guide-section {
+  border-top: 1px solid lightblue;
+}
+
+#userguide div.user-guide-section-footer {
+  font-size: 8pt;
+  text-align: right;
+  color: lightgrey;
+}
+
+table.redmine-issues {
+  width: 100%;
+}
+
+table.redmine-issues th {
+  background-color: lightgrey;
+  font-weight: bold;
+}
+
+table.redmine-issues tr.issue-subject {
+  border-bottom: 1px solid lightgrey;
+}
+
+table.redmine-issues tr.issue-subject td {
+  padding: 5px;
+}
+
+#userprofile p label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#userprofile p input {
+  margin-left: 40px;
+  width: 300px;
+  padding: 3px;
+}
+
+#issues p label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#issues p input, #issues p select {
+  margin-left: 30px;
+  width: 150px;
+  padding: 3px;
+}
+
+pre.error {
+  border: 2px solid #ff0000;
+  background-color: #fff;
+  color: #880000;
+}

@@ -1,0 +1,12 @@
+<tr>
+  <td><strong>$sqlname</strong></td>
+  <td>$sqltype_desc</td>
+  <td>[%funcjob=eqs;param=sqlmandatory;value=Y;true=Yes;false=No%]</td>
+  <td>[%funcjob=eqs;param=sqlruntime;value=Y;true=Yes;false=No%]</td>
+  <td>[%funcjob=eqs;param=sqlnodata;value=Y;true=No;false=Yes%]</td>
+  <td>$sqldefault_value</td>
+  <td>$sqlancestor_class_name</td>
+  <td><p>$sqldescription</p>
+[%funcjob=eqs;param=sqlvalue_list;value=;true=;false=<p><strong>List of possible values</strong></p><pre>$sqlvalue_list</pre>%]
+  </td>
+</tr>

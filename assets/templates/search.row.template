@@ -1,0 +1,13 @@
+<tr style="border-top: 1px solid #ccc;">
+  <td><span style="color:#aa0000;font-weight: bold;">$sqlcomponent_name</span></td>
+  <td><a href="javascript:addRoute('$sqlroute_id');"><i class="fa fa-plus"></i> $sqlroute</a>&nbsp;|&nbsp;<a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node', '#$sqlid').trigger('select_node.jstree');">$sqlname_with_type</a><br/>
+  <small>$sqlpath</small></td>
+  <td></td>
+</tr>
+<%FUNC%
+funcjob=eqs
+param=sqlvalue
+value=
+true=
+false=<tr><td colspan="3">$sqlvalue</td></tr>
+%FUNC%>

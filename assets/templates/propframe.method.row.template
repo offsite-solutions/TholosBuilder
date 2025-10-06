@@ -1,0 +1,15 @@
+<div class="row" style="padding-top: 5px; padding-bottom: 5px; border-bottom: 1px solid #ddd; background-color: #f7f7f7;">
+  <div class="col-xs-10">$sqlmethod_name</div>
+  <div class="col-xs-2"><button class="btn btn-default btn-xs pull-right" onclick="copyMethod($p_component_id,$sqlid);" title="Copy"><i class="fa fa-copy"></i></button></div>
+<%SQL%
+DB=Tholos.DefinitionDBIndex;
+ROW=tholosbuilder/propframe.method.referer;
+SQL=
+select tp.short_path as referer_component, ce.name as event_name, tp.id as referer_id
+  from app_tree_path_v tp,
+       app_component_events_v ce
+ where ce.value_component_id=$p_component_id
+       and ce.value_method_id=$sqlid
+       and tp.id=ce.component_id
+%SQL%>
+</div>

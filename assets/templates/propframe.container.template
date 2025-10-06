@@ -1,0 +1,15 @@
+<ul id="prop_tabs">
+  <li><a href="#tab_prop_0">Properties</a></li>
+  <li><a href="#tab_prop_1">Events</a></li>
+  <li><a href="#tab_prop_2">Methods</a></li>
+  <li><a href="#tab_prop_3">References</a></li>
+  <li><a href="#tab_prop_4">Help</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="tab_prop_0" class="col-xs-12"></div>
+  <div id="tab_prop_1" class="col-xs-12"></div>
+  <div id="tab_prop_2" class="col-xs-12"></div>
+  <div id="tab_prop_3" class="col-xs-12"></div>
+  <div id="tab_prop_4" class="col-xs-12"></div>
+</div>
