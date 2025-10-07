@@ -35,7 +35,7 @@ param=sqlvalue
 value=
 true=<span class="prop_type">$sqltype_desc</span>
 false>>>=
-[%_include=tholos/tholos_callback.php;_function_name=_safehtml;param=sqlvalue%]
+[%_function_name=TholosBuilder\TholosBuilderCallback::_safehtml;param=sqlvalue%]
 <%FUNC%
 _function_name=TholosBuilder\TholosBuilderCallback::_eqs
 param=sqltype

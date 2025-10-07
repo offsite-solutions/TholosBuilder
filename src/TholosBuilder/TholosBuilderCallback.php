@@ -68,4 +68,17 @@
       return $result;
     }
     
+    public static function _safehtml($params = array(), $parameterPrefix = ''): string {
+      if (function_exists('tholos_safeHTML')) {
+        $s = tholos_safeHTML(Eisodos::$parameterHandler->getParam($params['param']));
+        if (strpos($s, "\n")) {
+          $s = '<pre>' . $s . '</pre>';
+        }
+        
+        return $s;
+      }
+      
+      return '';
+    }
+    
   }

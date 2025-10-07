@@ -17,8 +17,8 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=8.4",
-    "offsite-solutions/eisodos": "@dev",
-    "offsite-solutions/eisodos-sqlparser": "@dev",
+    "offsite-solutions/eisodos": "^1.1.6",
+    "offsite-solutions/eisodos-sqlparser": "^1.0.2",
     "kbsali/redmine-api": "2.8.0",
     "bower-asset/bootstrap": "5.2.3",
     "bower-asset/font-awesome": "6.3.0",
@@ -32,8 +32,6 @@
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest"
-  },
-  "suggest": {
   },
   "autoload": {
     "psr-0": {

@@ -25,7 +25,7 @@ value=
 true=
 false=$sqlmethod_name()<br/><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node','#$sqlvalue_component_id');" class="method_path">$sqlshort_path</a>
 %FUNC%>
-[%_include=tholos/tholos_callback.php;_function_name=_eqs;param=sqlparameters;value=;true=;false=<pre>$sqlparameters</pre>%]
+[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=sqlparameters;value=;true=;false=<pre>$sqlparameters</pre>%]
   </td>
 </tr>
 $oldtype:='^sqltype';

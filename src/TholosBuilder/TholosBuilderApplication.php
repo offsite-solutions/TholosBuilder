@@ -109,7 +109,10 @@
       }
     }
     
-    private function safeHTML(string $text_): string {
+    private function safeHTML(string|null $text_): string {
+      if ($text_===null || $text_=='') {
+        return '';
+      }
       return str_replace(array("[", "]", "\$", "^"), array("&#91;", "&#93;", "&#36;", "&#94;"), htmlspecialchars(stripslashes($text_)));
     }
     
@@ -726,8 +729,6 @@
           $resultArray,
           true);
         
-        Eisodos::$logger->debug('result: '.print_r($resultArray, true),$this);
-        
         $this->SPError($resultArray);
         
         $this->builder_db->commit();
@@ -1193,7 +1194,7 @@
           "  from app_tree_path_v c \n" .
           "       join def_component_type_method_v ctm on ctm.root_component_id=c.component_type_id \n" .
 //              " where c.route != (select route from app_tree_path_v c2 where c2.id=".Eisodos::$parameterHandler->getParam("p_component_id","-1").") \n".
-          " where c.id=" . sa($value, "value_component_id", "-1") . "  \n" .
+          " where c.id=" . Eisodos::$utils->safe_array_value($value, "value_component_id", "-1") . "  \n" .
           ") order by 3,4";
         
         
@@ -1945,7 +1946,7 @@
           foreach ($props as $prop) {
             $s .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.property",
               array("status" => $o2["o_" . strtolower($prop) . "_status"],
-                "origvalue" => $this->safeHTML(sa($o2, "o_" . strtolower($prop) . "_origvalue")),
+                "origvalue" => $this->safeHTML(Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_origvalue")),
                 "value" => $this->safeHTML($o2["o_" . strtolower($prop)]),
                 "prop_name" => $prop),
               false);
@@ -1964,7 +1965,7 @@
           $this->builder_db->startTransaction();
           
           foreach ($o_columns as $o2) {
-            if (sa($o2, "status", "") == "new") { // create new component
+            if (Eisodos::$utils->safe_array_value($o2, "status", "") == "new") { // create new component
               
               $boundVariables = [];
               $this->builder_db->bind($boundVariables, "p_id", "integer", "");
@@ -1992,7 +1993,7 @@
               
             }
             
-            if (sa($o2, "status", "") != "delete") {  // updating properties
+            if (Eisodos::$utils->safe_array_value($o2, "status", "") != "delete") {  // updating properties
               
               foreach ($props as $prop) {
                 
@@ -2005,7 +2006,7 @@
                   $this->builder_db->bind($boundVariables, "p_value", "text", $o2["o_" . strtolower($prop)]);
                   $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", "");
                   
-                  $this->builder_db->bind($boundVariables, "p_version", "integer", sa($o2, "o_" . strtolower($prop) . "_version"));
+                  $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_version"));
                   $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
                   if ($o2["o_" . strtolower($prop) . "_linkid"] == "") $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
                   $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
@@ -2195,7 +2196,7 @@
           $this->builder_db->startTransaction();
           
           foreach ($o_columns as $o2) {
-            if (sa($o2, "status", "") == "new") { // create new component
+            if (Eisodos::$utils->safe_array_value($o2, "status", "") == "new") { // create new component
               
               $boundVariables = [];
               $this->builder_db->bind($boundVariables, "p_id", "integer", "");
@@ -2223,7 +2224,7 @@
               
             }
             
-            if (sa($o2, "status", "") != "delete") {  // updating properties
+            if (Eisodos::$utils->safe_array_value($o2, "status", "") != "delete") {  // updating properties
               
               foreach ($props as $prop) {
                 
@@ -2507,8 +2508,8 @@
             $this->builder_db->bind($boundVariables, "p_id", "integer", "");
             $this->builder_db->bind($boundVariables, "p_component_id", "integer", $component_id);
             $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . n($property_name)));
-            $this->builder_db->bind($boundVariables, "p_value", "text", sa($params, "value", ""));
-            $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", sa($params, "value_component_id", ""));
+            $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($params, "value", ""));
+            $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", Eisodos::$utils->safe_array_value($params, "value_component_id", ""));
             
             $this->builder_db->bind($boundVariables, "p_version", "integer", "");
             $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
@@ -2525,7 +2526,7 @@
             
             $this->SPError($resultArray);
             
-            $responseArray['html'] .= "Property " . $property_name . " created with value / value_component_id: " . sa($params, "value", "") . sa($params, "value_component_id", "") . "\n";
+            $responseArray['html'] .= "Property " . $property_name . " created with value / value_component_id: " . Eisodos::$utils->safe_array_value($params, "value", "") . Eisodos::$utils->safe_array_value($params, "value_component_id", "") . "\n";
             
           }
         }
@@ -2718,8 +2719,8 @@
             $this->builder_db->bind($boundVariables, "p_id", "integer", "");
             $this->builder_db->bind($boundVariables, "p_component_id", "integer", $component_id);
             $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . n($property_name)));
-            $this->builder_db->bind($boundVariables, "p_value", "text", sa($params, "value", ""));
-            $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", sa($params, "value_component_id", ""));
+            $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($params, "value", ""));
+            $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", Eisodos::$utils->safe_array_value($params, "value_component_id", ""));
             
             $this->builder_db->bind($boundVariables, "p_version", "integer", "");
             $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
@@ -2736,7 +2737,7 @@
             
             $this->SPError($resultArray);
             
-            $responseArray['html'] .= "Property " . $property_name . " created with value / value_component_id: " . sa($params, "value", "") . sa($params, "value_component_id", "") . "\n";
+            $responseArray['html'] .= "Property " . $property_name . " created with value / value_component_id: " . Eisodos::$utils->safe_array_value($params, "value", "") . Eisodos::$utils->safe_array_value($params, "value_component_id", "") . "\n";
             
           }
         }
@@ -3024,7 +3025,7 @@
         " where id = app_session_pkg.user_id",
         $redmine_options);
       
-      if (sa($redmine_options, "rm_secretkey", "") == "")
+      if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
         throw new RuntimeException("No Redmine secret key defined in user profile");
       
       $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
@@ -3177,7 +3178,7 @@
           " where id = app_session_pkg.user_id",
           $redmine_options);
         
-        if (sa($redmine_options, "rm_secretkey", "") == "")
+        if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
           throw new RuntimeException("No Redmine secret key defined in user profile");
         
         $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
@@ -3263,7 +3264,7 @@
           " where id = app_session_pkg.user_id",
           $redmine_options);
         
-        if (sa($redmine_options, "rm_secretkey", "") == "")
+        if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
           throw new RuntimeException("No Redmine secret key defined in user profile");
         
         $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
@@ -3275,7 +3276,7 @@
           $a_ = $redmine->issue->all(['status_id' => Eisodos::$parameterHandler->getParam("p_rm_status", ""),
             'sort' => 'project_id,id:desc',
             'project_id' => Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]),
-            'subproject_id' => Eisodos::$parameterHandler->getParam("p_rm_subprojects", sa($redmine_options, "rm_subprojects", '*')),
+            'subproject_id' => Eisodos::$parameterHandler->getParam("p_rm_subprojects", Eisodos::$utils->safe_array_value($redmine_options, "rm_subprojects", '*')),
             'limit' => '1000',
             'assigned_to_id' => Eisodos::$parameterHandler->getParam("p_rm_assigned_to_id", ""),
             'fixed_version_id' => Eisodos::$parameterHandler->getParam("p_rm_version", "")
@@ -3344,7 +3345,7 @@
         $responseArray['success'] = 'ERROR';
         
       }
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
@@ -3353,7 +3354,7 @@
     private function reloadTaskFrame(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "taskframe.main", array(), false);
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
@@ -3362,7 +3363,7 @@
     private function showCommitHistory(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.history.main", array(), false);
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
@@ -3371,7 +3372,7 @@
     private function showUserProfile(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.userprofile.main", array(), false);
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
@@ -3423,7 +3424,7 @@
         $responseArray['success'] = 'ERROR';
         
       }
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
@@ -3437,7 +3438,7 @@
         Eisodos::$parameterHandler->setParam("route_filter", implode(",", $route_filter), true);
       }
       $responseArray['html'] = '';
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finish();
       exit;
@@ -3480,7 +3481,7 @@
           false);
       }
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "filter.main", array("ROWS" => $rows), false);
-      header('Content - type: application / json');
+      header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finish();
       exit;
