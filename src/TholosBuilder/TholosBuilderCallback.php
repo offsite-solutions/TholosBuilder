@@ -7,10 +7,6 @@
   namespace TholosBuilder;
   
   use Eisodos\Eisodos;
-  use RuntimeException;
-  use Tholos\TDataProvider;
-  use Tholos\Tholos;
-  use Tholos\Throwable;
   
   class TholosBuilderCallback {
     public static function _eq($params = array(), $parameterPrefix = ''): string {

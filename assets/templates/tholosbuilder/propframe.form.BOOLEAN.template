@@ -2,8 +2,8 @@
   <div class="col-xs-10">
     <select id="prop_edit_$p_property_id" style="width: 100%;">
 <option value=""></option>
-<option value="true" [%funcjob=eqs;param=p_value;value=true;true=selected;false=%]>true</option>
-<option value="false" [%funcjob=eqs;param=p_value;value=false;true=selected;false=%]>false</option>
+<option value="true" [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=p_value;value=true;true=selected;false=%]>true</option>
+<option value="false" [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=p_value;value=false;true=selected;false=%]>false</option>
     <select>
   </div>
   <div class="col-xs-2">

@@ -56,7 +56,7 @@ order by path
   </div>
 </div>
 
-[%funcjob=eq;param=p_form_id;value=;true=;false=tholosbuilder/wizards.editform.controls.main%]
+[%_function_name=TholosBuilder\TholosBuilderCallback::_eq;param=p_form_id;value=;true=;false=tholosbuilder/wizards.editform.controls.main%]
 
 <div id="wizard_result" style="margin-top: 20px;">
 </div>

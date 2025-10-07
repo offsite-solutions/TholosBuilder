@@ -35,13 +35,13 @@
   <div class="col-sm-2">
     <select name="p_rm_assigned_to_id" style="width: 100%;">
 <option value="">Anybody</option>
-<option value="me" [:funcjob=eqs;param=p_rm_assigned_to;value=me;true=selected;false=:]>Me</option>
+<option value="me" [:_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=p_rm_assigned_to;value=me;true=selected;false=:]>Me</option>
 $rmmembers</select>
   </div>
   <div class="col-sm-2">
     <select name="p_rm_status" style="width: 100%;">
 <option value="">Any</option>
-<option value="open" [:funcjob=eqs;param=p_rm_status;value=open;true=selected;false=:]>Open</option>
+<option value="open" [:_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=p_rm_status;value=open;true=selected;false=:]>Open</option>
 $rmstatuses</select>
   </div>
   <div class="col-sm-2">

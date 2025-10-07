@@ -1,0 +1,12 @@
+<tr>
+  <td><strong>$sqlname</strong></td>
+  <td>$sqltype_desc</td>
+  <td>[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=sqlmandatory;value=Y;true=Yes;false=No%]</td>
+  <td>[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=sqlruntime;value=Y;true=Yes;false=No%]</td>
+  <td>[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=sqlnodata;value=Y;true=No;false=Yes%]</td>
+  <td>$sqldefault_value</td>
+  <td>$sqlancestor_class_name</td>
+  <td><p>$sqldescription</p>
+[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=sqlvalue_list;value=;true=;false=<p><strong>List of possible values</strong></p><pre>$sqlvalue_list</pre>%]
+  </td>
+</tr>

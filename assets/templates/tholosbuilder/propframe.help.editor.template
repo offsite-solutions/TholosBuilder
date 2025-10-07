@@ -1,5 +1,5 @@
 <div style="text-align: center; margin: 20px 0 20px 0;"><%FUNC%
-funcjob=eqs
+_function_name=TholosBuilder\TholosBuilderCallback::_eqs
 param=sqlhelp_id
 value=
 true=<a href="javascript:EditHelp($sqlid,$p_component_id);"><i class="fa fa-edit"></i> <b>#$sqlid</b>, last saved: $sqllast_update_date</a><br/>or<br/><a href="javascript:copyHelp($sqlid);"><i class="fa fa-copy"></i> Copy as reference</a><p style="margin-top: 20px; text-align: left;"><b>Referencing objects to this help section</b></p>

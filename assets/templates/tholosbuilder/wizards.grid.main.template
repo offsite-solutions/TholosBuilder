@@ -25,7 +25,7 @@ order by component_order
   </div>
 </div>
 
-[%funcjob=eq;param=p_grid_id;value=;true=;false=tholosbuilder/wizards.grid.columns.main%]
+[%_function_name=TholosBuilder\TholosBuilderCallback::_eq;param=p_grid_id;value=;true=;false=tholosbuilder/wizards.grid.columns.main%]
 
 <div id="wizard_result" style="margin-top: 20px;">
 </div>

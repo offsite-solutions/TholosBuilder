@@ -6,11 +6,12 @@
   
   namespace TholosBuilder;
   
-  require_once '../../vendor/autoload.php';
-  
   use Eisodos\Abstracts\Singleton;
   use Eisodos\Eisodos;
   use Eisodos\Interfaces\DBConnectorInterface;
+  use Eisodos\Parsers\CallbackFunctionParser;
+  use Eisodos\Parsers\CallbackFunctionShortParser;
+  use Eisodos\Parser\SQLParser;
   use Exception;
   use JetBrains\PhpStorm\NoReturn;
   use JsonException;
@@ -32,21 +33,33 @@
      */
     private string $project_schema;
     
+    private string $templateFolder = 'tholosbuilder/';
     /**
      * @var string
      */
     private string $project_owner;
     
+    public TholosBuilderCallback $callback;
+    
     private DBConnectorInterface $builder_db;
     private DBConnectorInterface $project_db;
     
+    /**
+     * @throws Exception
+     */
     protected function init(array $options_): void {
       /* setting mandatory configs */
       Eisodos::$parameterHandler->setParam("TranslateLanguageTags", "F");
       
-      $this->builder_schema = Eisodos::$parameterHandler->getParam("BuilderSchema", "");
-      $this->project_schema = Eisodos::$parameterHandler->getParam("ProjectSchema", "");
-      $this->project_owner = Eisodos::$parameterHandler->getParam("ProjectOwner", "");
+      $this->callback = new TholosBuilderCallback();
+      
+      Eisodos::$templateEngine->registerParser(new CallbackFunctionParser());
+      Eisodos::$templateEngine->registerParser(new CallbackFunctionShortParser());
+      Eisodos::$templateEngine->registerParser(new SQLParser());
+      
+      $this->builder_schema = Eisodos::$parameterHandler->getParam("TholosBuilder.BuilderSchema", "");
+      $this->project_schema = Eisodos::$parameterHandler->getParam("TholosBuilder.ProjectSchema", "");
+      $this->project_owner = Eisodos::$parameterHandler->getParam("TholosBuilder.ProjectOwner", "");
       
       $this->DB_Objects = [
         // ORACLE
@@ -81,11 +94,11 @@
       ];
     }
     
-    private function getDBObject(string $object_id_): string {
+    private function getDBObject(DBConnectorInterface $DBConnector_, string $object_id_): string {
       return str_replace(
         array('{BuilderSchema}', '{ProjectSchema}'),
         array($this->builder_schema, $this->project_schema),
-        Eisodos::$utils->safe_array_value($this->DB_Objects, $this->builder_db->DBSyntax() . '.' . $object_id_, '')
+        Eisodos::$utils->safe_array_value($this->DB_Objects, $DBConnector_->DBSyntax() . '.' . $object_id_, '')
       );
     }
     
@@ -105,7 +118,7 @@
      * @throws JsonException
      */
     #[NoReturn]
-    protected function run(
+    public function run(
       DBConnectorInterface $builder_db_,
       DBConnectorInterface $project_db_
     ): void {
@@ -113,22 +126,27 @@
       $this->builder_db = $builder_db_;
       $this->project_db = $project_db_;
       
+      // connect to db
+      
+      $this->builder_db->connect('Database1');
+      $this->project_db->connect('Database2');
+      
       // Authentication
       
       if (Eisodos::$parameterHandler->eq("action", "login")) {
         $this->login();
       } elseif (Eisodos::$parameterHandler->eq("action", "logout")) {
         $this->logout();
-      } elseif (Eisodos::$parameterHandler->eq("tholos_login_id", "")) {
+      } elseif (Eisodos::$parameterHandler->eq("tholosbuilder_login_id", "")) {
         $this->showLogin();
       }
       
-      // session initialization 
+      // session initialization
       
       $this->initSession();
       
       if (Eisodos::$parameterHandler->eq("action", "")) {
-        Eisodos::$templateEngine->getTemplate(templateFolder . "main", array(), true);
+        Eisodos::$templateEngine->getTemplate($this->templateFolder . "main", array(), true);
         Eisodos::$render->finish();
         exit;
       }
@@ -164,7 +182,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_clone")),
+          ($this->getDBObject($this->builder_db, "sp.component_clone")),
           $boundVariables,
           $resultArray
         );
@@ -211,7 +229,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_move_first")),
+          ($this->getDBObject($this->builder_db, "sp.component_move_first")),
           $boundVariables,
           $resultArray
         );
@@ -258,7 +276,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_move_last")),
+          ($this->getDBObject($this->builder_db, "sp.component_move_last")),
           $boundVariables,
           $resultArray
         );
@@ -305,7 +323,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_move_down")),
+          ($this->getDBObject($this->builder_db, "sp.component_move_down")),
           $boundVariables,
           $resultArray
         );
@@ -352,7 +370,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_move_up")),
+          ($this->getDBObject($this->builder_db, "sp.component_move_up")),
           $boundVariables,
           $resultArray
         );
@@ -408,7 +426,7 @@
           $resultArray = array();
           
           $this->builder_db->executeStoredProcedure(
-            (tholos_getDBObject($this->builder_db, "sp.component_move")),
+            ($this->getDBObject($this->builder_db, "sp.component_move")),
             $boundVariables,
             $resultArray
           );
@@ -456,7 +474,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_copy")),
+          ($this->getDBObject($this->builder_db, "sp.component_copy")),
           $boundVariables,
           $resultArray
         );
@@ -514,7 +532,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_insert")),
+          ($this->getDBObject($this->builder_db, "sp.component_insert")),
           $boundVariables,
           $resultArray
         );
@@ -541,7 +559,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.property_insert")),
+          ($this->getDBObject($this->builder_db, "sp.property_insert")),
           $boundVariables,
           $resultArray2
         );
@@ -582,7 +600,7 @@
       
       try {
         
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "component.add", array(), false);
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "component.add", array(), false);
         $responseArray['success'] = 'OK';
         
       } catch (Exception $e) {
@@ -609,7 +627,7 @@
     private function searchApp():void {
       
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "search.main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "search.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -664,7 +682,7 @@
       
       try {
         
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "navframe.main",
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "navframe.main",
           array(), false);
         $responseArray['success'] = 'OK';
         
@@ -693,27 +711,29 @@
       try {
         
         $boundVariables = [];
-        $this->builder_db->bind($boundVariables, 'P_USER', 'string', '');
-        $this->builder_db->bind($boundVariables, 'P_PASSWORD', 'string', '');
-        $this->builder_db->bind($boundVariables, 'P_SESSION_ID', 'string', '');
+        $this->builder_db->bindParam($boundVariables, 'P_USER', 'string');
+        $this->builder_db->bindParam($boundVariables, 'P_PASSWORD', 'string');
+        
+        $this->builder_db->bind($boundVariables, 'P_SESSION_ID', 'string', Eisodos::$parameterHandler->getParam("_sessionid", ""));
         $this->builder_db->bind($boundVariables, 'P_LOGIN_ID', 'int', '', 'OUT');
         $this->builder_db->bind($boundVariables, 'P_ERROR_MSG', 'string', '', 'OUT');
         $this->builder_db->bind($boundVariables, 'P_ERROR_CODE', 'int', '', 'OUT');
         
         $resultArray = [];
         $this->builder_db->executeStoredProcedure(
-          tholos_getDBObject($this->builder_db, 'sp.login'),
+          $this->getDBObject($this->builder_db, 'sp.login'),
           $boundVariables,
           $resultArray,
           true);
-        $this->builder_db->commit();
+        
+        Eisodos::$logger->debug('result: '.print_r($resultArray, true),$this);
         
         $this->SPError($resultArray);
         
         $this->builder_db->commit();
         
         Eisodos::$parameterHandler->setParam('tholosbuilder_login_id', $resultArray['p_login_id'], true);
-        Eisodos::$parameterHandler->setParam('REDIRECT', Eisodos::$parameterHandler->getParam('MainAddress'));
+        Eisodos::$parameterHandler->setParam('REDIRECT', Eisodos::$parameterHandler->getParam('TholosBuilderAppURL'));
         
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
@@ -721,7 +741,7 @@
         }
         
         Eisodos::$templateEngine->getTemplate(
-          templateFolder . 'login.main',
+          $this->templateFolder . 'login.main',
           array('ERRORMSG' => 'Login error (' . $e->getMessage() . ')'),
           true
         );
@@ -734,7 +754,7 @@
     #[NoReturn]
     private function logout(): void {
       Eisodos::$render->logout();
-      Eisodos::$parameterHandler->setParam("REDIRECT", Eisodos::$parameterHandler->getParam("cgi"));
+      Eisodos::$parameterHandler->setParam("REDIRECT", Eisodos::$parameterHandler->getParam("TholosBuilderAppURL"));
       Eisodos::$render->finish();
       exit;
     }
@@ -742,12 +762,12 @@
     #[NoReturn]
     private function showLogin(): void {
       if (Eisodos::$parameterHandler->eq("IsAjaxRequest", "T") && Eisodos::$parameterHandler->neq("action", "showlogin")) {
-        header("X-Tholos-Redirect: " . Eisodos::$parameterHandler->getParam("cgi") . (strpos(Eisodos::$parameterHandler->getParam("cgi"), "?") ? '&' : '?') . "action=showlogin");
+        header("X-Tholos-Redirect: " . Eisodos::$parameterHandler->getParam("TholosBuilderAppURL") . "?action=showlogin");
         Eisodos::$render->finish();
         exit;
       }
       
-      Eisodos::$templateEngine->getTemplate(templateFolder . "login.main", array(), true);
+      Eisodos::$templateEngine->getTemplate($this->templateFolder . "login.main", array(), true);
       Eisodos::$render->finish();
       exit;
     }
@@ -761,7 +781,7 @@
         
         $boundVariables = [];
         
-        $this->builder_db->bind($boundVariables, "p_login_id", "integer", Eisodos::$parameterHandler->getParam("tholos_login_id"));
+        $this->builder_db->bind($boundVariables, "p_login_id", "integer", Eisodos::$parameterHandler->getParam("tholosbuilder_login_id"));
         $this->builder_db->bind($boundVariables, "p_user_name", "text", "");
         $this->builder_db->bind($boundVariables, "p_task_number", "integer", "");
         $this->builder_db->bind($boundVariables, "p_task_subject", "text", "");
@@ -772,7 +792,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.init")),
+          ($this->getDBObject($this->builder_db, "sp.init")),
           $boundVariables,
           $resultArray
         );
@@ -801,7 +821,7 @@
         
         if (Eisodos::$parameterHandler->neq("IsAJAXRequest", "T")) {
           Eisodos::$render->logout();
-          Eisodos::$parameterHandler->setParam("REDIRECT", Eisodos::$parameterHandler->getParam("CGI"));
+          Eisodos::$parameterHandler->setParam("REDIRECT", Eisodos::$parameterHandler->getParam("TholosBuilderAppURL"));
         } else {
           $responseArray['success'] = 'ERROR';
           header('Content-type: application/json');
@@ -830,7 +850,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.component_delete")),
+          ($this->getDBObject($this->builder_db, "sp.component_delete")),
           $boundVariables,
           $resultArray
         );
@@ -884,7 +904,7 @@
             
             $this->builder_db->startTransaction();
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp.component_delete")),
+              ($this->getDBObject($this->builder_db, "sp.component_delete")),
               $boundVariables,
               $resultArray
             );
@@ -925,7 +945,7 @@
     private function showPropertiesAndEventsHead(): void {
       try {
         
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.container", array(), false);
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.container", array(), false);
         $responseArray['success'] = 'OK';
         
       } catch (Exception $e) {
@@ -952,13 +972,13 @@
       try {
         
         if (Eisodos::$parameterHandler->eq("p_property_id", "") && Eisodos::$parameterHandler->eq("p_event_id", "")) {
-          $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.tab." . Eisodos::$parameterHandler->getParam("p_tab_index", ""), array(), false);
+          $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.tab." . Eisodos::$parameterHandler->getParam("p_tab_index", ""), array(), false);
         }
         elseif (Eisodos::$parameterHandler->neq("p_property_id", "")) {
-          $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.property.sql", array(), false);
+          $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.property.sql", array(), false);
         }
         else {
-          $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.event.sql", array(), false);
+          $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.sql", array(), false);
         }
         $responseArray['success'] = 'OK';
         
@@ -1021,7 +1041,7 @@
             }
           }
         }
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.form." . Eisodos::$parameterHandler->getParam("p_type"),
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.form." . Eisodos::$parameterHandler->getParam("p_type"),
           array("p_value" => $this->safeHTML($p_value),
             "p_value2" => $this->safeHTML($p_value2),
             "options" => $options
@@ -1074,7 +1094,7 @@
             
             $this->builder_db->startTransaction();
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp.property_delete")),
+              ($this->getDBObject($this->builder_db, "sp.property_delete")),
               $boundVariables,
               $resultArray
             );
@@ -1107,7 +1127,7 @@
           
           $this->builder_db->startTransaction();
           $this->builder_db->executeStoredProcedure(
-            (tholos_getDBObject($this->builder_db, "sp.property_" . (Eisodos::$parameterHandler->eq("p_id", "") ? "insert" : "update"))),
+            ($this->getDBObject($this->builder_db, "sp.property_" . (Eisodos::$parameterHandler->eq("p_id", "") ? "insert" : "update"))),
             $boundVariables,
             $resultArray
           );
@@ -1141,7 +1161,7 @@
     }
     
     private function showComponentTypeDocumentation(): void {
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "docs.ctypes.main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "docs.ctypes.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -1194,11 +1214,11 @@
           foreach ($back as $row) {
             $methods .= '<option value="' . $row["id"] . '" ' . ($row["id"] == $value["value_method_id"] ? "selected" : "") . '>' . $row["method"] . '</option>';
           }
-          $methodlist = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.event.methods", array("methods" => $methods), false);
+          $methodlist = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.methods", array("methods" => $methods), false);
         }
         
         
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.event.form",
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.form",
           array("p_value" => $this->safeHTML($value["value"]),
             "p_parameters" => $value["parameters"],
             "components" => $components,
@@ -1304,7 +1324,7 @@
           foreach ($back as $row) {
             $methods .= '<option value="' . $row["id"] . '" ' . ($row["id"] == Eisodos::$parameterHandler->getParam("value_method_id") ? "selected" : "") . '>' . $row["method"] . '</option>';
           }
-          $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe.event.methods", array("methods" => $methods), false);
+          $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.methods", array("methods" => $methods), false);
         } else $responseArray['html'] = "";
         
         $responseArray['success'] = 'OK';
@@ -1346,7 +1366,7 @@
             
             $this->builder_db->startTransaction();
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp.event_delete")),
+              ($this->getDBObject($this->builder_db, "sp.event_delete")),
               $boundVariables,
               $resultArray
             );
@@ -1379,7 +1399,7 @@
           
           $this->builder_db->startTransaction();
           $this->builder_db->executeStoredProcedure(
-            (tholos_getDBObject($this->builder_db, "sp.event_" . (Eisodos::$parameterHandler->eq("p_id", "") ? "insert" : "update"))),
+            ($this->getDBObject($this->builder_db, "sp.event_" . (Eisodos::$parameterHandler->eq("p_id", "") ? "insert" : "update"))),
             $boundVariables,
             $resultArray
           );
@@ -1497,18 +1517,18 @@
         
         if (Eisodos::$parameterHandler->neq("action", "remoteCompile2") || Eisodos::$parameterHandler->eq("localCompile", "T")) {
           
-          if (file_exists(Eisodos::$parameterHandler->getParam("Tholos.ApplicationCacheDir") . "_compilation.status") && Eisodos::$parameterHandler->neq("compileall", "T")) {
-            $last_compilation_time = file_get_contents(Eisodos::$parameterHandler->getParam("Tholos.ApplicationCacheDir") . "_compilation.status");
+          if (file_exists(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status") && Eisodos::$parameterHandler->neq("compileall", "T")) {
+            $last_compilation_time = file_get_contents(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status");
           } else $last_compilation_time = "2000-01-01 00:00:00";
           
           Eisodos::$parameterHandler->setParam("LAST_COMPILATION_TIME", $last_compilation_time);
           
-          $statusfile = fopen(Eisodos::$parameterHandler->getParam("Tholos.ApplicationCacheDir") . "_compilation.status", 'wb');
+          $statusfile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status", 'wb');
           fwrite($statusfile, $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') FROM DUAL"));
           fclose($statusfile);
           
-          ($applicationFile = fopen(Eisodos::$parameterHandler->getParam("Tholos.ApplicationCacheDir") . "_tholos.init", 'wb'))
-          || die("can't open Tholos Application Cache file (" . Eisodos::$parameterHandler->getParam("Tholos.ApplicationCacheDir") . "_tholos.init" . ")");
+          ($applicationFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_tholos.init", 'wb'))
+          || die("can't open Tholos Application Cache file (" . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_tholos.init" . ")");
           fwrite($applicationFile, $applicationCachePHP);
           fclose($applicationFile);
         }
@@ -1738,14 +1758,14 @@
           }
           
           if (Eisodos::$parameterHandler->neq("action", "remoteCompile2") || Eisodos::$parameterHandler->eq("localCompile", "T")) {
-            $routeFile = fopen(Eisodos::$parameterHandler->getParam("Tholos.ApplicationCacheDir") . $route . ".tcd", 'wb');
+            $routeFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . $route . ".tcd", 'wb');
             fwrite($routeFile, $routeCachePHP);
             fclose($routeFile);
             if (Eisodos::$parameterHandler->neq("Tholos.ApplicationSourceWorkingDir", "")) {
-              if (!mkdir($sourceWorkingDir = Eisodos::$parameterHandler->getParam("Tholos.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name")) && !is_dir($sourceWorkingDir)) {
+              if (!mkdir($sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name")) && !is_dir($sourceWorkingDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
               }
-              $routeSourceFile = fopen(Eisodos::$parameterHandler->getParam("Tholos.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name") . "/" . $route . ".tcs", 'wb');
+              $routeSourceFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name") . "/" . $route . ".tcs", 'wb');
               fwrite($routeSourceFile, $routeSourceCode);
               fclose($routeSourceFile);
             }
@@ -1753,8 +1773,8 @@
           
         }
         
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "compile.result",
-          array("TholosApplicationCache" => Eisodos::$parameterHandler->getParam("Tholos.ApplicationCache"),
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "compile.result",
+          array("TholosApplicationCache" => Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCache"),
             "CompilationTime" => (microtime(true) - $start),
             "Compiled" => implode(",", $routes)
           ),
@@ -1788,7 +1808,7 @@
     /* wizard */
     private function showQueryWizard(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards.query.main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -1824,7 +1844,7 @@
         
         $this->project_db->startTransaction();
         $this->project_db->executeStoredProcedure(
-          (tholos_getDBObject($this->project_db, "sp.wizard_query")),
+          ($this->getDBObject($this->project_db, "sp.wizard_query")),
           $boundVariables,
           $resultArray,
           true,
@@ -1923,14 +1943,14 @@
         foreach ($o_columns as $o2) {
           $s = "";
           foreach ($props as $prop) {
-            $s .= Eisodos::$templateEngine->getTemplate(templateFolder . "wizards.query.result.property",
+            $s .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.property",
               array("status" => $o2["o_" . strtolower($prop) . "_status"],
                 "origvalue" => $this->safeHTML(sa($o2, "o_" . strtolower($prop) . "_origvalue")),
                 "value" => $this->safeHTML($o2["o_" . strtolower($prop)]),
                 "prop_name" => $prop),
               false);
           }
-          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate(templateFolder . "wizards.query.result.main",
+          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.main",
             array_merge($o2, array("properties" => $s)),
             false);
         }
@@ -1959,7 +1979,7 @@
               $resultArray = array();
               
               $this->builder_db->executeStoredProcedure(
-                (tholos_getDBObject($this->builder_db, "sp . component_insert")),
+                ($this->getDBObject($this->builder_db, "sp.component_insert")),
                 $boundVariables,
                 $resultArray
               );
@@ -1993,7 +2013,7 @@
                   $resultArray = array();
                   
                   $this->builder_db->executeStoredProcedure(
-                    (tholos_getDBObject($this->builder_db, "sp . property_" . ($o2["o_" . strtolower($prop) . "_linkid"] == "" ? "insert" : "update"))),
+                    ($this->getDBObject($this->builder_db, "sp.property_" . ($o2["o_" . strtolower($prop) . "_linkid"] == "" ? "insert" : "update"))),
                     $boundVariables,
                     $resultArray
                   );
@@ -2015,7 +2035,7 @@
           $this->builder_db->commit();
           
         } else
-          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . query . result . foot", array(), false);
+          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.foot", array(), false);
         
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
@@ -2041,7 +2061,7 @@
     
     private function showStoredProcedureWizard(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . storedprocedure . main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -2053,7 +2073,7 @@
         
         $o_columns = array();
         
-        $component_Procedure = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select cpv . value from app_component_properties_v cpv where cpv . component_id = " . $this->builder_db->nullStrParam("p_component_id", false) . " and cpv . name = 'Procedure'");
+        $component_Procedure = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select cpv.value from app_component_properties_v cpv where cpv.component_id = " . $this->builder_db->nullStrParam("p_component_id", false) . " and cpv.name = 'Procedure'");
         
         $boundVariables = [];
         if ($this->project_owner != "") {
@@ -2067,7 +2087,7 @@
         
         $this->project_db->startTransaction();
         $this->project_db->executeStoredProcedure(
-          (tholos_getDBObject($this->project_db, "sp . wizard_stored_procedure")),
+          ($this->getDBObject($this->project_db, "sp.wizard_stored_procedure")),
           $boundVariables,
           $resultArray,
           true,
@@ -2091,7 +2111,7 @@
           $props = array();
           $props = ["ParameterName", "Name", "NativeDataType", "DataType", "ParameterMode"];
           
-          $sql = "select tp . id, \n";
+          $sql = "select tp.id, \n";
           
           foreach ($props as $prop) {
             $sql .= "cpv_" . $prop . " . value       as o_" . $prop . ", \n" .
@@ -2105,11 +2125,11 @@
             "  from app_tree_path_v tp \n";
           
           foreach ($props as $prop) {
-            $sql .= "left outer join app_component_properties_v cpv_" . $prop . " on cpv_" . $prop . " . component_id = tp . id and cpv_" . $prop . " . name = '" . $prop . "' \n";
+            $sql .= "left outer join app_component_properties_v cpv_" . $prop . " on cpv_" . $prop . " . component_id = tp.id and cpv_" . $prop . " . name = '" . $prop . "' \n";
           }
           
-          $sql .= " where tp . parent_id = " . $this->builder_db->nullStrParam("p_component_id", false) . " \n" .
-            " and tp . class_name = 'TDBParam'";
+          $sql .= " where tp.parent_id = " . $this->builder_db->nullStrParam("p_component_id", false) . " \n" .
+            " and tp.class_name = 'TDBParam'";
           
           $this->builder_db->query(RT_ALL_ROWS, $sql, $o_columns);
           
@@ -2144,7 +2164,7 @@
               $x["o_" . strtolower($prop)] = $column[$prop];
               $x["o_" . strtolower($prop) . "_linkid"] = "";
               $x["o_" . strtolower($prop) . "_origvalue"] = "";
-              $x["o_" . strtolower($prop) . "_propertyid"] = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES p where lower(p . name) = '" . strtolower($prop) . "'");
+              $x["o_" . strtolower($prop) . "_propertyid"] = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES p where lower(p.name) = '" . strtolower($prop) . "'");
               $x["o_" . strtolower($prop) . "_status"] = "new";
             }
             $o_columns[] = $x;
@@ -2154,14 +2174,14 @@
         foreach ($o_columns as $o2) {
           $s = "";
           foreach ($props as $prop) {
-            $s .= Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . storedprocedure . result . property",
+            $s .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.result.property",
               array("status" => $o2["o_" . strtolower($prop) . "_status"],
                 "origvalue" => $this->safeHTML($o2["o_" . strtolower($prop) . "_origvalue"]),
                 "value" => $this->safeHTML($o2["o_" . strtolower($prop)]),
                 "prop_name" => $prop),
               false);
           }
-          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . storedprocedure . result . main",
+          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.result.main",
             array_merge($o2, array("properties" => $s)),
             false);
         }
@@ -2190,7 +2210,7 @@
               $resultArray = array();
               
               $this->builder_db->executeStoredProcedure(
-                (tholos_getDBObject($this->builder_db, "sp . component_insert")),
+                ($this->getDBObject($this->builder_db, "sp.component_insert")),
                 $boundVariables,
                 $resultArray
               );
@@ -2224,7 +2244,7 @@
                   $resultArray = array();
                   
                   $this->builder_db->executeStoredProcedure(
-                    (tholos_getDBObject($this->builder_db, "sp . property_" . ($o2["o_" . strtolower($prop) . "_linkid"] == "" ? "insert" : "update"))),
+                    ($this->getDBObject($this->builder_db, "sp.property_" . ($o2["o_" . strtolower($prop) . "_linkid"] == "" ? "insert" : "update"))),
                     $boundVariables,
                     $resultArray
                   );
@@ -2248,7 +2268,7 @@
                     }
                     
                     if ($sp_pname != "") {
-                      $sp_propid = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select nvl2(a . version, NULL, a . property_id) from app_component_properties_v a where a . component_id = " . Eisodos::$parameterHandler->getParam("p_component_id") . " and a . name = '" . $sp_pname . "'");
+                      $sp_propid = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select nvl2(a.version, NULL, a.property_id) from app_component_properties_v a where a.component_id = " . Eisodos::$parameterHandler->getParam("p_component_id") . " and a.name = '" . $sp_pname . "'");
                       if ($sp_propid != "") { // csak ha nincs megadva
                         $boundVariables = [];
                         $this->builder_db->bind($boundVariables, "p_id", "integer", "");
@@ -2265,7 +2285,7 @@
                         $resultArray2 = array();
                         
                         $this->builder_db->executeStoredProcedure(
-                          (tholos_getDBObject($this->builder_db, "sp . property_insert")),
+                          ($this->getDBObject($this->builder_db, "sp.property_insert")),
                           $boundVariables,
                           $resultArray2
                         );
@@ -2291,7 +2311,7 @@
           $this->builder_db->commit();
           
         } else
-          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . storedprocedure . result . foot", array(), false);
+          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.result.foot", array(), false);
         
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
@@ -2315,7 +2335,7 @@
     
     private function showGridWizard(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . grid . main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.grid.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -2331,27 +2351,27 @@
         
         $this->builder_db->startTransaction();
         
-        $sql = "SELECT atp . id, \n" .
-          "       atp . name, \n" .
-          "       acp_datatype . value as datatype \n" .
+        $sql = "SELECT atp.id, \n" .
+          "       atp.name, \n" .
+          "       acp_datatype.value as datatype \n" .
           "  FROM app_tree_path_v atp \n" .
-          "  LEFT OUTER JOIN app_component_properties_v acp_datatype ON acp_datatype . component_id = atp . id \n" .
-          " and acp_datatype . l_name = 'datatype' \n" .
+          "  LEFT OUTER JOIN app_component_properties_v acp_datatype ON acp_datatype.component_id = atp.id \n" .
+          " and acp_datatype.l_name = 'datatype' \n" .
           " WHERE parent_id = (SELECT value_component_id \n" .
           "                      FROM app_component_properties_v acp \n" .
-          "                     WHERE acp . component_id = " . $this->builder_db->nullStrParam("p_grid_id", false) . " \n" .
-          " and acp . name = 'ListSource') \n" .
-          " and atp . class_name = 'TDBField' \n" .
-          " and atp . id NOT IN \n" .
+          "                     WHERE acp.component_id = " . $this->builder_db->nullStrParam("p_grid_id", false) . " \n" .
+          " and acp.name = 'ListSource') \n" .
+          " and atp.class_name = 'TDBField' \n" .
+          " and atp.id NOT IN \n" .
           "       (SELECT value_component_id \n" .
           "          FROM app_component_properties_v acp \n" .
-          "         WHERE acp . component_id IN(SELECT atp . id \n" .
+          "         WHERE acp.component_id IN(SELECT atp.id \n" .
           "                                      FROM app_tree_path_v atp \n" .
           "                                     WHERE parent_id = " . $this->builder_db->nullStrParam("p_grid_id", false) . " \n" .
-          " and atp . class_name = 'TGridColumn') \n" .
-          " and acp . name = 'DBField' \n" .
+          " and atp.class_name = 'TGridColumn') \n" .
+          " and acp.name = 'DBField' \n" .
           " and VALUE IS NOT NULL) \n" .
-          " ORDER BY atp . component_order";
+          " ORDER BY atp.component_order";
         
         $dbFields = array();
         $this->builder_db->query(RT_ALL_ROWS, $sql, $dbFields);
@@ -2374,7 +2394,7 @@
             $resultArray = array();
             
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp . component_insert")),
+              ($this->getDBObject($this->builder_db, "sp.component_insert")),
               $boundVariables,
               $resultArray
             );
@@ -2391,7 +2411,7 @@
               $properties[$control]["Align"] = array("value" => "center");
             elseif ($dbField["datatype"] == "bool") {
               $properties[$control]["Align"] = array("value" => "center");
-              $properties[$control]["ValueTemplate"] = array("value" => "grid . column . bool");
+              $properties[$control]["ValueTemplate"] = array("value" => "grid.column.bool");
             }
             if (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "3")) {
               $properties[$control]["Visible"] = array("value" => "false");
@@ -2418,7 +2438,7 @@
             $resultArray = array();
             
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp . component_insert")),
+              ($this->getDBObject($this->builder_db, "sp.component_insert")),
               $boundVariables,
               $resultArray
             );
@@ -2445,26 +2465,26 @@
         
         if (Eisodos::$parameterHandler->neq('GridWizardSkipIDs', 'T')) {
           
-          $sql = "select atp . id \n" .
+          $sql = "select atp.id \n" .
             "  from app_tree_path_v atp \n" .
-            " where atp . parent_id = (\n" .
-            "select acp2 . value_component_id \n" .
+            " where atp.parent_id = (\n" .
+            "select acp2.value_component_id \n" .
             "  from app_component_properties_v acp2 \n" .
-            " where acp2 . component_id = " . $this->builder_db->nullStrParam("p_grid_id", false) . " \n" .
-            " and acp2 . name = 'ListSource' \n" .
+            " where acp2.component_id = " . $this->builder_db->nullStrParam("p_grid_id", false) . " \n" .
+            " and acp2.name = 'ListSource' \n" .
             " ) \n" .
-            " and atp . class_name = 'TDBField' \n" .
-            " and atp . name = 'ID'";
+            " and atp.class_name = 'TDBField' \n" .
+            " and atp.name = 'ID'";
           
           $keyfieldID = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, $sql);
           
           $sql = "select id \n" .
             "  from app_tree_path_v atp, \n" .
             "       app_component_properties_v acp \n" .
-            " where path like(select path || '_%' from app_tree_path_v atp2 where atp2 . id = " . $this->builder_db->nullStrParam("p_grid_id", false) . ") \n" .
-            " and acp . component_id = atp . id \n" .
-            " and acp . name = 'DBField' \n" .
-            " and acp . value_component_id is null \n" .
+            " where path like(select path || '_%' from app_tree_path_v atp2 where atp2.id = " . $this->builder_db->nullStrParam("p_grid_id", false) . ") \n" .
+            " and acp.component_id = atp.id \n" .
+            " and acp.name = 'DBField' \n" .
+            " and acp.value_component_id is null \n" .
             " order by id";
           
           $controls = array();
@@ -2486,7 +2506,7 @@
             $boundVariables = [];
             $this->builder_db->bind($boundVariables, "p_id", "integer", "");
             $this->builder_db->bind($boundVariables, "p_component_id", "integer", $component_id);
-            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp . name = " . n($property_name)));
+            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . n($property_name)));
             $this->builder_db->bind($boundVariables, "p_value", "text", sa($params, "value", ""));
             $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", sa($params, "value_component_id", ""));
             
@@ -2498,7 +2518,7 @@
             $resultArray = array();
             
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp . property_insert")),
+              ($this->getDBObject($this->builder_db, "sp.property_insert")),
               $boundVariables,
               $resultArray
             );
@@ -2540,8 +2560,8 @@
       try {
         
         $responseArray['success'] = 'OK';
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . editform . main",
-          array('EditFormWizardBlacklist' => Eisodos::$parameterHandler->getParam("p_EditFormWizardBlacklist", Eisodos::$parameterHandler->getParam("Tholos . EditFormWizardBlacklist"))), false);
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.editform.main",
+          array('EditFormWizardBlacklist' => Eisodos::$parameterHandler->getParam("p_EditFormWizardBlacklist", Eisodos::$parameterHandler->getParam("TholosBuilder.EditFormWizardBlacklist"))), false);
         
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
@@ -2572,26 +2592,26 @@
         
         $this->builder_db->startTransaction();
         
-        $sql = "SELECT atp . id, \n" .
-          "       atp . name, \n" .
-          "       acp_datatype . value as datatype, \n" .
-          "       acp_size . value as datasize \n" .
+        $sql = "SELECT atp.id, \n" .
+          "       atp.name, \n" .
+          "       acp_datatype.value as datatype, \n" .
+          "       acp_size.value as datasize \n" .
           "  FROM app_tree_path_v atp \n" .
-          "  LEFT OUTER JOIN app_component_properties_v acp_datatype ON acp_datatype . component_id = atp . id \n" .
-          " and acp_datatype . l_name = 'datatype' \n" .
-          "  LEFT OUTER JOIN app_component_properties_v acp_size ON acp_size . component_id = atp . id \n" .
-          " and acp_size . l_name = 'size' \n" .
+          "  LEFT OUTER JOIN app_component_properties_v acp_datatype ON acp_datatype.component_id = atp.id \n" .
+          " and acp_datatype.l_name = 'datatype' \n" .
+          "  LEFT OUTER JOIN app_component_properties_v acp_size ON acp_size.component_id = atp.id \n" .
+          " and acp_size.l_name = 'size' \n" .
           " WHERE parent_id = " . $this->builder_db->nullStrParam("p_query_id", false) . " \n" .
-          " and atp . class_name = 'TDBField' \n" .
-          " and atp . id NOT IN \n" .
+          " and atp.class_name = 'TDBField' \n" .
+          " and atp.id NOT IN \n" .
           "       (SELECT value_component_id \n" .
           "          FROM app_component_properties_v acp \n" .
-          "         WHERE acp . component_id IN(SELECT atp . id \n" .
+          "         WHERE acp.component_id IN(SELECT atp.id \n" .
           "                                      FROM app_tree_path_v atp \n" .
           "                                     WHERE parent_id = " . $this->builder_db->nullStrParam("p_form_id", false) . ") \n" .
-          " and acp . name = 'DBField' \n" .
+          " and acp.name = 'DBField' \n" .
           " and VALUE IS NOT NULL) \n" .
-          " ORDER BY atp . component_order";
+          " ORDER BY atp.component_order";
         
         
         $dbFields = array();
@@ -2614,7 +2634,7 @@
             $resultArray = array();
             
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp . component_insert")),
+              ($this->getDBObject($this->builder_db, "sp.component_insert")),
               $boundVariables,
               $resultArray
             );
@@ -2697,7 +2717,7 @@
             $boundVariables = [];
             $this->builder_db->bind($boundVariables, "p_id", "integer", "");
             $this->builder_db->bind($boundVariables, "p_component_id", "integer", $component_id);
-            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp . name = " . n($property_name)));
+            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . n($property_name)));
             $this->builder_db->bind($boundVariables, "p_value", "text", sa($params, "value", ""));
             $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", sa($params, "value_component_id", ""));
             
@@ -2709,7 +2729,7 @@
             $resultArray = array();
             
             $this->builder_db->executeStoredProcedure(
-              (tholos_getDBObject($this->builder_db, "sp . property_insert")),
+              ($this->getDBObject($this->builder_db, "sp.property_insert")),
               $boundVariables,
               $resultArray
             );
@@ -2754,7 +2774,7 @@
       if (Eisodos::$parameterHandler->neq('p_help_id', '')) {
         $this->builder_db->query(RT_FIRST_ROW, "select id,version,text from app_help where id = " . $this->builder_db->nullStrParam("p_help_id", false), $back);
       }
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . help . main", $back, false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.help.main", $back, false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -2763,7 +2783,7 @@
     
     private function showHelpInfo(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "propframe . help . main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.help.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -2787,7 +2807,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp . help_" . (Eisodos::$parameterHandler->eq("p_id", "") ? "insert" : "update"))),
+          ($this->getDBObject($this->builder_db, "sp.help_" . (Eisodos::$parameterHandler->eq("p_id", "") ? "insert" : "update"))),
           $boundVariables,
           $resultArray
         );
@@ -2835,7 +2855,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp . help_delete")),
+          ($this->getDBObject($this->builder_db, "sp.help_delete")),
           $boundVariables,
           $resultArray
         );
@@ -2870,10 +2890,10 @@
     
     private function generateUserGuide(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "userhelp . main", array(), false);
-      if (Eisodos::$parameterHandler->neq("Tholos . GenerateHelpFile", "")) {
-        $helpFile = fopen(Eisodos::$parameterHandler->getParam("Tholos . GenerateHelpFile"), 'wb');
-        fwrite($helpFile, Eisodos::$templateEngine->getTemplate(templateFolder . "userhelp . generated", array("userguide" => $responseArray['html']), false));
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "userhelp.main", array(), false);
+      if (Eisodos::$parameterHandler->neq("Tholos.GenerateHelpFile", "")) {
+        $helpFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.GenerateHelpFile"), 'wb');
+        fwrite($helpFile, Eisodos::$templateEngine->getTemplate($this->templateFolder . "userhelp.generated", array("userguide" => $responseArray['html']), false));
         fclose($helpFile);
       }
       header('Content-type: application/json');
@@ -2886,7 +2906,7 @@
       Eisodos::$parameterHandler->setParam("TranslateLanguageTags", "T");
       Eisodos::$parameterHandler->setParam("CollectLangIDs", "T");
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "translate . main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "translate.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finish();
@@ -2907,7 +2927,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp . task_open")),
+          ($this->getDBObject($this->builder_db, "sp.task_open")),
           $boundVariables,
           $resultArray
         );
@@ -2951,7 +2971,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp . task_close")),
+          ($this->getDBObject($this->builder_db, "sp.task_close")),
           $boundVariables,
           $resultArray
         );
@@ -2986,7 +3006,7 @@
     
     private function showOpenedTasks(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . commit . status", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.status", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -3001,31 +3021,31 @@
       
       $this->builder_db->query(RT_FIRST_ROW, "select rm_secretkey, rm_project_id, rm_subprojects \n" .
         "  from app_users \n" .
-        " where id = app_session_pkg . user_id",
+        " where id = app_session_pkg.user_id",
         $redmine_options);
       
       if (sa($redmine_options, "rm_secretkey", "") == "")
         throw new RuntimeException("No Redmine secret key defined in user profile");
       
-      $redmine = new Client(Eisodos::$parameterHandler->getParam("RedmineURL", ""), $redmine_options["rm_secretkey"]);
+      $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
       
       $responseArray['success'] = 'OK';
       
       $sql = "SELECT listagg(route, ',') within GROUP(ORDER BY 1) as routes, \n" .
         "       listagg('#' || task_number, ', ') within GROUP(ORDER BY 1) as tasks, \n" .
         "       listagg(task_number, ', ') within GROUP(ORDER BY 1) as task_ids \n" .
-        "  FROM(SELECT DISTINCT atp . route, \n" .
-        "                        at . task_number \n" .
+        "  FROM(SELECT DISTINCT atp.route, \n" .
+        "                        at.task_number \n" .
         "          FROM app_changes     ac, \n" .
         "               app_tree_path_v atp, \n" .
         "               app_tasks       at, \n" .
         "               app_users       au \n" .
-        "         WHERE ac . component_id = atp . id \n" .
-        " and at . id = ac . task_id \n" .
-        " and au . id = at . created_by \n" .
-        " and at . committed IS NULL \n" .
-        " and at . closed = 'N' \n" .
-        " and au . id = app_session_pkg . user_id) \n";
+        "         WHERE ac.component_id = atp.id \n" .
+        " and at.id = ac.task_id \n" .
+        " and au.id = at.created_by \n" .
+        " and at.committed IS NULL \n" .
+        " and at.closed = 'N' \n" .
+        " and au.id = app_session_pkg.user_id) \n";
       
       $back = array();
       
@@ -3051,7 +3071,7 @@
         $rmactivities .= '<option value="' . $activity["id"] . '" ' . ($activity["name"] == "Fejlesztés" ? "selected" : "") . '>' . $activity["name"] . '</option>';
       }
       
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . commit . main",
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.main",
         array_merge($back,
           array("rmmembers" => $rmmembers,
             "rmstatuses" => $redmineStatuses,
@@ -3077,22 +3097,22 @@
         
         $result = "";
         foreach (array_unique(explode(",", Eisodos::$parameterHandler->getParam("p_routes"))) as $route) {
-          $sourcefile = Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs";
-          $destfile = Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceDir") . $route . ".tcs";
+          $sourcefile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs";
+          $destfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
           if (file_exists($sourcefile)) {
             copy($sourcefile, $destfile);
-            $result .= "Copying\n" . Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs to\n" .
-              Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceDir") . $route . ".tcs" . "\n";
-            $tcsfiles .= Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceDir") . $route . ".tcs";
+            $result .= "Copying\n" . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs to\n" .
+              Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs" . "\n";
+            $tcsfiles .= Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
           }
         }
         
         if ($tcsfiles == "") throw new RuntimeException("Nothing to commit");
         
-        if (!mkdir($commitLogDirectory = Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log") && !is_dir($commitLogDirectory)) {
+        if (!mkdir($commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log") && !is_dir($commitLogDirectory)) {
           throw new \RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
         }
-        $logfile = Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/ " . date("YmdHis") . ".msg";
+        $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/ " . date("YmdHis") . ".msg";
         $result .= "\nWriting message file\n  " . $logfile . "\n";
         $file = fopen($logfile, "wb");
         if ($file === false) throw new RuntimeException("Can not write log file");
@@ -3101,14 +3121,14 @@
         
         $result .= "\nGetting SVN authorization information\n";
         
-        $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG . USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
+        $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG.USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
         $svn = array();
         if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) throw new RuntimeException("You are not logged in!");
         
-        $result .= "  Done . \n";
+        $result .= "  Done.\n";
         
-        $svncommand1 = "cd " . Eisodos::$parameterHandler->getParam("Tholos . ApplicationSourceDir") . ' && svn st | grep ? | cut -d? -f2 | xargs svn add';
-        $svncommand2 = Eisodos::$parameterHandler->getParam("Tholos . SVN", "/bin/svn") . ' commit --non-interactive --no-auth-cache --username ' . $svn["svn_username"] . ' --password ' . $svn["svn_password"] .
+        $svncommand1 = "cd " . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . ' && svn st | grep ? | cut -d? -f2 | xargs svn add';
+        $svncommand2 = Eisodos::$parameterHandler->getParam("TholosBuilder.SVN", "/bin/svn") . ' commit --non-interactive --no-auth-cache --username ' . $svn["svn_username"] . ' --password ' . $svn["svn_password"] .
           ' --file ' . $logfile .
           ' ' . $tcsfiles . ' 2>&1';
         
@@ -3132,17 +3152,17 @@
         $sql = "UPDATE app_tasks at2 \n" .
           "   SET COMMITTED = SYSDATE, \n" .
           "       closed = 'Y' \n" .
-          " WHERE at2 . id IN(SELECT at . id \n" .
+          " WHERE at2.id IN(SELECT at.id \n" .
           "                    FROM app_changes     ac, \n" .
           "                         app_tree_path_v atp, \n" .
           "                         app_tasks       at, \n" .
           "                         app_users       au \n" .
-          "                   WHERE ac . component_id = atp . id \n" .
-          " and at . id = ac . task_id \n" .
-          " and au . id = at . created_by \n" .
-          " and at . committed IS NULL \n" .
-          " and at . closed = 'N' \n" .
-          " and au . id = app_session_pkg . user_id) \n";
+          "                   WHERE ac.component_id = atp.id \n" .
+          " and at.id = ac.task_id \n" .
+          " and au.id = at.created_by \n" .
+          " and at.committed IS NULL \n" .
+          " and at.closed = 'N' \n" .
+          " and au.id = app_session_pkg.user_id) \n";
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeDML($sql);
@@ -3154,13 +3174,13 @@
         
         $this->builder_db->query(RT_FIRST_ROW, "select rm_secretkey, rm_project_id, rm_subprojects \n" .
           "  from app_users \n" .
-          " where id = app_session_pkg . user_id",
+          " where id = app_session_pkg.user_id",
           $redmine_options);
         
         if (sa($redmine_options, "rm_secretkey", "") == "")
           throw new RuntimeException("No Redmine secret key defined in user profile");
         
-        $redmine = new Client(Eisodos::$parameterHandler->getParam("RedmineURL", ""), $redmine_options["rm_secretkey"]);
+        $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
         
         try {
           $taskoptions = array();
@@ -3202,7 +3222,7 @@
           $result .= "Failed: " . $e->getMessage() . "\n\n";
         }
         
-        $result .= "Commit done . ";
+        $result .= "Commit done.";
         
       } catch (Exception $e) {
         
@@ -3220,7 +3240,7 @@
         $result .= "\n\n\nERROR: " . $e->getMessage() . "\n\n\n";
       }
       
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards . commit . result",
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.result",
         array("result" => " < pre>" . $result . " </pre > "),
         false);
       
@@ -3240,13 +3260,13 @@
         
         $this->builder_db->query(RT_FIRST_ROW, "select rm_secretkey, rm_project_id, rm_subprojects \n" .
           "  from app_users \n" .
-          " where id = app_session_pkg . user_id",
+          " where id = app_session_pkg.user_id",
           $redmine_options);
         
         if (sa($redmine_options, "rm_secretkey", "") == "")
           throw new RuntimeException("No Redmine secret key defined in user profile");
         
-        $redmine = new Client(Eisodos::$parameterHandler->getParam("RedmineURL", ""), $redmine_options["rm_secretkey"]);
+        $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
         
         if (Eisodos::$parameterHandler->neq("p_rm_task_id", ""))
           $a_ = $redmine->issue->all(['issue_id' => Eisodos::$parameterHandler->getParam("p_rm_task_id", "")
@@ -3263,7 +3283,7 @@
         
         $issues = "";
         foreach ($a_["issues"] as $task) {
-          $issues .= Eisodos::$templateEngine->getTemplate("tholosbuilder / redmine . issues . list.row",
+          $issues .= Eisodos::$templateEngine->getTemplate("tholosbuilder / redmine.issues.list.row",
             array("id" => $task["id"],
               "project" => $task["project"]["name"],
               "tracker" => $task["tracker"]["name"],
@@ -3332,7 +3352,7 @@
     
     private function reloadTaskFrame(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "taskframe.main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "taskframe.main", array(), false);
       header('Content - type: application / json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -3341,7 +3361,7 @@
     
     private function showCommitHistory(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards.commit.history.main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.history.main", array(), false);
       header('Content - type: application / json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -3350,7 +3370,7 @@
     
     private function showUserProfile(): void {
       $responseArray['success'] = 'OK';
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards.userprofile.main", array(), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.userprofile.main", array(), false);
       header('Content - type: application / json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
@@ -3374,7 +3394,7 @@
         
         $this->builder_db->startTransaction();
         $this->builder_db->executeStoredProcedure(
-          (tholos_getDBObject($this->builder_db, "sp.user_config")),
+          ($this->getDBObject($this->builder_db, "sp.user_config")),
           $boundVariables,
           $resultArray
         );
@@ -3385,7 +3405,7 @@
         
         $this->builder_db->commit();
         
-        $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "wizards.userprofile.main", array(), false);
+        $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.userprofile.main", array(), false);
         
       } catch (Exception $e) {
         
@@ -3453,13 +3473,13 @@
       }
       $rows = "";
       foreach ($back as $row) {
-        $rows .= Eisodos::$templateEngine->getTemplate(templateFolder . "filter.row",
+        $rows .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "filter.row",
           array("id" => $row["id"],
             "name" => $row["name"],
             "checked" => in_array($row["id"], $route_filter, false) ? "checked" : ""),
           false);
       }
-      $responseArray['html'] = Eisodos::$templateEngine->getTemplate(templateFolder . "filter.main", array("ROWS" => $rows), false);
+      $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "filter.main", array("ROWS" => $rows), false);
       header('Content - type: application / json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finish();

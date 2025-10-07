@@ -5,7 +5,7 @@ Compiled: $compiled
 Compilation time: $CompilationTime seconds
 </pre>
 
-<p class="text-center">[%funcjob=eqs;param=task_number;value=;true=;false=<button onclick="commitChanges()" title="Commit your changes"><i class="fa fa-floppy-o"></i> Commit</button>%]</p>
+<p class="text-center">[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;true=;false=<button onclick="commitChanges()" title="Commit your changes"><i class="fa fa-floppy-o"></i> Commit</button>%]</p>
 
 <h4>Compilation errors</h4>
 <i>Please note that routes starting with underscore (_) character are excluded from syntax checking</i>

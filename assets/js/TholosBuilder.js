@@ -43,7 +43,7 @@ function finishedLoading() {
 function getNavFrame() {
   showLoading($('#nav_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=getNavFrame',
@@ -65,7 +65,7 @@ function getNavFrame() {
 function loadAppTree(treeid_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {'action': 'loadAppTree'},
@@ -494,7 +494,7 @@ function loadAppTree(treeid_) {
 function searchApp(searchFor_) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=searchApp&searchfor=' + searchFor_,
@@ -518,7 +518,7 @@ function searchApp(searchFor_) {
 function addComponent(parent_id_) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=addComponent&p_parent_id=' + parent_id_,
@@ -540,7 +540,7 @@ function addComponent(parent_id_) {
 function saveComponent(parent_id_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: $('#form_addComponent').serialize(),
@@ -562,7 +562,7 @@ function saveComponent(parent_id_) {
 function pasteComponent(parent_id_, component_id_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=pasteComponent&p_id=' + component_id_ + '&p_parent_id=' + parent_id_,
@@ -587,7 +587,7 @@ function moveMultiple() {
   var movedNodes_ = movedNodes;
   movedNodes = "";
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -613,7 +613,7 @@ function moveMultiple() {
 function moveFirstComponent(component_id_, version_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=moveFirstComponent&p_id=' + component_id_ + '&p_version=' + version_,
@@ -635,7 +635,7 @@ function moveFirstComponent(component_id_, version_) {
 function moveUpComponent(component_id_, version_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=moveUpComponent&p_id=' + component_id_ + '&p_version=' + version_,
@@ -657,7 +657,7 @@ function moveUpComponent(component_id_, version_) {
 function moveDownComponent(component_id_, version_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=moveDownComponent&p_id=' + component_id_ + '&p_version=' + version_,
@@ -679,7 +679,7 @@ function moveDownComponent(component_id_, version_) {
 function moveLastComponent(component_id_, version_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=moveLastComponent&p_id=' + component_id_ + '&p_version=' + version_,
@@ -701,7 +701,7 @@ function moveLastComponent(component_id_, version_) {
 // function changeParentComponent(component_id_,parent_id_) {
 //     showLoading();
 //     $.ajax({
-//         url: __editorURL,
+//         url: __TholosBuilderAppUrl,
 //         type: 'post',
 //         dataType: 'json',
 //         data: 'action=changeParentComponent&p_id='+component_id_+'&p_parent_id='+parent_id_,
@@ -724,7 +724,7 @@ function deleteComponent(component_id_, version_) {
   showLoading();
   showPropertiesAndEvents(-1, '', '');
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=deleteComponent&p_id=' + component_id_ + '&p_version=' + version_,
@@ -747,7 +747,7 @@ function deleteComponents(component_ids_) {
   showLoading();
   showPropertiesAndEvents(-1, '', '');
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=deleteComponents&p_ids=' + component_ids_,
@@ -770,7 +770,7 @@ function cloneComponents(component_ids_) {
   showLoading();
   showPropertiesAndEvents(-1, '', '');
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=cloneComponents&p_ids=' + component_ids_,
@@ -833,7 +833,7 @@ function historyStepForward() {
 function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
   if ($('#prop_frame #prop_tabs').length == 0) {
     $.ajax({
-      url: __editorURL,
+      url: __TholosBuilderAppUrl,
       type: 'post',
       dataType: 'json',
       data: {'action': 'showPropertiesAndEventsHead'},
@@ -865,7 +865,7 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
       showLoading($('#prop_frame').find('#tab_prop_' + tabIndex));
     else showLoading();
     $.ajax({
-      url: __editorURL,
+      url: __TholosBuilderAppUrl,
       type: 'post',
       dataType: 'json',
       data: {
@@ -897,7 +897,7 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
 function editProperty(component_id_, property_id_, type_, link_id_, version_) {
   showLoading($('#prop_' + property_id_));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -925,7 +925,7 @@ function editProperty(component_id_, property_id_, type_, link_id_, version_) {
 function saveProperty(component_id_, property_id_, link_id_, version_, value_, value_component_id_) {
   $('#prop_frame #prop_row_' + property_id_ + ' .saveIcon').addClass('fa-spin');
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -958,7 +958,7 @@ function saveProperty(component_id_, property_id_, link_id_, version_, value_, v
 function editEvent(component_id_, event_id_, link_id_, version_) {
   showLoading($('#event_' + event_id_));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -984,7 +984,7 @@ function editEvent(component_id_, event_id_, link_id_, version_) {
 
 function loadEventComponents(event_id_, component_id_, search_) {
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -1010,7 +1010,7 @@ function loadEventComponents(event_id_, component_id_, search_) {
 function loadMethods(event_id_, component_id_) {
   showLoading($('#event_methods_' + event_id_));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -1035,7 +1035,7 @@ function loadMethods(event_id_, component_id_) {
 function saveEvent(component_id_, event_id_, link_id_, version_, value_, value_component_id_, value_method_id_, parameters_) {
   $('#prop_frame #event_row_' + event_id_ + ' .saveIcon').addClass('fa-spin');
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {
@@ -1075,7 +1075,7 @@ function copyMethod(component_id, method_id) {
 function showComponentTypeDocumentation() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: {'action': 'showComponentTypeDocumentation'},
@@ -1092,7 +1092,7 @@ function showComponentTypeDocumentation() {
 function compile(all) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=compile2&compileall=' + (all),
@@ -1118,7 +1118,7 @@ function compile(all) {
 function showQueryWizard(component_id_ = '') {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showQueryWizard&p_id=' + component_id_,
@@ -1140,7 +1140,7 @@ function showQueryWizard(component_id_ = '') {
 function showTranslate() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showTranslate',
@@ -1162,7 +1162,7 @@ function showTranslate() {
 function QueryWizardRun(p_component_id_, p_trans_root_, p_skip_label_, todo_) {
   showLoading($('#wizard_result'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=QueryWizardRun&p_component_id=' + p_component_id_ + '&p_trans_root=' + p_trans_root_ + '&p_skip_label=' + p_skip_label_ + '&todo=' + todo_,
@@ -1186,7 +1186,7 @@ function QueryWizardRun(p_component_id_, p_trans_root_, p_skip_label_, todo_) {
 function showStoredProcedureWizard(component_id_ = '') {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showStoredProcedureWizard&p_id=' + component_id_,
@@ -1208,7 +1208,7 @@ function showStoredProcedureWizard(component_id_ = '') {
 function StoredProcedureWizardRun(p_component_id_, todo_) {
   showLoading($('#wizard_result'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=StoredProcedureWizardRun&p_component_id=' + p_component_id_ + '&todo=' + todo_,
@@ -1231,7 +1231,7 @@ function StoredProcedureWizardRun(p_component_id_, todo_) {
 function showGridWizard(p_grid_id_) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showGridWizard&p_grid_id=' + p_grid_id_,
@@ -1253,7 +1253,7 @@ function showGridWizard(p_grid_id_) {
 function GridWizardRun() {
   showLoading($('#edit_frame').find('.content').find('#gridFormPost'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: $('#gridForm').serialize(),
@@ -1276,7 +1276,7 @@ function GridWizardRun() {
 function showEditFormWizard(p_form_id_, p_query_id_, p_blacklist_) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showEditFormWizard&p_form_id=' + p_form_id_ + '&p_query_id=' + p_query_id_ + '&p_editformwizardblacklist=' + p_blacklist_,
@@ -1298,7 +1298,7 @@ function showEditFormWizard(p_form_id_, p_query_id_, p_blacklist_) {
 function EditFormWizardRun() {
   showLoading($('#edit_frame').find('.content').find('#editformFormPost'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: $('#editformForm').serialize(),
@@ -1323,7 +1323,7 @@ function EditFormWizardRun() {
 function EditHelp(p_help_id_, p_component_id_) {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showEditHelp&p_help_id=' + p_help_id_ + '&p_component_id=' + p_component_id_,
@@ -1345,7 +1345,7 @@ function EditHelp(p_help_id_, p_component_id_) {
 
 function refreshHelp(p_component_id_) {
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showHelpInfo&p_component_id=' + p_component_id_,
@@ -1366,7 +1366,7 @@ function refreshHelp(p_component_id_) {
 function saveHelp() {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: $('#helpForm').serialize(),
@@ -1396,7 +1396,7 @@ function deleteHelp(p_id_, p_version_, p_component_id_) {
       function (result) {
         if (result === true) {
           $.ajax({
-            url: __editorURL,
+            url: __TholosBuilderAppUrl,
             type: 'post',
             dataType: 'json',
             data: 'action=deleteHelp&p_id=' + p_id_ + '&p_version=' + p_version_,
@@ -1431,7 +1431,7 @@ function copyHelp(p_help_id_) {
 function pasteHelp(p_component_id_) {
   if (clipboardHelpID != '')
     $.ajax({
-      url: __editorURL,
+      url: __TholosBuilderAppUrl,
       type: 'post',
       dataType: 'json',
       data: 'action=saveHelp&p_component_id=' + p_component_id_ + '&p_help_id=' + clipboardHelpID,
@@ -1456,7 +1456,7 @@ function pasteHelp(p_component_id_) {
 function generateUserHelp() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=generateUserGuide',
@@ -1480,7 +1480,7 @@ function chooseTask(form) {
   var data = (form ? form.serialize() : 'action=chooseTask');
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: data,
@@ -1503,7 +1503,7 @@ function chooseTask(form) {
 function openTask(p_task_number_, p_subject_, p_project_id_) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=openTask&p_task_number=' + p_task_number_ + '&p_subject=' + p_subject_ + '&p_project_id=' + p_project_id_,
@@ -1527,7 +1527,7 @@ function openTask(p_task_number_, p_subject_, p_project_id_) {
 function closeTask() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=closeTask',
@@ -1551,7 +1551,7 @@ function closeTask() {
 function showCommitHistory() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showCommitHistory',
@@ -1574,7 +1574,7 @@ function showCommitHistory() {
 function showUserProfile() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showUserProfile',
@@ -1597,7 +1597,7 @@ function showUserProfile() {
 function saveUserProfile() {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: $('#userprofile').serialize(),
@@ -1622,7 +1622,7 @@ function saveUserProfile() {
 function showOpenedTasks() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showOpenedTasks',
@@ -1645,7 +1645,7 @@ function showOpenedTasks() {
 function commitChanges() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=commitChanges',
@@ -1669,7 +1669,7 @@ function saveCommitChanges() {
   var data = $('#issues');
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: data.serialize(),
@@ -1691,7 +1691,7 @@ function saveCommitChanges() {
 
 function reloadTaskFrame() {
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=reloadTaskFrame',
@@ -1711,7 +1711,7 @@ function reloadTaskFrame() {
 function showRoutes() {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=showRoutes',
@@ -1733,7 +1733,7 @@ function showRoutes() {
 
 function addRoute($route_id) {
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: 'action=addRoute&route_id=' + $route_id,
@@ -1756,7 +1756,7 @@ function addRoute($route_id) {
 function setFilterRoute() {
   showLoading();
   $.ajax({
-    url: __editorURL,
+    url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
     data: $('#setFilterRoute').serialize(),
@@ -1842,6 +1842,6 @@ $(document).ready(function () {
     showRoutes();
   }
 
-  addHandler(document, "keydown", disabler);
+  // addHandler(document, "keydown", disabler);
 
 });

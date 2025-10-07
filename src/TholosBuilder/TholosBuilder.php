@@ -29,10 +29,13 @@
      */
     public const string THOLOSBUILDER_CLASS_PREFIX = "TholosBuilder\\";
     
+    /**
+     * @throws \Exception
+     */
     public function init(array $options_): TholosBuilder {
       self::$app = TholosBuilderApplication::getInstance();
       
-      self::$app->init([]);
+      self::$app->init($options_);
       
       return $this;
     }
