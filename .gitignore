@@ -1,0 +1,7 @@
+/.idea
+/vendor
+/composer.lock
+/composer_update_dev.sh
+/composer_update_prod.sh
+/composer.dev.json
+/composer.dev.lock
