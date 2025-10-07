@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tholos Application Builder</title>
     <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/bower-asset/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/bower-asset/jquery-ui/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/bower-asset/jstree/dist/themes/default/style.min.css" />
-    <link rel="stylesheet" href="/bower-asset/font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/bower-asset/toastr/toastr.min.css" />
+    <link rel="stylesheet" href="/vendor/bower-asset/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/vendor/bower-asset/jquery-ui/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/vendor/bower-asset/jstree/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/vendor/bower-asset/font-awesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="/vendor/bower-asset/toastr/toastr.min.css" />
     <link rel="stylesheet" href="/assets/css/textareafullscreen.css" />
     <link rel="stylesheet" href="/assets/css/TholosBuilder.css" />
   </head>
@@ -28,13 +28,13 @@
 
 	<script type="text/javascript">var __editorURL='$tholos_builderURL';</script>
 
-    <script src="/bower-asset/jquery/dist/jquery.min.js"></script>
-    <script src="/bower-asset/jquery-ui/jquery-ui.min.js"></script>
-    <script src="/bower-asset/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/bower-asset/jstree/dist/jstree.min.js"></script>
-    <script src="/bower-asset/dynamic-bootstrap-responsive-tabs/dist/dynamic-bootstrap-responsive-tabs.js"></script>
-    <script src="/bower-asset/bootbox/dist/bootbox.min.js"></script>
-    <script src="/bower-asset/toastr/toastr.min.js"></script>
+    <script src="/vendor/bower-asset/jquery/dist/jquery.min.js"></script>
+    <script src="/vendor/bower-asset/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/vendor/bower-asset/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/vendor/bower-asset/jstree/dist/jstree.min.js"></script>
+    <!-- script src="/bower-asset/dynamic-bootstrap-responsive-tabs/dist/dynamic-bootstrap-responsive-tabs.js"></script -->
+    <script src="/vendor/bower-asset/bootbox/dist/bootbox.min.js"></script>
+    <script src="/vendor/bower-asset/toastr/toastr.min.js"></script>
     <script src="/assets/js/jquery.textareafullscreen.js"></script>
 
     <script type="text/javascript">const skipframeloading=true;</script>
