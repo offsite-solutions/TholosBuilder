@@ -1,4 +1,4 @@
-<p style="text-align: center"><button type="button" onclick="setFilterRoute()"><i class="fa fa-filter"></i> Show selected routes</button></p>
+<p style="text-align: center"><button type="button" onclick="setFilterRoute()"><i class="fa-regular fa-filter"></i> Show selected routes</button></p>
 <form id="setFilterRoute">
 <input type="hidden" name="action" value="showRoutes">
 <input type="hidden" name="todo" value="save">
@@ -11,4 +11,4 @@ column-gap: 20px;">
 $ROWS
 </div>
 </form>
-<p style="text-align: center"><button type="button" onclick="setFilterRoute()"><i class="fa fa-filter"></i> Show selected routes</button></p>
+<p style="text-align: center"><button type="button" onclick="setFilterRoute()"><i class="fa-regular fa-filter"></i> Show selected routes</button></p>

@@ -1,10 +1,10 @@
 <h1 class="text-center">Tholos :: Grid wizard</h1>
 
 <div class="row" style="margin-top: 20px;">
-  <div class="col-xs-2 text-right">
+  <div class="col-sm-2 text-right">
     Query:
   </div>
-  <div class="col-xs-10">
+  <div class="col-sm-10">
 	<select id="GridWizardComponentId">
       <option value="">--- Please select TGrid component ---</option>
 <%SQL%
@@ -20,7 +20,7 @@ order by component_order
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-12 text-center">
+  <div class="col-sm-12 text-center">
     <button class="button" onclick="showGridWizard($('#GridWizardComponentId').val(),'');">Generate/Update TGridColumns</button>
   </div>
 </div>

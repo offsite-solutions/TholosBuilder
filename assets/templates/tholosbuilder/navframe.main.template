@@ -1,57 +1,62 @@
 <div id="options_container" class="well well-sm">
   <div class="row">
-    <div class="col-xs-10 info">
-      <strong><img src="$TholosBuilderBaseDir/assets/images/favicon.png" align="absmiddle" width="16"> Tholos :: Builder :: <a href="javascript:showUserProfile();">$user_name</a> | <a href="$cgi?action=logout"><i class="fa fa-sign-out"></i></a></strong>
+    <div class="col-sm-10 info">
+      <strong><img src="$TholosBuilderBaseDir/assets/images/favicon.png" align="absmiddle" width="16"> Tholos :: Builder :: <a href="javascript:showUserProfile();">$user_name</a> | <a href="$cgi?action=logout"><i class="fa-regular fa-sign-out"></i></a></strong>
     </div>
-    <div class="col-xs-2 text-right">
-      <a href="javascript:historyStepBack()"><i class="fa fa-chevron-circle-left"></i></a>
-      <a href="javascript:historyStepForward()"><i class="fa fa-chevron-circle-right"></i></a>
+    <div class="col-sm-2 text-right">
+      <a href="javascript:historyStepBack()"><i class="fa-regular fa-chevron-circle-left"></i></a>
+      <a href="javascript:historyStepForward()"><i class="fa-regular fa-chevron-circle-right"></i></a>
     </div>
   </div>
-  <div class="row hovered">
+  <div class="row hovered" style="margin-bottom: 3px;margin-top: 5px;">
 
-    <div class="col-xs-6" style="margin-bottom: 3px;">
+    <div class="col-sm-6">
       <input id="searchText" class="form-control input-sm" placeholder="Search..." style="width: 100%;">
     </div>
 
-    <div class="col-xs-6 text-right">
-      <button class="btn btn-default btn-sm " onclick="searchApp($('#searchText').val());" title="Search"><i class="fa fa-search"></i></button>
-      <button class="btn btn-default btn-sm " onclick="addComponent('','');" title="Add component"><i class="fa fa-plus-square"></i></button>
-      <button class="btn btn-default btn-sm " onclick="loadAppTree('#app_tree');" title="Refresh"><i class="fa fa-refresh" id="globalLoading"></i></button>
+    <div class="col-sm-6 text-end">
+      <button id="searchButton" class="btn btn-default btn-sm " onclick="searchApp($('#searchText').val());" title="Search"><i class="fa-regular fa-search"></i></button>
+      <button class="btn btn-default btn-sm " onclick="addComponent('','');" title="Add component"><i class="fa-regular fa-plus-square"></i></button>
+      <button class="btn btn-default btn-sm " onclick="loadAppTree('#app_tree');" title="Refresh"><i class="fa-regular fa-refresh" id="globalLoading"></i></button>
     </div>
 
   </div>
+  <script type="text/javascript">
+$("#searchText").keyup(function (e) {
+    if (e.keyCode == 13) $("#searchButton").click();
+});
+</script>
   <div class="row hovered">
 
-    <div class="col-xs-12">
+    <div class="col-sm-12">
       <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Menu <span class="caret"></span>
+        <button type="button" id="menuButton" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          Menu
         </button>
         <ul class="dropdown-menu">
-          <li><a href="javascript:showQueryWizard();"><i class="fa fa-database"></i> Query wizard</a></li>
-          <li><a href="javascript:showStoredProcedureWizard();"><i class="fa fa-download"></i> Stored procedure wizard</a></li>
-          <li><a href="javascript:showGridWizard('');"><i class="fa fa-table"></i> Grid wizard</a></li>
-          <li><a href="javascript:showEditFormWizard('','','');"><i class="fa fa-external-link"></i> Edit form wizard</a></li>
-          <li><a href="javascript:showTranslate();"><i class="fa fa-language"></i> Generate language file</a></li>
-          <li><a href="javascript:showComponentTypeDocumentation();"><i class="fa fa-university"></i> Component type documentation</a></li>
-          <li><a href="javascript:generateUserHelp();"><i class="fa fa-question-circle"></i> Generate User Guide</a></li>
+          <li><a class="dropdown-item" href="javascript:showQueryWizard();"><i class="fa-regular fa-database"></i> Query wizard</a></li>
+          <li><a class="dropdown-item" href="javascript:showStoredProcedureWizard();"><i class="fa-regular fa-download"></i> Stored procedure wizard</a></li>
+          <li><a class="dropdown-item" href="javascript:showGridWizard('');"><i class="fa-regular fa-table"></i> Grid wizard</a></li>
+          <li><a class="dropdown-item" href="javascript:showEditFormWizard('','','');"><i class="fa-regular fa-external-link"></i> Edit form wizard</a></li>
+          <li><a class="dropdown-item" href="javascript:showTranslate();"><i class="fa-regular fa-language"></i> Generate language file</a></li>
+          <li><a class="dropdown-item" href="javascript:showComponentTypeDocumentation();"><i class="fa-regular fa-university"></i> Component type documentation</a></li>
+          <li><a class="dropdown-item" href="javascript:generateUserHelp();"><i class="fa-regular fa-question-circle"></i> Generate User Guide</a></li>
         </ul>
       </div>
-      <button type="button" class="btn btn-default btn-sm" onclick="showRoutes();"><i class="fa fa-filter"></i> Routes</button>
-      <button type="button" class="btn btn-default btn-sm" onclick="compile('T');"><i class="fa fa-check-circle"></i> Build</button>
-      <button type="button" class="btn btn-default btn-sm" onclick="compile('F');"><i class="fa fa-check-circle-o"></i> Compile</button>
+      <button type="button" class="btn btn-default" onclick="showRoutes();"><i class="fa-regular fa-filter"></i> Routes</button>
+      <button type="button" class="btn btn-default" onclick="compile('T');"><i class="fa-regular fa-landmark"></i> Build</button>
+      <button type="button" class="btn btn-default" onclick="compile('F');"><i class="fa-regular fa-circle-check"></i> Compile</button>
     </div>
 
   </div>
 </div>
 
 <div id="app_tree_container" class="well well-sm">
-  <div id="apps" class="col-xs-12">
+  <div id="apps" class="col-sm-12">
 
     <div class="tab-content">
       <div id="tab_app_tree" class="tab-pane active">
-         <div id="app_tree" class="col-xs-12">
+         <div id="app_tree" class="col-sm-12">
          </div>
       </div>
     </div>

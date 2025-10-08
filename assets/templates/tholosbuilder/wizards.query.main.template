@@ -1,10 +1,10 @@
 <h1 class="text-center">Tholos :: Query wizard</h1>
 
 <div class="row" style="margin-top: 20px;">
-  <div class="col-xs-4 text-right">
+  <div class="col-sm-4 text-right">
     Query:
   </div>
-  <div class="col-xs-8">
+  <div class="col-sm-8">
 	<select id="QueryWizardComponentId">
       <option value="">--- Please select TQuery component ---</option>
 <%SQL%
@@ -21,21 +21,21 @@ order by path
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-4 text-right">
+  <div class="col-sm-4 text-right">
     Translate root:
   </div>
-  <div class="col-xs-8">
+  <div class="col-sm-8">
     <input id="QueryWizardTransRoot"> <i>component route is the default</i>
   </div>
-  <div class="col-xs-4 text-right">
+  <div class="col-sm-4 text-right">
     &nbsp;
   </div>
-  <div class="col-xs-8">
+  <div class="col-sm-8">
     <input type="checkbox" id="QueryWizardSkipLabel"> Skip Label overwrite
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-12 text-center">
+  <div class="col-sm-12 text-center">
     <button class="button" onclick="QueryWizardRun($('#QueryWizardComponentId').val(),$('#QueryWizardTransRoot').val(),($('#QueryWizardSkipLabel').is(':checked')?'Y':'N'),'');">Generate/Update TDBFields</button>
   </div>
 </div>

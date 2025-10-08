@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/bootstrap/dist/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/jquery-ui/themes/base/jquery-ui.min.css"/>
   <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/jstree/dist/themes/default/style.min.css"/>
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/font-awesome/css/fontawesome.min.css"/>
   <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/toastr/toastr.min.css"/>
   <link rel="stylesheet" href="$TholosBuilderBaseDir/assets/css/textareafullscreen.css"/>
   <link rel="stylesheet" href="$TholosBuilderBaseDir/assets/css/TholosBuilder.css"/>
@@ -34,8 +33,10 @@
 
 <script src="$TholosBuilderBaseDir/vendor/bower-asset/jquery/dist/jquery.min.js"></script>
 <script src="$TholosBuilderBaseDir/vendor/bower-asset/jquery-ui/jquery-ui.min.js"></script>
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/font-awesome/js/all.min.js"></script>
+<script src="$TholosBuilderBaseDir/vendor/bower-asset/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="$TholosBuilderBaseDir/assets/js/fontawesome/fontawesome.min.js"></script>
+<script defer src="$TholosBuilderBaseDir/assets/js/fontawesome/regular.min.js"></script>
+<script defer src="$TholosBuilderBaseDir/assets/js/fontawesome/brands.min.js"></script>
 <script src="$TholosBuilderBaseDir/vendor/bower-asset/jstree/dist/jstree.min.js"></script>
 <!-- script src="/bower-asset/dynamic-bootstrap-responsive-tabs/dist/dynamic-bootstrap-responsive-tabs.js"></script -->
 <script src="$TholosBuilderBaseDir/vendor/bower-asset/bootbox/dist/bootbox.min.js"></script>

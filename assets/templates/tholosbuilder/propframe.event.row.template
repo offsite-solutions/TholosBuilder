@@ -16,9 +16,9 @@ false=
 <tr id="event_row_$sqlevent_id">
   <td nowrap class="prop_name">$sqlname</td>
   <td class="prop_value" id="event_$sqlevent_id">
-    <button class="btn btn-default btn-xs pull-right" onclick="editEvent($sqlcomponent_id,$sqlevent_id,'$sqllink_id','$sqlversion');" title="Edit"><i class="fa fa-edit"></i></button>
-    <button class="btn btn-default btn-xs pull-right"
-     onclick="if (clipboardMethodID!='') saveEvent($sqlcomponent_id, $sqlevent_id, '$sqllink_id', '$sqlversion', '', clipboardMethodComponentID, clipboardMethodID, $('#event_parameters_$sqlevent_id').val());" title="Paste"><i class="fa fa-clipboard saveIcon"></i></button>$sqlvalue<%FUNC%
+    <button class="btn btn-default btn-sm btn-xs pull-right" onclick="editEvent($sqlcomponent_id,$sqlevent_id,'$sqllink_id','$sqlversion');" title="Edit"><i class="fa-regular fa-edit"></i></button>
+    <button class="btn btn-default btn-sm btn-xs pull-right"
+     onclick="if (clipboardMethodID!='') saveEvent($sqlcomponent_id, $sqlevent_id, '$sqllink_id', '$sqlversion', '', clipboardMethodComponentID, clipboardMethodID, $('#event_parameters_$sqlevent_id').val());" title="Paste"><i class="fa-regular fa-clipboard saveIcon"></i></button>$sqlvalue<%FUNC%
 _function_name=TholosBuilder\TholosBuilderCallback::_eqs
 param=sqlmethod_name
 value=

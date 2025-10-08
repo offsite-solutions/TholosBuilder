@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-xs-12">
+  <div class="col-sm-12">
     <p class="title">Add new component</p>
     <form class="form-horizontal" method="post" role="form" onsubmit="return false;" id="form_addComponent">
 <!-- common fields start -->
@@ -59,7 +59,7 @@ select id, class_name as text
 
       <hr>
       <div class="row">
-        <div class="col-xs-12 text-center">
+        <div class="col-sm-12 text-center">
           <button class="btn btn-primary" onclick="saveComponent();">Save</button>
         </div>
       </div>

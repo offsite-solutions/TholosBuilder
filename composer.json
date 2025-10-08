@@ -1,7 +1,7 @@
 {
   "name": "offsite-solutions/tholos-builder",
   "description": "Tholos Application Builder",
-  "type": "Library",
+  "type": "library",
   "authors": [
     {
       "name": "Offsite Solutions Ltd.",
@@ -21,7 +21,6 @@
     "offsite-solutions/eisodos-sqlparser": "^1.0.2",
     "kbsali/redmine-api": "2.8.0",
     "bower-asset/bootstrap": "5.2.3",
-    "bower-asset/font-awesome": "6.3.0",
     "bower-asset/jquery": "3.6.4",
     "bower-asset/jquery-ui": "1.12.1",
     "bower-asset/select2": "4.0.13",

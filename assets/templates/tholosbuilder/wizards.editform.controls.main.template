@@ -49,7 +49,7 @@ SELECT atp.id, atp.name||':'||acp_datatype.value||case when acp_size.value is nu
 %SQL%>
 </form>
 <div class="row" style="margin-top: 20px">
-  <div class="col-xs-12 text-center" id="editformFormPost">
+  <div class="col-sm-12 text-center" id="editformFormPost">
     <button onclick="EditFormWizardRun();">Create form controls</button>
   </div>
 </div>

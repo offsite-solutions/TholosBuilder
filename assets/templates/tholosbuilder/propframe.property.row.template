@@ -14,20 +14,20 @@ _function_name=TholosBuilder\TholosBuilderCallback::_eqs
 param=sqlruntime
 value=Y
 true=<span class="prop_type">$sqltype_desc (runtime) $sqlvalue</span>
-false>>=<button class="btn btn-default btn-xs pull-right" onclick="editProperty($sqlcomponent_id,$sqlproperty_id,'$sqltype','$sqllink_id','$sqlversion');" title="Edit"><i class="fa fa-edit"></i></button>
+false>>=<button class="btn btn-default btn-sm btn-xs pull-right" onclick="editProperty($sqlcomponent_id,$sqlproperty_id,'$sqltype','$sqllink_id','$sqlversion');" title="Edit"><i class="fa-regular fa-edit"></i></button>
 <%FUNC%
 _function_name=TholosBuilder\TholosBuilderCallback::_eqs
 param=sqltype
 value=COMPONENT
 false=
-true=<button class="btn btn-default btn-xs pull-right" onclick="if (clipboardComponentID!='') saveProperty($sqlcomponent_id,$sqlproperty_id,'$sqllink_id','$sqlversion','',clipboardComponentID); else alert('Nothing to paste!');" title="Paste"><i class="fa fa-clipboard"></i></button>
+true=<button class="btn btn-default btn-sm btn-xs pull-right" onclick="if (clipboardComponentID!='') saveProperty($sqlcomponent_id,$sqlproperty_id,'$sqllink_id','$sqlversion','',clipboardComponentID); else alert('Nothing to paste!');" title="Paste"><i class="fa-regular fa-clipboard"></i></button>
 %FUNC%>
 <%FUNC%
 _function_name=TholosBuilder\TholosBuilderCallback::_eqs
 param=sqlvalue_component_id
 value=
 true=
-false=<button class="btn btn-default btn-xs pull-right" onclick="clipboardComponentID='$sqlvalue_component_id';" title="Copy"><i class="fa fa-copy"></i></button>
+false=<button class="btn btn-default btn-sm btn-xs pull-right" onclick="clipboardComponentID='$sqlvalue_component_id';" title="Copy"><i class="fa-regular fa-copy"></i></button>
 %FUNC%>
 <%FUNC%
 _function_name=TholosBuilder\TholosBuilderCallback::_eqs

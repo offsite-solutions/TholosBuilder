@@ -1,6 +1,6 @@
 <div class="row" style="margin-top: 5px;">
-  <div class="col-xs-4 text-right"><b>$sqlname</b></div>
-  <div class="col-xs-8"><select name="option$sqlid">
+  <div class="col-sm-4 text-right"><b>$sqlname</b></div>
+  <div class="col-sm-8"><select name="option$sqlid">
 <option value="">Skip</option>
 <option value="TEdit"
 [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=sqlpreferred_component;value=TEdit;true=selected;false=%]>Edit</option>

@@ -7,9 +7,9 @@
 </ul>
 
 <div class="tab-content">
-  <div id="tab_prop_0" class="col-xs-12"></div>
-  <div id="tab_prop_1" class="col-xs-12"></div>
-  <div id="tab_prop_2" class="col-xs-12"></div>
-  <div id="tab_prop_3" class="col-xs-12"></div>
-  <div id="tab_prop_4" class="col-xs-12"></div>
+  <div id="tab_prop_0" class="col-sm-12"></div>
+  <div id="tab_prop_1" class="col-sm-12"></div>
+  <div id="tab_prop_2" class="col-sm-12"></div>
+  <div id="tab_prop_3" class="col-sm-12"></div>
+  <div id="tab_prop_4" class="col-sm-12"></div>
 </div>

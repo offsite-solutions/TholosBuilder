@@ -22,7 +22,7 @@ var componentHistory = [];
 
 function showLoading(container_) {
   if (container_ !== undefined)
-    container_.html('<div class="text-center"><i class="fa fa-refresh fa-spin fa-lg"></i></div>');
+    container_.html('<div class="text-center"><i class="fa-regular  fa-refresh fa-spin fa-lg"></i></div>');
   else $('#globalLoading').addClass('fa-spin');
 }
 
@@ -253,208 +253,208 @@ function loadAppTree(treeid_) {
             'state': {'key': 'app_tree'},
             'types': {
               'default': {
-                'icon': 'fa fa-cubes color-grey'
+                'icon': 'fa-regular  fa-cubes color-grey'
               },
               'TApplication': {
-                'icon': 'fa fa-university color-green'
+                'icon': 'fa-regular  fa-university color-green'
               },
               'TRoute': {
-                'icon': 'fa fa-random color-purple'
+                'icon': 'fa-regular  fa-random color-purple'
               },
               'TAction': {
-                'icon': 'fa fa-arrow-circle-right color-purple'
+                'icon': 'fa-regular  fa-arrow-circle-right color-purple'
               },
               'TQuery': {
-                'icon': 'fa fa-database color-green'
+                'icon': 'fa-regular  fa-database color-green'
               },
               'TStoredProcedure': {
-                'icon': 'fa fa-download color-blue'
+                'icon': 'fa-regular  fa-download color-blue'
               },
               'TRoleManager': {
-                'icon': 'fa fa-lock color-maroon'
+                'icon': 'fa-regular  fa-lock color-maroon'
               },
               'TPage': {
-                'icon': 'fa fa-desktop color-purple2'
+                'icon': 'fa-regular  fa-desktop color-purple2'
               },
               'TPartial': {
-                'icon': 'fa fa-bookmark-o color-purple2'
+                'icon': 'fa-regular  fa-bookmark-o color-purple2'
               },
               'TDBParam': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TDataParameter': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TGridParameter': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TLOVParameter': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TDBField': {
-                'icon': 'fa fa-list-alt color-lightgreen'
+                'icon': 'fa-regular  fa-list-alt color-lightgreen'
               },
               'TContainer': {
-                'icon': 'fa fa-square-o color-brown'
+                'icon': 'fa-regular  fa-square-o color-brown'
               },
               'TColumn': {
-                'icon': 'fa fa-square-o color-brown'
+                'icon': 'fa-regular  fa-square-o color-brown'
               },
               'TWidget': {
-                'icon': 'fa fa-square-o color-brown'
+                'icon': 'fa-regular  fa-square-o color-brown'
               },
               'TForm': {
-                'icon': 'fa fa-external-link color-green'
+                'icon': 'fa-regular  fa-external-link color-green'
               },
               'TQueryFilter': {
-                'icon': 'fa fa-filter color-green3'
+                'icon': 'fa-regular  fa-filter color-green3'
               },
               'TButton': {
-                'icon': 'fa fa-caret-square-o-right color-red'
+                'icon': 'fa-regular  fa-caret-square-o-right color-red'
               },
               'TLink': {
-                'icon': 'fa fa-caret-square-o-right color-red'
+                'icon': 'fa-regular  fa-caret-square-o-right color-red'
               },
               'TDateTimePicker': {
-                'icon': 'fa fa-calendar color-control'
+                'icon': 'fa-regular  fa-calendar color-control'
               },
               'TLOV': {
-                'icon': 'fa fa-sort-amount-asc color-lightgreen'
+                'icon': 'fa-regular  fa-sort-amount-asc color-lightgreen'
               },
               'TGrid': {
-                'icon': 'fa fa-table color-grid'
+                'icon': 'fa-regular  fa-table color-grid'
               },
               'TGridColumn': {
-                'icon': 'fa fa-columns color-gridcolumn'
+                'icon': 'fa-regular  fa-columns color-gridcolumn'
               },
               'TGridFilter': {
-                'icon': 'fa fa-filter color-green3'
+                'icon': 'fa-regular  fa-filter color-green3'
               },
               'TGridRowActions': {
-                'icon': 'fa fa-square-o color-red'
+                'icon': 'fa-regular  fa-square-o color-red'
               },
               'TTabs': {
-                'icon': 'fa fa-folder-o color-brown'
+                'icon': 'fa-regular  fa-folder-o color-brown'
               },
               'TTabPane': {
-                'icon': 'fa fa-columns color-brown'
+                'icon': 'fa-regular  fa-columns color-brown'
               },
               'TTemplate': {
-                'icon': 'fa fa-file-code-o color-green'
+                'icon': 'fa-regular  fa-file-code-o color-green'
               },
               'TImage': {
-                'icon': 'fa fa-picture-o color-control'
+                'icon': 'fa-regular  fa-picture-o color-control'
               },
               'THidden': {
-                'icon': 'fa fa-angle-double-right color-grey'
+                'icon': 'fa-regular  fa-angle-double-right color-grey'
               },
               'TText': {
-                'icon': 'fa fa-font color-control'
+                'icon': 'fa-regular  fa-font color-control'
               },
               'TRadio': {
-                'icon': 'fa fa-dot-circle-o color-control'
+                'icon': 'fa-regular  fa-dot-circle-o color-control'
               },
               'TLabel': {
-                'icon': 'fa fa-tag color-control'
+                'icon': 'fa-regular  fa-tag color-control'
               },
               'TEdit': {
-                'icon': 'fa fa-pencil-square-o color-control'
+                'icon': 'fa-regular  fa-pencil-square-o color-control'
               },
               'THTMLEdit': {
-                'icon': 'fa fa-header color-control'
+                'icon': 'fa-regular  fa-header color-control'
               },
               'TCheckbox': {
-                'icon': 'fa fa-toggle-on color-control'
+                'icon': 'fa-regular  fa-toggle-on color-control'
               },
               'TStatic': {
-                'icon': 'fa fa-tags color-control'
+                'icon': 'fa-regular  fa-tags color-control'
               },
               'TWorkflow': {
-                'icon': 'fa fa-forward color-red'
+                'icon': 'fa-regular  fa-forward color-red'
               },
               'TWorkflowStep': {
-                'icon': 'fa fa-step-forward color-red'
+                'icon': 'fa-regular  fa-step-forward color-red'
               },
               'TModal': {
-                'icon': 'fa fa-square color-brown'
+                'icon': 'fa-regular  fa-square color-brown'
               },
               'TMap': {
-                'icon': 'fa fa-globe color-control'
+                'icon': 'fa-regular  fa-globe color-control'
               },
               'TMapSource': {
-                'icon': 'fa fa-map-marker color-control'
+                'icon': 'fa-regular  fa-map-marker color-control'
               },
               'TWizard': {
-                'icon': 'fa fa-magic color-brown'
+                'icon': 'fa-regular  fa-magic color-brown'
               },
               'TWizardStep': {
-                'icon': 'fa fa-toggle-right color-brown'
+                'icon': 'fa-regular  fa-toggle-right color-brown'
               },
               'TFormContainer': {
-                'icon': 'fa fa-square-o color-green'
+                'icon': 'fa-regular  fa-square-o color-green'
               },
               'TFileUpload': {
-                'icon': 'fa fa-upload color-purple'
+                'icon': 'fa-regular  fa-upload color-purple'
               },
               'TFileProcessor': {
-                'icon': 'fa fa-file color-purple'
+                'icon': 'fa-regular  fa-file color-purple'
               },
               'TJSLib': {
-                'icon': 'fa fa-puzzle-piece color-purple'
+                'icon': 'fa-regular  fa-puzzle-piece color-purple'
               },
               'TTimer': {
-                'icon': 'fa fa-clock-o color-red'
+                'icon': 'fa-regular  fa-clock-o color-red'
               },
               'TConfirmDialog': {
-                'icon': 'fa fa-question-circle color-red'
+                'icon': 'fa-regular  fa-question-circle color-red'
               },
               'TConfirmButton': {
-                'icon': 'fa fa-caret-square-o-right color-red'
+                'icon': 'fa-regular  fa-caret-square-o-right color-red'
               },
               'TButtonDropdown': {
-                'icon': 'fa fa-caret-square-o-down color-red'
+                'icon': 'fa-regular  fa-caret-square-o-down color-red'
               },
               'TDPOpen': {
-                'icon': 'fa fa-plug color-green'
+                'icon': 'fa-regular  fa-plug color-green'
               },
               'TCell': {
-                'icon': 'fa fa-square-o color-brown'
+                'icon': 'fa-regular  fa-square-o color-brown'
               },
               'TPDFPage': {
-                'icon': 'fa fa-file-pdf-o color-purple2'
+                'icon': 'fa-regular  fa-file-pdf-o color-purple2'
               },
               'TExternalDataProvider': {
-                'icon': 'fa fa-external-link-square fa-rotate-180 color-green'
+                'icon': 'fa-regular  fa-external-link-square fa-rotate-180 color-green'
               },
               'TJSONDataProvider': {
-                'icon': 'fa fa-file-text-o color-green'
+                'icon': 'fa-regular  fa-file-text-o color-green'
               },
               'TDocumentTitle': {
-                'icon': 'fa fa-header color-purple2'
+                'icon': 'fa-regular  fa-header color-purple2'
               },
               'TIterator': {
-                'icon': 'fa fa-sort-amount-asc color-green'
+                'icon': 'fa-regular  fa-sort-amount-asc color-green'
               },
               'TAPIParameter': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TDataProxyParameter': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TGlobalParameter': {
-                'icon': 'fa fa-chain color-lightblue'
+                'icon': 'fa-regular  fa-chain color-lightblue'
               },
               'TQueryFilterGroup': {
-                'icon': 'fa fa-filter fa-border color-green3'
+                'icon': 'fa-regular  fa-filter fa-border color-green3'
               },
               'TAPIPost': {
-                'icon': 'fa fa-external-link-square color-blue'
+                'icon': 'fa-regular  fa-external-link-square color-blue'
               },
               'TButtonDropdownItem': {
-                'icon': 'fa fa-caret-square-o-right color-red'
+                'icon': 'fa-regular  fa-caret-square-o-right color-red'
               },
               'TMenuItem': {
-                'icon': 'fa fa-caret-square-o-down color-blue'
+                'icon': 'fa-regular  fa-caret-square-o-down color-blue'
               },
             },
             'plugins': ['state', 'contextmenu', 'types', 'dnd']

@@ -5,6 +5,6 @@
   <td>$assigned_to</td>
 <tr>
 <tr class="issue-subject">
-  <td><a href="javascript:openTask('$id','$subject','$project');" title="Open task"><i class="fa fa-pencil-square-o"></i> Open</a></td>
+  <td><a href="javascript:openTask('$id','$subject','$project');" title="Open task"><i class="fa-regular fa-pencil-square-o"></i> Open</a></td>
   <td colspan="4"><a href="$RedmineURL/issues/$id" target="_blank">$subject</a></td>
 </tr>

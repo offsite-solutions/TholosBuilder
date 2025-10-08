@@ -24,16 +24,16 @@ SELECT atp.id, atp.name
  ORDER BY atp.component_order
 %SQL%>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-4 text-right">
+  <div class="col-sm-4 text-right">
     &nbsp;
   </div>
-  <div class="col-xs-8">
+  <div class="col-sm-8">
     <input type="checkbox" name="GridWizardSkipIDs" id="GridWizardSkipIDs" value="T" checked> Skip empty DBField's assign to ID column
   </div>
 </div>
 </form>
 <div class="row" style="margin-top: 20px">
-  <div class="col-xs-12 text-center" id="gridFormPost">
+  <div class="col-sm-12 text-center" id="gridFormPost">
     <button onclick="GridWizardRun();">Create grid columns and filters</button>
   </div>
 </div>

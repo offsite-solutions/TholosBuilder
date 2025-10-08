@@ -1,10 +1,10 @@
 <h1 class="text-center">Tholos :: Edit Form wizard</h1>
 
 <div class="row" style="margin-top: 20px;">
-  <div class="col-xs-2 text-right">
+  <div class="col-sm-2 text-right">
     Form:
   </div>
-  <div class="col-xs-10">
+  <div class="col-sm-10">
 	<select id="EditFormWizardComponentId">
       <option value="">--- Please select TForm component ---</option>
 <%SQL%
@@ -21,10 +21,10 @@ order by path
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-2 text-right">
+  <div class="col-sm-2 text-right">
     Query:
   </div>
-  <div class="col-xs-10">
+  <div class="col-sm-10">
     <select id="QueryComponentId">
       <option value="">--- Please select TQuery component ---</option>
 <%SQL%
@@ -41,15 +41,15 @@ order by path
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-2 text-right">
+  <div class="col-sm-2 text-right">
     Excluded columns:
   </div>
-  <div class="col-xs-10">
+  <div class="col-sm-10">
     <input id="Blacklist" value="$editformwizardblacklist" style="width: 100%;">
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-12 text-center">
+  <div class="col-sm-12 text-center">
     <button class="button" onclick="showEditFormWizard($('#EditFormWizardComponentId').val(),
                                                        $('#QueryComponentId').val(),
                                                        $('#Blacklist').val());">Generate/Update inputs</button>

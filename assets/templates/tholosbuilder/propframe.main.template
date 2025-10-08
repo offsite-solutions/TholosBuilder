@@ -8,7 +8,7 @@
 
     <div class="tab-content">
       <div id="tab_prop_tree" class="tab-pane active">
-         <div id="prop_tree" class="col-xs-12">
+         <div id="prop_tree" class="col-sm-12">
 
 <table class="table table-condensed table_props">
   <thead>
@@ -29,7 +29,7 @@ $templateabs_tholosbuilder__propframe_property_sql
          </div>
       </div>
       <div id="tab_event_tree" class="tab-pane">
-        <div id="event_tree" class="col-xs-12">
+        <div id="event_tree" class="col-sm-12">
 
 <table class="table table-condensed table_props">
   <thead>
@@ -49,7 +49,7 @@ $templateabs_tholosbuilder__propframe_form_title_js
       </div>
 
       <div id="tab_methods_tree" class="tab-pane">
-        <div id="methods_tree" class="col-xs-12">
+        <div id="methods_tree" class="col-sm-12">
 
 $templateabs_tholosbuilder__propframe_method_sql
 
@@ -58,7 +58,7 @@ $templateabs_tholosbuilder__propframe_method_sql
       </div>
 
       <div id="tab_referers_tree" class="tab-pane">
-        <div id="referers_tree" class="col-xs-12">
+        <div id="referers_tree" class="col-sm-12">
 
 $templateabs_tholosbuilder__propframe_referers_sql
 
@@ -67,7 +67,7 @@ $templateabs_tholosbuilder__propframe_referers_sql
       </div>
 
       <div id="tab_user_help" class="tab-pane">
-        <div id="user_help" class="col-xs-12">
+        <div id="user_help" class="col-sm-12">
 
 $templateabs_tholosbuilder__propframe_help_main
 

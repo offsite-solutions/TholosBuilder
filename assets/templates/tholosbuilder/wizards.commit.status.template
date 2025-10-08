@@ -3,4 +3,4 @@ $templateabs_tholosbuilder__wizards_commit_opened
 $templateabs_tholosbuilder__wizards_commit_uncommitted_all
 $templateabs_tholosbuilder__wizards_commit_multiuser_main
 
-<p style="margin-top: 20px;"><a href="javascript:showCommitHistory()"><i class="fa fa-history"></i> Show commit history</a></p>
+<p style="margin-top: 20px;"><a href="javascript:showCommitHistory()"><i class="fa-regular fa-history"></i> Show commit history</a></p>

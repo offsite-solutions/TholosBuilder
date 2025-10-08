@@ -1,6 +1,6 @@
 <div class="row" style="margin-top: 5px;">
-  <div class="col-xs-4 text-right"><b>$sqlname</b></div>
-  <div class="col-xs-8"><select name="option$sqlid">
+  <div class="col-sm-4 text-right"><b>$sqlname</b></div>
+  <div class="col-sm-8"><select name="option$sqlid">
 <option value="2">Column and Filter</option>
 <option value="1">Column only</option>
 <option value="3">Export only</option>

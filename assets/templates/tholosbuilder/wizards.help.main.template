@@ -10,7 +10,7 @@
   </form>
 </div>
 
-<div style="text-align: right; margin: 0px 10px 10px 10px;"><a href="javascript:deleteHelp($('#helpForm').find('#p_id').val(),$('#helpForm').find('#p_version').val(),$('#helpForm').find('#p_component_id').val());" style="color: #cc0000;"><i class="fa fa-trash"></i> Delete</a></div>
+<div style="text-align: right; margin: 0px 10px 10px 10px;"><a href="javascript:deleteHelp($('#helpForm').find('#p_id').val(),$('#helpForm').find('#p_version').val(),$('#helpForm').find('#p_component_id').val());" style="color: #cc0000;"><i class="fa-regular fa-trash"></i> Delete</a></div>
 
 <script type="text/javascript">
   CKEDITOR.replace('helpHTML', {

@@ -1,14 +1,14 @@
 <div class="row">
-  <div class="col-xs-10">
+  <div class="col-sm-10">
     <select id="prop_edit_$p_property_id" style="width: 100%;">
 <option value=""></option>
 $options
     <select>
   </div>
-  <div class="col-xs-2">
-    <button id="prop_button_$p_property_id" class="btn btn-default btn-xs pull-right" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val()==''?$('#prop_edit_$p_property_id').val():$('#prop_edit_2_$p_property_id').val(),'');"><i class="fa fa-check saveIcon"></i></button>
+  <div class="col-sm-2">
+    <button id="prop_button_$p_property_id" class="btn btn-default btn-sm btn-xs pull-right" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val()==''?$('#prop_edit_$p_property_id').val():$('#prop_edit_2_$p_property_id').val(),'');"><i class="fa-regular fa-check saveIcon"></i></button>
   </div>
-  <div class="col-xs-10">
+  <div class="col-sm-10">
     Selector or custom value:<br/>
     <input id="prop_edit_2_$p_property_id" style="width: 100%;" value="$p_value2" >
   </div>

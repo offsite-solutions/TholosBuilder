@@ -109,7 +109,7 @@
       }
     }
     
-    private function safeHTML(string|null $text_): string {
+    public function safeHTML(string|null $text_): string {
       if ($text_===null || $text_=='') {
         return '';
       }
@@ -3016,8 +3016,6 @@
     
     private function commitChanges(): void {
       
-      require_once 'vendor_php/redmine-1.5.15/autoload.php';
-      
       $redmine_options = array();
       
       $this->builder_db->query(RT_FIRST_ROW, "select rm_secretkey, rm_project_id, rm_subprojects \n" .
@@ -3252,8 +3250,6 @@
     }
     
     private function chooseTask(): void {
-      
-      require_once 'vendor_php/redmine-1.5.15/autoload.php';
       
       try {
         

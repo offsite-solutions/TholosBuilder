@@ -1,10 +1,10 @@
 <h1 class="text-center">Tholos :: StoredProcedure wizard</h1>
 
 <div class="row" style="margin-top: 20px;">
-  <div class="col-xs-4 text-right">
+  <div class="col-sm-4 text-right">
     Stored procedure:
   </div>
-  <div class="col-xs-8">
+  <div class="col-sm-8">
 	<select id="SPWizardComponentId">
       <option value="">--- Please select TStoredProcedure component ---</option>
 <%SQL%
@@ -21,7 +21,7 @@ order by path
   </div>
 </div>
 <div class="row" style="margin-top: 10px;">
-  <div class="col-xs-12 text-center">
+  <div class="col-sm-12 text-center">
     <button class="button" onclick="StoredProcedureWizardRun($('#SPWizardComponentId').val(),'');">Generate/Update TDBParams</button>
   </div>
 </div>
