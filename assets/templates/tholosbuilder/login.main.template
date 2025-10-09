@@ -5,13 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Tholos Application Builder</title>
-  <link rel="shortcut icon" href="$TholosBuilderBaseDir/assets/images/favicon.png" type="image/x-icon">
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/bootstrap/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/jquery-ui/themes/base/jquery-ui.min.css"/>
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/jstree/dist/themes/default/style.min.css"/>
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/vendor/bower-asset/toastr/toastr.min.css"/>
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/assets/css/textareafullscreen.css"/>
-  <link rel="stylesheet" href="$TholosBuilderBaseDir/assets/css/TholosBuilder.css"/>
+  <link rel="shortcut icon" href="$TholosBuilderAssetsDir/images/favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="$TholosBuilderVendorDir/bower-asset/bootstrap/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="$TholosBuilderVendorDir/bower-asset/jquery-ui/themes/base/jquery-ui.min.css"/>
+  <link rel="stylesheet" href="$TholosBuilderVendorDir/bower-asset/jstree/dist/themes/default/style.min.css"/>
+  <link rel="stylesheet" href="$TholosBuilderVendorDir/bower-asset/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="$TholosBuilderAssetsDir/css/textareafullscreen.css"/>
+  <link rel="stylesheet" href="$TholosBuilderAssetsDir/css/TholosBuilder.css"/>
 </head>
 <body>
 <div id="login">
@@ -29,20 +29,19 @@
 
 <script type="text/javascript">var __TholosBuilderAppUrl = '$TholosBuilderAppURL';</script>
 
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/jquery/dist/jquery.min.js"></script>
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/jquery-ui/jquery-ui.min.js"></script>
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/bootstrap/dist/js/bootstrap.min.js"></script>
-<script defer src="$TholosBuilderBaseDir/assets/js/fontawesome/fontawesome.min.js"></script>
-<script defer src="$TholosBuilderBaseDir/assets/js/fontawesome/regular.min.js"></script>
-<script defer src="$TholosBuilderBaseDir/assets/js/fontawesome/brands.min.js"></script>
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/jstree/dist/jstree.min.js"></script>
-<!-- script src="/bower-asset/dynamic-bootstrap-responsive-tabs/dist/dynamic-bootstrap-responsive-tabs.js"></script -->
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/bootbox/dist/bootbox.min.js"></script>
-<script src="$TholosBuilderBaseDir/vendor/bower-asset/toastr/toastr.min.js"></script>
-<script src="$TholosBuilderBaseDir/assets/js/jquery.textareafullscreen.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/jquery/dist/jquery.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/jquery-ui/jquery-ui.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/bootstrap/dist/js/bootstrap.min.js"></script>
+<script defer src="$TholosBuilderAssetsDir/js/fontawesome/fontawesome.min.js"></script>
+<script defer src="$TholosBuilderAssetsDir/js/fontawesome/regular.min.js"></script>
+<script defer src="$TholosBuilderAssetsDir/js/fontawesome/brands.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/jstree/dist/jstree.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/bootbox/dist/bootbox.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/toastr/toastr.min.js"></script>
+<script src="$TholosBuilderAssetsDir/js/jquery.textareafullscreen.js"></script>
 
 <script type="text/javascript">const skipframeloading = true;</script>
-<script src="$TholosBuilderBaseDir/assets/js/TholosBuilder.js"></script>
+<script src="$TholosBuilderAssetsDir/js/TholosBuilder.js"></script>
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 <div id="options_container" class="well well-sm">
   <div class="row">
     <div class="col-sm-10 info">
-      <strong><img src="$TholosBuilderBaseDir/assets/images/favicon.png" align="absmiddle" width="16"> Tholos :: Builder :: <a href="javascript:showUserProfile();">$user_name</a> | <a href="$cgi?action=logout"><i class="fa-regular fa-sign-out"></i></a></strong>
+      <strong><img src="$TholosBuilderAssetsDir/images/favicon.png" align="absmiddle" width="16"> Tholos :: Builder :: <a href="javascript:showUserProfile();">$user_name</a> | <a href="$cgi?action=logout"><i class="fa-regular fa-sign-out"></i></a></strong>
     </div>
     <div class="col-sm-2 text-right">
       <a href="javascript:historyStepBack()"><i class="fa-regular fa-chevron-circle-left"></i></a>
