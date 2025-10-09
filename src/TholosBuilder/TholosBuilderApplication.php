@@ -1763,7 +1763,8 @@
             fwrite($routeFile, $routeCachePHP);
             fclose($routeFile);
             if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
-              if (!mkdir($sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name")) && !is_dir($sourceWorkingDir)) {
+              $sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name");
+              if (!is_dir($sourceWorkingDir) && !mkdir($sourceWorkingDir) && !is_dir($sourceWorkingDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
               }
               $routeSourceFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name") . "/" . $route . ".tcs", 'wb');
@@ -3108,7 +3109,8 @@
         
         if ($tcsfiles == "") throw new RuntimeException("Nothing to commit");
         
-        if (!mkdir($commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log") && !is_dir($commitLogDirectory)) {
+        $commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log";
+        if (!is_dir($commitLogDirectory) && !mkdir($commitLogDirectory) && !is_dir($commitLogDirectory)) {
           throw new \RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
         }
         $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/" . date("YmdHis") . ".msg";
@@ -3292,7 +3294,7 @@
               "project" => $task["project"]["name"],
               "tracker" => $task["tracker"]["name"],
               "status" => $task["status"]["name"],
-              "category" => $task["category"]["name"],
+              "category" => (array_key_exists('category',$task)?$task["category"]["name"]:''),
               "assigned_to" => $task["assigned_to"]["name"],
               "subject" => Eisodos::$utils->replace_all($task["subject"], "'", "")
             ),
