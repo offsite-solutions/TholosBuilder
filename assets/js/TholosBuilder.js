@@ -22,12 +22,12 @@ var componentHistory = [];
 
 function showLoading(container_) {
   if (container_ !== undefined)
-    container_.html('<div class="text-center"><i class="fa-regular  fa-refresh fa-spin fa-lg"></i></div>');
+    container_.html('<div class="text-center"><i class="fa-regular fa-refresh fa-spin fa-lg"></i></div>');
   else $('#globalLoading').addClass('fa-spin');
 }
 
 function finishedLoading() {
-  $('#globalLoading').removeClass('fa-spin');
+  $('#globalLoading').removeClass('fa-spin').addClass('fa-regular');
 }
 
 /*function initEditorTabs() {
@@ -583,7 +583,6 @@ function pasteComponent(parent_id_, component_id_) {
 /* moving components */
 
 function moveMultiple() {
-  console.log(movedNodes);
   var movedNodes_ = movedNodes;
   movedNodes = "";
   $.ajax({
@@ -943,7 +942,7 @@ function saveProperty(component_id_, property_id_, link_id_, version_, value_, v
         if (data.refreshtree == 'Y') loadAppTree('#app_tree');
         else showPropertiesAndEvents(component_id_, property_id_, '');
       } else {
-        $('#prop_frame #prop_row_' + property_id_ + ' .saveIcon').removeClass('fa-spin');
+        $('#prop_frame #prop_row_' + property_id_ + ' .saveIcon').removeClass('fa-spin').addClass('fa-regular');
         bootbox.alert(data.errormsg);
       }
     },
@@ -1055,7 +1054,7 @@ function saveEvent(component_id_, event_id_, link_id_, version_, value_, value_c
         if (data.refreshtree == 'Y') loadAppTree('#app_tree');
         else showPropertiesAndEvents(component_id_, '', event_id_);
       } else {
-        $('#prop_frame #event_row_' + event_id_ + ' .saveIcon').removeClass('fa-spin');
+        $('#prop_frame #event_row_' + event_id_ + ' .saveIcon').removeClass('fa-spin').addClass('fa-regular');
         bootbox.alert(data.errormsg);
       }
     },

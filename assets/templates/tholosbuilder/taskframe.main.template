@@ -1,6 +1,6 @@
 <p><a href="$RedmineURL/issues/$task_number" target="_blank">#$task_number :: $task_subject</a></p>
 <p style="text-align: right;">
-<a href="javascript:showOpenedTasks();" title="Task status"><i class="fa-regular fa-info-circle"></i> Status</a>[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;false=;true= | <a href="javascript:chooseTask()" title="Choose issue"><i class="fa-regular fa-pencil-square-o"></i> Choose issue</a>%]
+<a href="javascript:showOpenedTasks();" title="Task status"><i class="fa-regular fa-info-circle"></i> Status</a>[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;false=;true= | <a href="javascript:chooseTask()" title="Choose issue"><i class="fa-regular fa-pencil-square"></i> Choose issue</a>%]
 [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;true=;false= | <a href="javascript:closeTask()" title="Close unchanged issue"><i class="fa-regular fa-times-circle"></i> Close unchanged</a>%]
-[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;true=;false= | <a href="javascript:compile('F')" title="Compile and commit"><i class="fa-regular fa-check-circle-o"></i> Compile and commit</a>%]
+[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;true=;false= | <a href="javascript:compile('F')" title="Compile and commit"><i class="fa-regular fa-check-circle"></i> Compile and commit</a>%]
 | <a href="javascript:reloadTaskFrame();" title="Refresh"><i class="fa-regular fa-refresh"></i></a></p>

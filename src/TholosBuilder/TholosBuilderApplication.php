@@ -16,6 +16,7 @@
   use JetBrains\PhpStorm\NoReturn;
   use JsonException;
   use Redmine\Client;
+  use Redmine\Client\NativeCurlClient;
   use RuntimeException;
   use Throwable;
   
@@ -110,9 +111,10 @@
     }
     
     public function safeHTML(string|null $text_): string {
-      if ($text_===null || $text_=='') {
+      if ($text_ === NULL || $text_ == '') {
         return '';
       }
+      
       return str_replace(array("[", "]", "\$", "^"), array("&#91;", "&#93;", "&#36;", "&#94;"), htmlspecialchars(stripslashes($text_)));
     }
     
@@ -219,7 +221,7 @@
     /**
      * @throws JsonException
      */
-    private function moveFirstComponent():void {
+    private function moveFirstComponent(): void {
       try {
         
         $boundVariables = [];
@@ -266,7 +268,7 @@
     /**
      * @throws JsonException
      */
-    private function moveLastComponent():void {
+    private function moveLastComponent(): void {
       try {
         
         $boundVariables = [];
@@ -313,7 +315,7 @@
     /**
      * @throws JsonException
      */
-    private function moveDownComponent():void {
+    private function moveDownComponent(): void {
       try {
         
         $boundVariables = [];
@@ -360,7 +362,7 @@
     /**
      * @throws JsonException
      */
-    private function moveUpComponent():void {
+    private function moveUpComponent(): void {
       try {
         
         $boundVariables = [];
@@ -407,7 +409,7 @@
     /**
      * @throws JsonException
      */
-    private function moveMultiple():void {
+    private function moveMultiple(): void {
       try {
         
         $this->builder_db->startTransaction();
@@ -465,7 +467,7 @@
     /**
      * @throws JsonException
      */
-    private function pasteComponent():void {
+    private function pasteComponent(): void {
       try {
         
         $boundVariables = [];
@@ -513,7 +515,7 @@
     /**
      * @throws JsonException
      */
-    private function saveComponent():void {
+    private function saveComponent(): void {
       
       try {
         
@@ -599,7 +601,7 @@
     /**
      * @throws JsonException
      */
-    private function addComponent():void {
+    private function addComponent(): void {
       
       try {
         
@@ -627,7 +629,7 @@
      * @throws JsonException
      */
     #[NoReturn]
-    private function searchApp():void {
+    private function searchApp(): void {
       
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "search.main", array(), false);
@@ -641,7 +643,7 @@
     /**
      * @throws JsonException
      */
-    private function loadAppTree():void {
+    private function loadAppTree(): void {
       
       try {
         $apptree_ = array();
@@ -710,7 +712,7 @@
     /**
      * @throws Throwable
      */
-    private function login():void {
+    private function login(): void {
       try {
         
         $boundVariables = [];
@@ -974,11 +976,9 @@
         
         if (Eisodos::$parameterHandler->eq("p_property_id", "") && Eisodos::$parameterHandler->eq("p_event_id", "")) {
           $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.tab." . Eisodos::$parameterHandler->getParam("p_tab_index", ""), array(), false);
-        }
-        elseif (Eisodos::$parameterHandler->neq("p_property_id", "")) {
+        } elseif (Eisodos::$parameterHandler->neq("p_property_id", "")) {
           $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.property.sql", array(), false);
-        }
-        else {
+        } else {
           $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.sql", array(), false);
         }
         $responseArray['success'] = 'OK';
@@ -1351,7 +1351,7 @@
       exit;
     }
     
-    private function saveEvent():void {
+    private function saveEvent(): void {
       try {
         
         if (Eisodos::$parameterHandler->eq("p_value", "") && Eisodos::$parameterHandler->eq("p_value_component_id", "")) {
@@ -1673,7 +1673,7 @@
             "?>";
           
           // generating source code for SVN
-          if (Eisodos::$parameterHandler->neq("Tholos.ApplicationSourceWorkingDir", "")) {
+          if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
             $sourcecodesql =
               "SELECT CASE \n" .
               "        WHEN lag(q.path, \n" .
@@ -1755,14 +1755,14 @@
           
           if (Eisodos::$parameterHandler->eq("action", "remoteCompile2")) {
             $responseArray['routeCachePHP'][$route] = base64_encode($routeCachePHP);
-            if (Eisodos::$parameterHandler->neq("Tholos.ApplicationSourceWorkingDir", "")) $responseArray['routeSourceCode'][$route] = base64_encode($routeSourceCode);
+            if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) $responseArray['routeSourceCode'][$route] = base64_encode($routeSourceCode);
           }
           
           if (Eisodos::$parameterHandler->neq("action", "remoteCompile2") || Eisodos::$parameterHandler->eq("localCompile", "T")) {
             $routeFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . $route . ".tcd", 'wb');
             fwrite($routeFile, $routeCachePHP);
             fclose($routeFile);
-            if (Eisodos::$parameterHandler->neq("Tholos.ApplicationSourceWorkingDir", "")) {
+            if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
               if (!mkdir($sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name")) && !is_dir($sourceWorkingDir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
               }
@@ -2892,7 +2892,7 @@
     private function generateUserGuide(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "userhelp.main", array(), false);
-      if (Eisodos::$parameterHandler->neq("Tholos.GenerateHelpFile", "")) {
+      if (Eisodos::$parameterHandler->neq("TholosBuilder.GenerateHelpFile", "")) {
         $helpFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.GenerateHelpFile"), 'wb');
         fwrite($helpFile, Eisodos::$templateEngine->getTemplate($this->templateFolder . "userhelp.generated", array("userguide" => $responseArray['html']), false));
         fclose($helpFile);
@@ -3026,7 +3026,7 @@
       if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
         throw new RuntimeException("No Redmine secret key defined in user profile");
       
-      $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
+      $redmine = new NativeCurlClient(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
       
       $responseArray['success'] = 'OK';
       
@@ -3050,22 +3050,22 @@
       
       $this->builder_db->query(RT_FIRST_ROW, $sql, $back);
       
-      $task_ = $redmine->issue->show($back["task_ids"]);
+      $task_ = $redmine->getApi('issue')->show($back["task_ids"]);
       
       $rmmembers = "";
-      $a_ = $redmine->membership->all($task_["issue"]["project"]["id"]);
+      $a_ = $redmine->getApi('membership')->listByProject($task_["issue"]["project"]["id"]);
       foreach ($a_["memberships"] as $member) {
         $rmmembers .= '<option value="' . (array_key_exists("user", $member) ? $member["user"]["id"] : ($member["group"]["id"])) . '" ' . ((array_key_exists("user", $member) ? $member["user"]["id"] : ($member["group"]["id"])) == $task_["issue"]["assigned_to"]["id"] ? "selected" : "") . '>' . (array_key_exists("user", $member) ? $member["user"]["name"] : ("[" . $member["group"]["name"] . "]")) . '</option>';
       }
       
       $redmineStatuses = "";
-      $a_ = $redmine->issue_status->all(array("project_id" => $task_["issue"]["project"]["id"]));
+      $a_ = $redmine->getApi('issue_status')->list(array("project_id" => $task_["issue"]["project"]["id"]));
       foreach ($a_["issue_statuses"] as $status) {
         $redmineStatuses .= '<option value="' . $status["id"] . '" ' . ($status["id"] == $task_["issue"]["status"]["id"] ? "selected" : "") . '>' . $status["name"] . '</option>';
       }
       
       $rmactivities = "";
-      $a_ = $redmine->time_entry_activity->all(array("project_id" => $task_["issue"]["project"]["id"]));
+      $a_ = $redmine->getApi('time_entry_activity')->list(array("project_id" => $task_["issue"]["project"]["id"]));
       foreach ($a_["time_entry_activities"] as $activity) {
         $rmactivities .= '<option value="' . $activity["id"] . '" ' . ($activity["name"] == "Fejlesztés" ? "selected" : "") . '>' . $activity["name"] . '</option>';
       }
@@ -3111,40 +3111,46 @@
         if (!mkdir($commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log") && !is_dir($commitLogDirectory)) {
           throw new \RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
         }
-        $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/ " . date("YmdHis") . ".msg";
+        $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/" . date("YmdHis") . ".msg";
         $result .= "\nWriting message file\n  " . $logfile . "\n";
         $file = fopen($logfile, "wb");
         if ($file === false) throw new RuntimeException("Can not write log file");
         fwrite($file, Eisodos::$parameterHandler->getParam("p_message"));
         fclose($file);
         
-        $result .= "\nGetting SVN authorization information\n";
-        
-        $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG.USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
-        $svn = array();
-        if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) throw new RuntimeException("You are not logged in!");
-        
-        $result .= "  Done.\n";
-        
-        $svncommand1 = "cd " . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . ' && svn st | grep ? | cut -d? -f2 | xargs svn add';
-        $svncommand2 = Eisodos::$parameterHandler->getParam("TholosBuilder.SVN", "/bin/svn") . ' commit --non-interactive --no-auth-cache --username ' . $svn["svn_username"] . ' --password ' . $svn["svn_password"] .
-          ' --file ' . $logfile .
-          ' ' . $tcsfiles . ' 2>&1';
-        
-        $result .= "\nRunning svn commands\n\n" .
-          $svncommand1 . "\n\n";
-        
-        $output = shell_exec($svncommand1);
-        
-        $result .= $output . "\n\n";
-        
-        $result .= $svncommand2 . "\n\n";
-        
-        $output = shell_exec($svncommand2);
-        
-        $result .= $output . "\n\n";
-        
-        if (D_pos("Commit failed", $output)) throw new RuntimeException("Commit failed");
+        if (Eisodos::$parameterHandler->getParam("TholosBuilder.SVNBinary", "") !== "") {
+          
+          $result .= "\nGetting SVN authorization information\n";
+          
+          $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG.USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
+          $svn = array();
+          if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) throw new RuntimeException("You are not logged in!");
+          
+          $result .= "  Done.\n";
+          
+          $svncommand1 = "cd " . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . ' && svn st | grep ? | cut -d? -f2 | xargs svn add';
+          $svncommand2 = Eisodos::$parameterHandler->getParam("TholosBuilder.SVNBinary", "") . ' commit --non-interactive --no-auth-cache --username ' . $svn["svn_username"] . ' --password ' . $svn["svn_password"] .
+            ' --file ' . $logfile .
+            ' ' . $tcsfiles . ' 2>&1';
+          
+          $result .= "\nRunning svn commands\n\n" .
+            $svncommand1 . "\n\n";
+          
+          $output = shell_exec($svncommand1);
+          
+          $result .= $output . "\n\n";
+          
+          $result .= $svncommand2 . "\n\n";
+          
+          $output = shell_exec($svncommand2);
+          
+          $result .= $output . "\n\n";
+          
+          if (D_pos("Commit failed", $output)) throw new RuntimeException("Commit failed");
+          
+        } else {
+          $result .= "\n\n" . 'SVN is disabled' . "\n\n";
+        }
         
         $result .= "Setting commit flag for the tasks\n\n";
         
@@ -3179,7 +3185,7 @@
         if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
           throw new RuntimeException("No Redmine secret key defined in user profile");
         
-        $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
+        $redmine = new NativeCurlClient(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
         
         try {
           $taskoptions = array();
@@ -3194,9 +3200,10 @@
           
           if (!empty($taskoptions)) {
             $result .= "Updating redmine task... ";
-            $redmine->issue->update(Eisodos::$parameterHandler->getParam("task_number"), $taskoptions);
+            $redmine->getApi('issue')->update(Eisodos::$parameterHandler->getParam("task_number"), $taskoptions);
             $result .= "Success\n\n";
           }
+          
           
         } catch (Exception $e) {
           $result .= "Failed: " . $e->getMessage() . "\n\n";
@@ -3206,13 +3213,13 @@
           $timeoptions = array();
           if (Eisodos::$parameterHandler->neq("p_rm_time_spent", "")) {
             $result .= "Saving time record... ";
-            if (!D_isfloat(Eisodos::$parameterHandler->getParam("p_rm_time_spent"))) throw new RuntimeException("Spent time is not a number!");
+            if (!Eisodos::$utils->isFloat(Eisodos::$parameterHandler->getParam("p_rm_time_spent"))) throw new RuntimeException("Spent time is not a number!");
             
             $timeoptions["hours"] = Eisodos::$parameterHandler->getParam("p_rm_time_spent");
             $timeoptions["issue_id"] = Eisodos::$parameterHandler->getParam("task_number");
             $timeoptions["activity_id"] = Eisodos::$parameterHandler->getParam("p_rm_time_activity");
             
-            $redmine->time_entry->create($timeoptions);
+            $redmine->getApi('time_entry')->create($timeoptions);
             
             $result .= "Success\n\n";
           }
@@ -3240,7 +3247,7 @@
       }
       
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.result",
-        array("result" => " < pre>" . $result . " </pre > "),
+        array("result" => " <pre>" . $result . " </pre > "),
         false);
       
       header('Content-type: application/json');
@@ -3263,13 +3270,13 @@
         if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
           throw new RuntimeException("No Redmine secret key defined in user profile");
         
-        $redmine = new Client(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
+        $redmine = new NativeCurlClient(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
         
         if (Eisodos::$parameterHandler->neq("p_rm_task_id", ""))
-          $a_ = $redmine->issue->all(['issue_id' => Eisodos::$parameterHandler->getParam("p_rm_task_id", "")
+          $a_ = $redmine->getApi('issue')->list(['issue_id' => Eisodos::$parameterHandler->getParam("p_rm_task_id", "")
           ]);
         else
-          $a_ = $redmine->issue->all(['status_id' => Eisodos::$parameterHandler->getParam("p_rm_status", ""),
+          $a_ = $redmine->getApi('issue')->list(['status_id' => Eisodos::$parameterHandler->getParam("p_rm_status", ""),
             'sort' => 'project_id,id:desc',
             'project_id' => Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]),
             'subproject_id' => Eisodos::$parameterHandler->getParam("p_rm_subprojects", Eisodos::$utils->safe_array_value($redmine_options, "rm_subprojects", '*')),
@@ -3280,7 +3287,7 @@
         
         $issues = "";
         foreach ($a_["issues"] as $task) {
-          $issues .= Eisodos::$templateEngine->getTemplate("tholosbuilder / redmine.issues.list.row",
+          $issues .= Eisodos::$templateEngine->getTemplate("tholosbuilder/redmine.issues.list.row",
             array("id" => $task["id"],
               "project" => $task["project"]["name"],
               "tracker" => $task["tracker"]["name"],
@@ -3294,26 +3301,26 @@
         
         $rmprojects = "";
         foreach (explode(',', $redmine_options["rm_project_id"]) as $p_) {
-          $rmprojects .= ' < option value = "' . $p_ . '" ' . (Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]) == $p_ ? 'selected' : '') . ' > ' . $p_ . '</option > ';
+          $rmprojects .= ' <option value = "' . $p_ . '" ' . (Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]) == $p_ ? 'selected' : '') . ' > ' . $p_ . '</option > ';
         }
         
         $rmmembers = "";
-        $a_ = $redmine->membership->all(Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]), array("sort" => "name"));
+        $a_ = $redmine->getApi('membership')->listByProject(Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]), array("sort" => "name"));
         foreach ($a_["memberships"] as $member) {
-          $rmmembers .= ' < option value = "' . (array_key_exists("user", $member) ? $member["user"]["id"] : ($member["group"]["id"])) . '" ' . ((array_key_exists("user", $member) ? $member["user"]["id"] : ($member["group"]["id"])) == Eisodos::$parameterHandler->getParam("p_rm_assigned_to_id", "me") ? "selected" : "") . ' > ' . (array_key_exists("user", $member) ? $member["user"]["name"] : ("[" . $member["group"]["name"] . "]")) . '</option > ';
+          $rmmembers .= ' <option value = "' . (array_key_exists("user", $member) ? $member["user"]["id"] : ($member["group"]["id"])) . '" ' . ((array_key_exists("user", $member) ? $member["user"]["id"] : ($member["group"]["id"])) == Eisodos::$parameterHandler->getParam("p_rm_assigned_to_id", "me") ? "selected" : "") . ' > ' . (array_key_exists("user", $member) ? $member["user"]["name"] : ("[" . $member["group"]["name"] . "]")) . '</option > ';
         }
         
         $redmineStatuses = "";
-        $a_ = $redmine->issue_status->all(array("project_id" => Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0])));
+        $a_ = $redmine->getApi('issue_status')->list(array("project_id" => Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0])));
         foreach ($a_["issue_statuses"] as $status) {
-          $redmineStatuses .= ' < option value = "' . $status["id"] . '" ' . ($status["id"] == Eisodos::$parameterHandler->getParam("p_rm_status", "open") ? "selected" : "") . ' > ' . $status["name"] . '</option > ';
+          $redmineStatuses .= ' <option value = "' . $status["id"] . '" ' . ($status["id"] == Eisodos::$parameterHandler->getParam("p_rm_status", "open") ? "selected" : "") . ' > ' . $status["name"] . '</option > ';
         }
         
         $redmineVersions = "";
-        $a_ = $redmine->version->all(Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]));
+        $a_ = $redmine->getApi('version')->listByProject(Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]));
         foreach ($a_["versions"] as $version) {
           if ($version["status"] == "open")
-            $redmineVersions .= ' < option value = "' . $version["id"] . '" ' . ($version["id"] == Eisodos::$parameterHandler->getParam("p_rm_version", "") ? "selected" : "") . ' > ' . $version["name"] . '</option > ';
+            $redmineVersions .= ' <option value = "' . $version["id"] . '" ' . ($version["id"] == Eisodos::$parameterHandler->getParam("p_rm_version", "") ? "selected" : "") . ' > ' . $version["name"] . '</option > ';
         }
         
         $responseArray['success'] = 'OK';
