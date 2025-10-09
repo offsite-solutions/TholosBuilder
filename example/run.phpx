@@ -1,0 +1,40 @@
+<?php
+  
+  use Eisodos\Connectors\ConnectorOCI8;
+  use Eisodos\Eisodos;
+  use TholosBuilder\TholosBuilder;
+  
+  require_once './vendor/autoload.php'; // Autoload files using Composer autoload
+  
+  try {
+    Eisodos::getInstance()->init(
+      [
+        __DIR__,
+        'tb'
+      ]
+    );
+    
+    Eisodos::$render->start(
+      ['configType' => Eisodos::$configLoader::CONFIG_TYPE_INI],
+      [],
+      [],
+      ''
+    );
+    
+    Eisodos::$dbConnectors->registerDBConnector(new ConnectorOCI8(), '1');
+    Eisodos::$dbConnectors->registerDBConnector(new ConnectorOCI8(), '2');
+    
+    TholosBuilder::getInstance()->init([]);
+    TholosBuilder::$app->run(
+      Eisodos::$dbConnectors->db('1'),
+      Eisodos::$dbConnectors->db('2')
+    );
+    
+  } catch (Throwable $e) {
+    if (!isset(Eisodos::$logger)) {
+      die($e->getMessage());
+    }
+    
+    Eisodos::$logger->writeErrorLog($e);
+    exit(1);
+  }
