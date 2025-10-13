@@ -38,8 +38,8 @@
 <script defer src="$TholosBuilderAssetsDir/js/fontawesome/regular.min.js"></script>
 <script defer src="$TholosBuilderAssetsDir/js/fontawesome/brands.min.js"></script>
 <script src="$TholosBuilderVendorDir/bower-asset/jstree/dist/jstree.min.js"></script>
-<script src="$TholosBuilderVendorDir/vendor/bower-asset/bootbox/dist/bootbox.min.js"></script>
-<script src="$TholosBuilderVendorDir/vendor/bower-asset/toastr/toastr.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/bootbox/dist/bootbox.min.js"></script>
+<script src="$TholosBuilderVendorDir/bower-asset/toastr/toastr.min.js"></script>
 <script src="$TholosBuilderAssetsDir/js/jquery.textareafullscreen.js"></script>
 
 <script type="text/javascript">const skipframeloading = false;</script>
