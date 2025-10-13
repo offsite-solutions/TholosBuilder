@@ -1024,15 +1024,19 @@
         } elseif ($back["type"] == 'TEMPLATE') {
           $p_value2 = $p_value;
           Eisodos::$parameterHandler->setParam("p_type", "LIST");
-          $dir = opendir(Eisodos::$parameterHandler->getParam("TemplateDir"));
+          $dir = opendir(Eisodos::$parameterHandler->getParam("TholosBuilder.TargetTemplateDir"));
           $filenames = [];
-          while ($file = readdir($dir)) {
-            if (preg_match("/\.template$/", $file)) {
-              $filename = Eisodos::$utils->replace_all($file, ".template", "", true, true);
-              $filenames[] = $filename;
+          if ($dir) {
+            while ($file = readdir($dir)) {
+              if (preg_match("/\.template$/", $file)) {
+                $filename = Eisodos::$utils->replace_all($file, ".template", "", true, true);
+                $filenames[] = $filename;
+              }
             }
+            closedir($dir);
+          } else {
+            Eisodos::$logger->error('Could not open target app template dir: '.Eisodos::$parameterHandler->getParam("TholosBuilder.TargetTemplateDir"));
           }
-          closedir($dir);
           sort($filenames);
           foreach ($filenames as $filename) {
             $found = ($filename == $p_value);
@@ -3294,7 +3298,7 @@
               "project" => $task["project"]["name"],
               "tracker" => $task["tracker"]["name"],
               "status" => $task["status"]["name"],
-              "category" => (array_key_exists('category',$task)?$task["category"]["name"]:''),
+              "category" => (array_key_exists('category', $task) ? $task["category"]["name"] : ''),
               "assigned_to" => $task["assigned_to"]["name"],
               "subject" => Eisodos::$utils->replace_all($task["subject"], "'", "")
             ),
