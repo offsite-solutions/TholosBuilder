@@ -14,11 +14,11 @@
       "url": "https://asset-packagist.org"
     }
   ],
-  "minimum-stability": "stable",
+  "x-minimum-stability": "stable",
   "require": {
     "php": ">=8.4",
-    "offsite-solutions/eisodos": "^1.1.6",
-    "offsite-solutions/eisodos-sqlparser": "^1.0.2",
+    "offsite-solutions/eisodos": "@dev",
+    "offsite-solutions/eisodos-sqlparser": "@dev",
     "kbsali/redmine-api": "2.8.0",
     "bower-asset/bootstrap": "5.2.3",
     "bower-asset/jquery": "3.6.4",
