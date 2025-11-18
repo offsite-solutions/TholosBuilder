@@ -2910,7 +2910,7 @@
     
     private function showTranslate(): void {
       Eisodos::$parameterHandler->setParam("TranslateLanguageTags", "T");
-      Eisodos::$translator->setCollectLangIds(true);
+      Eisodos::$translator->setCollectLangIDs(true);
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "translate.main", array(), false);
       header('Content-type: application/json');
