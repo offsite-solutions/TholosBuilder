@@ -2512,7 +2512,7 @@
             $boundVariables = [];
             $this->builder_db->bind($boundVariables, "p_id", "integer", "");
             $this->builder_db->bind($boundVariables, "p_component_id", "integer", $component_id);
-            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . n($property_name)));
+            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . $this->builder_db->nullStr($property_name)));
             $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($params, "value", ""));
             $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", Eisodos::$utils->safe_array_value($params, "value_component_id", ""));
             
@@ -2723,7 +2723,7 @@
             $boundVariables = [];
             $this->builder_db->bind($boundVariables, "p_id", "integer", "");
             $this->builder_db->bind($boundVariables, "p_component_id", "integer", $component_id);
-            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . n($property_name)));
+            $this->builder_db->bind($boundVariables, "p_property_id", "integer", $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES dp where dp.name = " . $this->builder_db->nullStr($property_name)));
             $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($params, "value", ""));
             $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", Eisodos::$utils->safe_array_value($params, "value_component_id", ""));
             
