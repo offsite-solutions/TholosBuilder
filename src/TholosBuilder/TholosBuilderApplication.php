@@ -2008,7 +2008,7 @@
                   $this->builder_db->bind($boundVariables, "p_id", "integer", $o2["o_" . strtolower($prop) . "_linkid"]);
                   $this->builder_db->bind($boundVariables, "p_component_id", "integer", $o2["id"]);
                   $this->builder_db->bind($boundVariables, "p_property_id", "integer", $o2["o_" . strtolower($prop) . "_propertyid"]);
-                  $this->builder_db->bind($boundVariables, "p_value", "text", $o2["o_" . strtolower($prop)]);
+                  $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($o2,"o_" . strtolower($prop),''));
                   $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", "");
                   
                   $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_version"));
