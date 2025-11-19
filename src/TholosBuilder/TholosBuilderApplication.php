@@ -545,7 +545,7 @@
         $this->SPError($resultArray);
         
         /* adding name property */
-        $name_property_id = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select property_id from app_component_properties_v cp where cp.l_name='name' && cp.component_id=" . $resultArray["p_id"]);
+        $name_property_id = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select property_id from app_component_properties_v cp where cp.l_name='name' and cp.component_id=" . $resultArray["p_id"]);
         
         $boundVariables = [];
         $this->builder_db->bind($boundVariables, "p_id", "integer", "");
