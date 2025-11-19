@@ -4,7 +4,7 @@
   </div>
   <div class="col-sm-2">
     <button id="prop_button_$p_property_id" class="btn btn-default btn-sm btn-xs pull-right" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_$p_property_id').val(),'');"><i class="fa-regular fa-check saveIcon"></i></button>
-    <button class="btn btn-default btn-sm btn-xs pull-right" style="margin-top: 3px;" onclick="editProperty($p_component_id,$p_property_id,'text','$p_link_id','$p_version');" title="Edit as large text"><i class="fa-regular fa-line-height"></i></button>
+    <button class="btn btn-default btn-sm btn-xs pull-right" style="margin-top: 3px;" onclick="editProperty($p_component_id,$p_property_id,'TEXT','$p_link_id','$p_version');" title="Edit as large text"><i class="fa-regular fa-line-height"></i></button>
   </div>
 </div>
 <script type="text/javascript">
