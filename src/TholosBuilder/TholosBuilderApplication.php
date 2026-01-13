@@ -3299,7 +3299,7 @@
               "tracker" => $task["tracker"]["name"],
               "status" => $task["status"]["name"],
               "category" => (array_key_exists('category', $task) ? $task["category"]["name"] : ''),
-              "assigned_to" => Eisodos::$utils->safe_array_value(Eisodos::$utils->safe_array_value($task,"assigned_to",[]),"name",''),
+              "assigned_to" => Eisodos::$utils->safe_array_value(Eisodos::$utils->safe_array_value($task,"assigned_to",''),"name",''),
               "subject" => Eisodos::$utils->replace_all($task["subject"], "'", "")
             ),
             false);
