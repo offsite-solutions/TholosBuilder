@@ -2242,7 +2242,7 @@
                   $this->builder_db->bind($boundVariables, "p_value", "text", $o2["o_" . strtolower($prop)]);
                   $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", "");
                   
-                  $this->builder_db->bind($boundVariables, "p_version", "integer", $o2["o_" . strtolower($prop) . "_version"]);
+                  $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2,"o_" . strtolower($prop) . "_version"));
                   $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
                   if ($o2["o_" . strtolower($prop) . "_linkid"] == "") $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
                   $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
@@ -3299,7 +3299,7 @@
               "tracker" => $task["tracker"]["name"],
               "status" => $task["status"]["name"],
               "category" => (array_key_exists('category', $task) ? $task["category"]["name"] : ''),
-              "assigned_to" => $task["assigned_to"]["name"],
+              "assigned_to" => Eisodos::$utils->safe_array_value(Eisodos::$utils->safe_array_value($task,"assigned_to",[]),"name",''),
               "subject" => Eisodos::$utils->replace_all($task["subject"], "'", "")
             ),
             false);
