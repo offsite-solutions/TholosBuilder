@@ -1,16 +1,3 @@
-/*
-=============================================================================
-Copyright (c) 2015 Offsite Solutions Kft.
-=============================================================================
-$Id:: tholos_builder.js 2020 2024-11-28 10:22:43Z laszlo.banfalvi          $:
-
-$Description: Tholos Application Builder - Javascript
-
-$History:
-2015.08.06 Bánfalvi László Létrehozás 
-=============================================================================
-*/
-
 var clipboardComponentID = "";
 var clipboardMethodComponentID = "";
 var clipboardMethodID = "";
@@ -29,16 +16,6 @@ function showLoading(container_) {
 function finishedLoading() {
   $('#globalLoading').removeClass('fa-spin').addClass('fa-regular');
 }
-
-/*function initEditorTabs() {
-  $('#editortabs').tab();
-  $('#editortabs a').off('shown.bs.tab');
-  $('#editortabs a').on('shown.bs.tab', function (e) {
-    var tabid = $(e.target).attr("href") // activated tab
-  });
-  $('#editortabs').sortable();
-}*/
-
 
 function getNavFrame() {
   showLoading($('#nav_frame').find('.content'));

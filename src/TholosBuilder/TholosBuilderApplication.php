@@ -1,8 +1,9 @@
 <?php
   /** @noinspection DuplicatedCode */
   /** @noinspection SpellCheckingInspection */
-  /** @noinspection PhpUnusedFunctionInspection */
+  /** @noinspection PhpUnusedPrivateMethodInspection */
   /** @noinspection NotOptimalIfConditionsInspection */
+  /** @noinspection SqlNoDataSourceInspection */
   
   namespace TholosBuilder;
   
@@ -15,7 +16,6 @@
   use Exception;
   use JetBrains\PhpStorm\NoReturn;
   use JsonException;
-  use Redmine\Client;
   use Redmine\Client\NativeCurlClient;
   use RuntimeException;
   use Throwable;
@@ -111,7 +111,7 @@
     }
     
     public function safeHTML(string|null $text_): string {
-      if ($text_ === NULL || $text_ == '') {
+      if ($text_ === NULL || $text_ === '') {
         return '';
       }
       
@@ -1000,6 +1000,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function editProperty(): void {
       try {
         $options = "";
@@ -1074,11 +1077,13 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function saveProperty(): void {
       try {
         
         // check is it the name property?
-        $isname = false;
         $isname = ($this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select l_name \n" .
             "  from app_component_properties_v cpv \n" .
             " where cpv.component_id=" . $this->builder_db->nullStrParam("p_component_id", false) .
@@ -1087,7 +1092,9 @@
         if (Eisodos::$parameterHandler->eq("p_value", "") && Eisodos::$parameterHandler->eq("p_value_component_id", "")) {
           if (Eisodos::$parameterHandler->neq("p_id", "")) {
             
-            if ($isname) throw new RuntimeException("Name property can not be null!");
+            if ($isname) {
+              throw new RuntimeException("Name property can not be null!");
+            }
             
             $boundVariables = [];
             $this->builder_db->bindParam($boundVariables, "p_id", "integer");
@@ -1109,12 +1116,14 @@
           }
         } else {
           if ($isname) {
-            if (!preg_match('/^[A-Za-z_]{1}([A-Za-z0-9_])?/', Eisodos::$parameterHandler->getParam("p_value")))
+            if (!preg_match('/^[A-Za-z_]{1}([A-Za-z0-9_])?/', Eisodos::$parameterHandler->getParam("p_value"))) {
               throw new RuntimeException("Value of name property is not valid!");
+            }
           }
           
-          if (Eisodos::$parameterHandler->neq("p_value", "") && Eisodos::$parameterHandler->neq("p_value_component_id", ""))
+          if (Eisodos::$parameterHandler->neq("p_value", "") && Eisodos::$parameterHandler->neq("p_value_component_id", "")) {
             throw new RuntimeException("Selector and component could not be selected at the same time!");
+          }
           
           $boundVariables = [];
           $this->builder_db->bindParam($boundVariables, "p_id", "integer");
@@ -1125,7 +1134,9 @@
           
           $this->builder_db->bindParam($boundVariables, "p_version", "integer");
           $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
-          if (Eisodos::$parameterHandler->eq("p_id", "")) $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+          if (Eisodos::$parameterHandler->eq("p_id", "")) {
+            $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+          }
           $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
           $this->builder_db->bind($boundVariables, "p_error_code", "integer", "");
           $resultArray = array();
@@ -1165,6 +1176,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showComponentTypeDocumentation(): void {
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "docs.ctypes.main", array(), false);
       header('Content-type: application/json');
@@ -1173,6 +1188,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function editEvent(): void {
       try {
         
@@ -1253,7 +1271,13 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function loadEventComponents(): void {
+    
+      $components = '';
+      
       try {
         
         $where = "";
@@ -1312,9 +1336,12 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function loadMethods(): void {
       try {
-        $methodlist = "";
+
         $methods = "";
         
         if (Eisodos::$parameterHandler->neq("p_component_id", "")) {
@@ -1330,7 +1357,9 @@
             $methods .= '<option value="' . $row["id"] . '" ' . ($row["id"] == Eisodos::$parameterHandler->getParam("value_method_id") ? "selected" : "") . '>' . $row["method"] . '</option>';
           }
           $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.methods", array("methods" => $methods), false);
-        } else $responseArray['html'] = "";
+        } else {
+          $responseArray['html'] = "";
+        }
         
         $responseArray['success'] = 'OK';
         
@@ -1355,6 +1384,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function saveEvent(): void {
       try {
         
@@ -1381,10 +1413,13 @@
           }
         } else {
           
-          if (Eisodos::$parameterHandler->neq("p_value_component_id", "") && Eisodos::$parameterHandler->eq("p_value_method_id", ""))
+          if (Eisodos::$parameterHandler->neq("p_value_component_id", "") && Eisodos::$parameterHandler->eq("p_value_method_id", "")) {
             throw new RuntimeException("Method is not selected!");
+          }
           
-          if (Eisodos::$parameterHandler->neq("p_value_component_id", "")) Eisodos::$parameterHandler->setParam("p_value", "");
+          if (Eisodos::$parameterHandler->neq("p_value_component_id", "")) {
+            Eisodos::$parameterHandler->setParam("p_value", "");
+          }
           
           $boundVariables = [];
           $this->builder_db->bindParam($boundVariables, "p_id", "integer");
@@ -1397,7 +1432,9 @@
           
           $this->builder_db->bindParam($boundVariables, "p_version", "integer");
           $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
-          if (Eisodos::$parameterHandler->eq("p_id", "")) $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+          if (Eisodos::$parameterHandler->eq("p_id", "")) {
+            $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+          }
           $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
           $this->builder_db->bind($boundVariables, "p_error_code", "integer", "");
           $resultArray = array();
@@ -1436,14 +1473,18 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function compile2(): void {
+    
+      $routeSourceCode='';
       
       try {
         
         set_time_limit(60 * 60);
         
         $start = microtime(true);
-        $step = 0;
         
         $this->builder_db->startTransaction();
         /* deleting deferred properties */
@@ -1524,7 +1565,9 @@
           
           if (file_exists(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status") && Eisodos::$parameterHandler->neq("compileall", "T")) {
             $last_compilation_time = file_get_contents(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status");
-          } else $last_compilation_time = "2000-01-01 00:00:00";
+          } else {
+            $last_compilation_time = "2000-01-01 00:00:00";
+          }
           
           Eisodos::$parameterHandler->setParam("LAST_COMPILATION_TIME", $last_compilation_time);
           
@@ -1581,7 +1624,6 @@
         $events = array();
         $this->builder_db->query(RT_ALL_ROWS, $sql, $events);
         
-        $eventids = array();
         $eventids = array_column($events, "id");
         
         // Eisodos::$logger->debug("Step  9: ".(microtime(true) - $start));
@@ -1641,7 +1683,9 @@
           
           // setting helpindex to the corresponding component
           foreach ($back4 as $id => $row) {
-            if ($row["h"]) $properties[] = array("id" => $id, "n" => "helpindex", "t" => "NUMBER", "v" => $row["h"], "c" => NULL, "d" => "N");
+            if ($row["h"]) {
+              $properties[] = array("id" => $id, "n" => "helpindex", "t" => "NUMBER", "v" => $row["h"], "c" => NULL, "d" => "N");
+            }
           }
           
           $propids = array_column($properties, "id");
@@ -1654,7 +1698,7 @@
               unset($prrow["id"]);
               $a[] = $prrow;
             }
-            $back4[$id]["p"] = json_encode($a);
+            $back4[$id]["p"] = json_encode($a, JSON_THROW_ON_ERROR);
           }
           
           // Eisodos::$logger->debug("Step 11-".($step++).": ".(microtime(true) - $start));
@@ -1667,7 +1711,7 @@
               unset($prrow["id"]);
               $a[] = $prrow;
             }
-            $back4[$id]["e"] = json_encode($a);
+            $back4[$id]["e"] = json_encode($a, JSON_THROW_ON_ERROR);
           }
           
           // Eisodos::$logger->debug("Step 12-".($step++).": ".(microtime(true) - $start));
@@ -1759,7 +1803,9 @@
           
           if (Eisodos::$parameterHandler->eq("action", "remoteCompile2")) {
             $responseArray['routeCachePHP'][$route] = base64_encode($routeCachePHP);
-            if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) $responseArray['routeSourceCode'][$route] = base64_encode($routeSourceCode);
+            if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
+              $responseArray['routeSourceCode'][$route] = base64_encode($routeSourceCode);
+            }
           }
           
           if (Eisodos::$parameterHandler->neq("action", "remoteCompile2") || Eisodos::$parameterHandler->eq("localCompile", "T")) {
@@ -1769,7 +1815,7 @@
             if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
               $sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name");
               if (!is_dir($sourceWorkingDir) && !mkdir($sourceWorkingDir) && !is_dir($sourceWorkingDir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
               }
               $routeSourceFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name") . "/" . $route . ".tcs", 'wb');
               fwrite($routeSourceFile, $routeSourceCode);
@@ -1812,6 +1858,10 @@
     }
     
     /* wizard */
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showQueryWizard(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.main", array(), false);
@@ -1821,6 +1871,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function QueryWizardRun(): void {
       try {
         
@@ -1828,9 +1881,11 @@
         
         $component_SQL = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select cpv.value from app_component_properties_v cpv where cpv.component_id=" . $this->builder_db->nullStrParam("p_component_id", false) . " and cpv.name='SQL'");
         
-        if (Eisodos::$parameterHandler->eq("p_trans_root", ""))
+        if (Eisodos::$parameterHandler->eq("p_trans_root", "")) {
           $transroot = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select route from APP_TREE_PATH_V t where t.ID=" . $this->builder_db->nullStrParam("p_component_id", false));
-        else $transroot = Eisodos::$parameterHandler->getParam("p_trans_root");
+        } else {
+          $transroot = Eisodos::$parameterHandler->getParam("p_trans_root");
+        }
         
         $component_SQL = Eisodos::$utils->replace_all($component_SQL, ":filter", " and 0=1");
         $component_SQL = Eisodos::$utils->replace_all($component_SQL, ":orderby", " 1");
@@ -1864,7 +1919,7 @@
         $columns = array();
         
         try {
-          $columns = json_decode($resultArray["p_columns"], true);
+          $columns = json_decode($resultArray["p_columns"], true, 512, JSON_THROW_ON_ERROR);
           //$responseArray['html'].="<h4>New properties</h4><pre>".print_r($columns,true)."</pre>";
         } catch (Exception $e) {
           $responseArray['html'] = "<h3>Error converting to JSON!</h3>" . $e->getMessage() . "<pre>" . $resultArray["p_columns"] . "</pre>";
@@ -1872,7 +1927,6 @@
         
         try {
           
-          $props = array();
           $props = ["FieldName", "Name", "Index", "NativeDataType", "Size", "DataType", "Label"];
           
           $sql = "select tp.id, \n";
@@ -1915,10 +1969,16 @@
                   if ($prop == 'DataType') {
                     if ((in_array($o["o_" . strtolower($prop)], array("date", "datetime", "datetimehm", "timestamp", "time")) && $column[$prop] == "date") ||
                       ($o["o_" . strtolower($prop)] == "float" && $column[$prop] == "integer") ||
-                      (in_array($o["o_" . strtolower($prop)], array("bool", "text")) && $column[$prop] == "string")) $skip = true;
+                      (in_array($o["o_" . strtolower($prop)], array("bool", "text")) && $column[$prop] == "string")) {
+                      $skip = true;
+                    }
                   }
-                  if ($prop == 'Label' && Eisodos::$parameterHandler->eq('p_skip_label', "Y")) $skip = true;
-                  if ($prop == 'Name' && $o["o_" . strtolower($prop)] != $o["o_" . 'fieldname']) $skip = true;
+                  if ($prop == 'Label' && Eisodos::$parameterHandler->eq('p_skip_label', "Y")) {
+                    $skip = true;
+                  }
+                  if ($prop == 'Name' && $o["o_" . strtolower($prop)] != $o["o_" . 'fieldname']) {
+                    $skip = true;
+                  }
                   if (!$skip) {
                     $o["o_" . strtolower($prop) . "_origvalue"] = $o["o_" . strtolower($prop)];
                     $o["o_" . strtolower($prop)] = $column[$prop];
@@ -1936,11 +1996,12 @@
           if (!$found) {
             $x = array("id" => "", "status" => "new");
             foreach ($props as $prop) {
-              $x["o_" . strtolower($prop)] = $column[$prop];
-              $x["o_" . strtolower($prop) . "_linkid"] = "";
-              $x["o_" . strtolower($prop) . "_origvalue"] = "";
-              $x["o_" . strtolower($prop) . "_propertyid"] = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES p where lower(p.name)='" . strtolower($prop) . "'");
-              $x["o_" . strtolower($prop) . "_status"] = "new";
+              $prop_=strtolower($prop);
+              $x["o_" . $prop_] = $column[$prop];
+              $x["o_" . $prop_ . "_linkid"] = "";
+              $x["o_" . $prop_ . "_origvalue"] = "";
+              $x["o_" . $prop_ . "_propertyid"] = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES p where lower(p.name)='" . $prop_ . "'");
+              $x["o_" . $prop_ . "_status"] = "new";
             }
             $o_columns[] = $x;
           }
@@ -2013,7 +2074,9 @@
                   
                   $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_version"));
                   $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
-                  if ($o2["o_" . strtolower($prop) . "_linkid"] == "") $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+                  if ($o2["o_" . strtolower($prop) . "_linkid"] == "") {
+                    $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+                  }
                   $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
                   $this->builder_db->bind($boundVariables, "p_error_code", "integer", "");
                   $resultArray = array();
@@ -2030,8 +2093,9 @@
                   
                 }
               }
-            } else
+            } else {
               $responseArray['html'] .= "\nComponent " . $o2["o_name"] . " must be deleted manually!\n\n";
+            }
             
             
           }
@@ -2040,8 +2104,9 @@
           
           $this->builder_db->commit();
           
-        } else
+        } else {
           $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.foot", array(), false);
+        }
         
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
@@ -2065,6 +2130,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showStoredProcedureWizard(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.main", array(), false);
@@ -2074,6 +2143,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function StoredProcedureWizardRun(): void {
       try {
         
@@ -2114,7 +2186,6 @@
         
         try {
           
-          $props = array();
           $props = ["ParameterName", "Name", "NativeDataType", "DataType", "ParameterMode"];
           
           $sql = "select tp.id, \n";
@@ -2167,11 +2238,12 @@
           if (!$found) {
             $x = array("id" => "", "status" => "new");
             foreach ($props as $prop) {
-              $x["o_" . strtolower($prop)] = $column[$prop];
-              $x["o_" . strtolower($prop) . "_linkid"] = "";
-              $x["o_" . strtolower($prop) . "_origvalue"] = "";
-              $x["o_" . strtolower($prop) . "_propertyid"] = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES p where lower(p.name) = '" . strtolower($prop) . "'");
-              $x["o_" . strtolower($prop) . "_status"] = "new";
+              $prop_=strtolower($prop);
+              $x["o_" . $prop_] = $column[$prop];
+              $x["o_" . $prop_ . "_linkid"] = "";
+              $x["o_" . $prop_ . "_origvalue"] = "";
+              $x["o_" . $prop_ . "_propertyid"] = $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "select id from DEF_PROPERTIES p where lower(p.name) = '" . $prop_ . "'");
+              $x["o_" . $prop_ . "_status"] = "new";
             }
             $o_columns[] = $x;
           }
@@ -2244,7 +2316,9 @@
                   
                   $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2,"o_" . strtolower($prop) . "_version"));
                   $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
-                  if ($o2["o_" . strtolower($prop) . "_linkid"] == "") $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+                  if ($o2["o_" . strtolower($prop) . "_linkid"] == "") {
+                    $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
+                  }
                   $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
                   $this->builder_db->bind($boundVariables, "p_error_code", "integer", "");
                   $resultArray = array();
@@ -2306,8 +2380,9 @@
                   
                 }
               }
-            } else
+            } else {
               $responseArray['html'] .= "\nComponent " . $o2["o_name"] . " must be deleted manually!\n\n";
+            }
             
             
           }
@@ -2316,9 +2391,9 @@
           
           $this->builder_db->commit();
           
-        } else
+        } else {
           $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.result.foot", array(), false);
-        
+        }
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
           $this->builder_db->rollback();
@@ -2339,6 +2414,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showGridWizard(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.grid.main", array(), false);
@@ -2348,6 +2427,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function GridWizardRun(): void {
       try {
         
@@ -2411,10 +2493,12 @@
             $gridcolumns[$dbField["name"]] = $control;
             $properties[$control]["Name"] = array("value" => "gc" . $dbField["name"]);
             $properties[$control]["DBField"] = array("value_component_id" => $dbField["id"]);
-            if ($dbField["datatype"] == "integer" || $dbField["datatype"] == "float")
+            if ($dbField["datatype"] == "integer" || $dbField["datatype"] == "float") {
               $properties[$control]["Align"] = array("value" => "right");
-            elseif ($dbField["datatype"] == "date" || $dbField["datatype"] == "datetime" || $dbField["datatype"] == "time")
+            }
+            elseif ($dbField["datatype"] == "date" || $dbField["datatype"] == "datetime" || $dbField["datatype"] == "time") {
               $properties[$control]["Align"] = array("value" => "center");
+            }
             elseif ($dbField["datatype"] == "bool") {
               $properties[$control]["Align"] = array("value" => "center");
               $properties[$control]["ValueTemplate"] = array("value" => "grid.column.bool");
@@ -2562,6 +2646,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function showEditFormWizard(): void {
       try {
         
@@ -2591,7 +2678,13 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function EditFormWizardRun(): void {
+    
+      $responseArray = [];
+    
       try {
         
         // getting fields
@@ -2686,25 +2779,32 @@
             $properties[$control]["Name"] = array("value" => $prefix . $dbField["name"]);
             $properties[$control]["DBField"] = array("value_component_id" => $dbField["id"]);
             
-            $responseArray = [];
-            
             if (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TEdit")) {
-              if ($dbField["datatype"] == "integer" || $dbField["datatype"] == "float")
+              if ($dbField["datatype"] == "integer" || $dbField["datatype"] == "float") {
                 $properties[$control]["HTMLInputType"] = array("value" => "number");
-              elseif ($dbField["datatype"] == "string" || $dbField["datatype"] == "text")
+              }
+              elseif ($dbField["datatype"] == "string" || $dbField["datatype"] == "text") {
                 $properties[$control]["HTMLInputType"] = array("value" => "text");
+              }
             } elseif (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TDateTimePicker")) {
-              if ($dbField["datatype"] == "date")
+              if ($dbField["datatype"] == "date") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSDateFormat");
-              elseif ($dbField["datatype"] == "datetime")
+              }
+              elseif ($dbField["datatype"] == "datetime") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSDateTimeFormat");
-              elseif ($dbField["datatype"] == "datetimehm")
+              }
+              elseif ($dbField["datatype"] == "datetimehm") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSDateTimeHMFormat");
-              elseif ($dbField["datatype"] == "time")
+              }
+              elseif ($dbField["datatype"] == "time") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSTimeFormat");
-              elseif ($dbField["datatype"] == "timestamp")
+              }
+              elseif ($dbField["datatype"] == "timestamp") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSTimestampFormat");
-              else $responseArray['html'] .= "!!!" . $properties[$control]["Name"] . ":TDateTimePicker is referring to a non - date type field!\n";
+              }
+              else {
+                $responseArray['html'] .= "!!!" . $properties[$control]["Name"] . ":TDateTimePicker is referring to a non - date type field!\n";
+              }
             } elseif (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TText")) {
               $properties[$control]["Autosize"] = array("value" => "true");
             } elseif (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TCheckbox")) {
@@ -2774,6 +2874,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showEditHelp(): void {
       $responseArray['success'] = 'OK';
       $back = array();
@@ -2787,6 +2891,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showHelpInfo(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.help.main", array(), false);
@@ -2796,6 +2904,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function saveHelp(): void {
       try {
         
@@ -2848,6 +2959,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function deleteHelp(): void {
       try {
         
@@ -2894,6 +3008,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function generateUserGuide(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "userhelp.main", array(), false);
@@ -2908,6 +3026,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showTranslate(): void {
       Eisodos::$parameterHandler->setParam("TranslateLanguageTags", "T");
       Eisodos::$translator->setCollectLangIDs(true);
@@ -2919,6 +3041,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function openTask(): void {
       try {
         
@@ -2966,6 +3091,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function closeTask(): void {
       try {
         
@@ -3010,6 +3138,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showOpenedTasks(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.status", array(), false);
@@ -3019,6 +3151,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function commitChanges(): void {
       
       $redmine_options = array();
@@ -3028,8 +3163,9 @@
         " where id = app_session_pkg.user_id",
         $redmine_options);
       
-      if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
+      if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "") {
         throw new RuntimeException("No Redmine secret key defined in user profile");
+      }
       
       $redmine = new NativeCurlClient(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
       
@@ -3090,16 +3226,23 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function saveCommitChanges(): void {
+    
+      $result = '';
+      
       try {
         
         $responseArray['success'] = 'OK';
         
         $tcsfiles = "";
         
-        if (Eisodos::$parameterHandler->eq("p_message", "")) throw new RuntimeException("Message can not be empty");
+        if (Eisodos::$parameterHandler->eq("p_message", "")) {
+          throw new RuntimeException("Message can not be empty");
+        }
         
-        $result = "";
         foreach (array_unique(explode(",", Eisodos::$parameterHandler->getParam("p_routes"))) as $route) {
           $sourcefile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs";
           $destfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
@@ -3111,16 +3254,20 @@
           }
         }
         
-        if ($tcsfiles == "") throw new RuntimeException("Nothing to commit");
+        if ($tcsfiles == "") {
+          throw new RuntimeException("Nothing to commit");
+        }
         
         $commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log";
         if (!is_dir($commitLogDirectory) && !mkdir($commitLogDirectory) && !is_dir($commitLogDirectory)) {
-          throw new \RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
+          throw new RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
         }
         $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/" . date("YmdHis") . ".msg";
         $result .= "\nWriting message file\n  " . $logfile . "\n";
         $file = fopen($logfile, "wb");
-        if ($file === false) throw new RuntimeException("Can not write log file");
+        if ($file === false) {
+          throw new RuntimeException("Can not write log file");
+        }
         fwrite($file, Eisodos::$parameterHandler->getParam("p_message"));
         fclose($file);
         
@@ -3130,7 +3277,9 @@
           
           $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG.USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
           $svn = array();
-          if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) throw new RuntimeException("You are not logged in!");
+          if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) {
+            throw new RuntimeException("You are not logged in!");
+          }
           
           $result .= "  Done.\n";
           
@@ -3152,7 +3301,9 @@
           
           $result .= $output . "\n\n";
           
-          if (D_pos("Commit failed", $output)) throw new RuntimeException("Commit failed");
+          if (D_pos("Commit failed", $output)) {
+            throw new RuntimeException("Commit failed");
+          }
           
         } else {
           $result .= "\n\n" . 'SVN is disabled' . "\n\n";
@@ -3188,21 +3339,25 @@
           " where id = app_session_pkg.user_id",
           $redmine_options);
         
-        if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
+        if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "") {
           throw new RuntimeException("No Redmine secret key defined in user profile");
+        }
         
         $redmine = new NativeCurlClient(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
         
         try {
           $taskoptions = array();
-          if (Eisodos::$parameterHandler->getParam("p_rm_assigned_to", "") != Eisodos::$parameterHandler->getParam("p_rm_current_assigned_to"))
+          if (Eisodos::$parameterHandler->getParam("p_rm_assigned_to", "") != Eisodos::$parameterHandler->getParam("p_rm_current_assigned_to")) {
             $taskoptions["assigned_to_id"] = Eisodos::$parameterHandler->getParam("p_rm_assigned_to", "");
+          }
           
-          if (Eisodos::$parameterHandler->getParam("p_rm_status", "") != Eisodos::$parameterHandler->getParam("p_rm_current_status"))
+          if (Eisodos::$parameterHandler->getParam("p_rm_status", "") != Eisodos::$parameterHandler->getParam("p_rm_current_status")) {
             $taskoptions["status_id"] = Eisodos::$parameterHandler->getParam("p_rm_status", "");
+          }
           
-          if (Eisodos::$parameterHandler->neq("p_rm_note", ""))
+          if (Eisodos::$parameterHandler->neq("p_rm_note", "")) {
             $taskoptions["notes"] = Eisodos::$parameterHandler->getParam("p_rm_note", "");
+          }
           
           if (!empty($taskoptions)) {
             $result .= "Updating redmine task... ";
@@ -3219,7 +3374,9 @@
           $timeoptions = array();
           if (Eisodos::$parameterHandler->neq("p_rm_time_spent", "")) {
             $result .= "Saving time record... ";
-            if (!Eisodos::$utils->isFloat(Eisodos::$parameterHandler->getParam("p_rm_time_spent"))) throw new RuntimeException("Spent time is not a number!");
+            if (!Eisodos::$utils->isFloat(Eisodos::$parameterHandler->getParam("p_rm_time_spent"))) {
+              throw new RuntimeException("Spent time is not a number!");
+            }
             
             $timeoptions["hours"] = Eisodos::$parameterHandler->getParam("p_rm_time_spent");
             $timeoptions["issue_id"] = Eisodos::$parameterHandler->getParam("task_number");
@@ -3262,6 +3419,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function chooseTask(): void {
       
       try {
@@ -3273,15 +3433,16 @@
           " where id = app_session_pkg.user_id",
           $redmine_options);
         
-        if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "")
+        if (Eisodos::$utils->safe_array_value($redmine_options, "rm_secretkey", "") == "") {
           throw new RuntimeException("No Redmine secret key defined in user profile");
+        }
         
         $redmine = new NativeCurlClient(Eisodos::$parameterHandler->getParam("TholosBuilder.RedmineURL", ""), $redmine_options["rm_secretkey"]);
         
-        if (Eisodos::$parameterHandler->neq("p_rm_task_id", ""))
+        if (Eisodos::$parameterHandler->neq("p_rm_task_id", "")) {
           $a_ = $redmine->getApi('issue')->list(['issue_id' => Eisodos::$parameterHandler->getParam("p_rm_task_id", "")
           ]);
-        else
+        } else {
           $a_ = $redmine->getApi('issue')->list(['status_id' => Eisodos::$parameterHandler->getParam("p_rm_status", ""),
             'sort' => 'project_id,id:desc',
             'project_id' => Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]),
@@ -3290,6 +3451,7 @@
             'assigned_to_id' => Eisodos::$parameterHandler->getParam("p_rm_assigned_to_id", ""),
             'fixed_version_id' => Eisodos::$parameterHandler->getParam("p_rm_version", "")
           ]);
+        }
         
         $issues = "";
         foreach ($a_["issues"] as $task) {
@@ -3325,8 +3487,9 @@
         $redmineVersions = "";
         $a_ = $redmine->getApi('version')->listByProject(Eisodos::$parameterHandler->getParam("p_rm_project_id", explode(',', $redmine_options["rm_project_id"])[0]));
         foreach ($a_["versions"] as $version) {
-          if ($version["status"] == "open")
+          if ($version["status"] == "open") {
             $redmineVersions .= ' <option value = "' . $version["id"] . '" ' . ($version["id"] == Eisodos::$parameterHandler->getParam("p_rm_version", "") ? "selected" : "") . ' > ' . $version["name"] . '</option > ';
+          }
         }
         
         $responseArray['success'] = 'OK';
@@ -3360,6 +3523,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function reloadTaskFrame(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "taskframe.main", array(), false);
@@ -3369,6 +3536,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showCommitHistory(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.commit.history.main", array(), false);
@@ -3378,6 +3549,10 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function showUserProfile(): void {
       $responseArray['success'] = 'OK';
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.userprofile.main", array(), false);
@@ -3387,6 +3562,9 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
     private function saveUserProfile(): void {
       try {
         
@@ -3439,10 +3617,14 @@
       exit;
     }
     
+    /**
+     * @throws JsonException
+     */
+    #[NoReturn]
     private function addRoute(): void {
       $responseArray['success'] = 'OK';
       $route_filter = explode(",", Eisodos::$parameterHandler->getParam("route_filter", ""));
-      if (!in_array(Eisodos::$parameterHandler->getParam("route_id"), $route_filter)) {
+      if (!in_array(Eisodos::$parameterHandler->getParam("route_id"), $route_filter, false)) {
         $route_filter[] = Eisodos::$parameterHandler->getParam("route_id");
         Eisodos::$parameterHandler->setParam("route_filter", implode(",", $route_filter), true);
       }
@@ -3455,6 +3637,7 @@
     
     /**
      * @throws JsonException
+     * @throws Exception
      */
     #[NoReturn]
     private function showRoutes(): void {
