@@ -1038,7 +1038,7 @@
             }
             closedir($dir);
           } else {
-            Eisodos::$logger->error('Could not open target app template dir: '.Eisodos::$parameterHandler->getParam("TholosBuilder.TargetTemplateDir"));
+            Eisodos::$logger->error('Could not open target app template dir: ' . Eisodos::$parameterHandler->getParam("TholosBuilder.TargetTemplateDir"));
           }
           sort($filenames);
           foreach ($filenames as $filename) {
@@ -1222,7 +1222,7 @@
         
         $this->builder_db->query(RT_ALL_ROWS, $sql, $back);
         foreach ($back as $row) {
-          $components .= '<option value="' . $row["id"] . '" ' . ($row["id"] != '' && $row["id"] == $value["value_component_id"] ? "selected" : "") . '>' . $row["path"] . '</option>';
+          $components .= '<option value="' . $row["id"] . '" ' . ($row["id"] != '' && $row["id"] == Eisodos::$utils->safe_array_value($value, "value_component_id", "-1") ? "selected" : "") . '>' . $row["path"] . '</option>';
         }
         
         if ($value["value_method_id"] != "") {
@@ -1242,8 +1242,8 @@
         
         
         $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "propframe.event.form",
-          array("p_value" => $this->safeHTML($value["value"]),
-            "p_parameters" => $value["parameters"],
+          array("p_value" => $this->safeHTML(Eisodos::$utils->safe_array_value($value, "value")),
+            "p_parameters" => Eisodos::$utils->safe_array_value($value, "parameters"),
             "components" => $components,
             "methodlist" => $methodlist
           ),
@@ -1275,7 +1275,7 @@
      * @throws JsonException
      */
     private function loadEventComponents(): void {
-    
+      
       $components = '';
       
       try {
@@ -1341,7 +1341,7 @@
      */
     private function loadMethods(): void {
       try {
-
+        
         $methods = "";
         
         if (Eisodos::$parameterHandler->neq("p_component_id", "")) {
@@ -1477,8 +1477,8 @@
      * @throws JsonException
      */
     private function compile2(): void {
-    
-      $routeSourceCode='';
+      
+      $routeSourceCode = '';
       
       try {
         
@@ -1996,7 +1996,7 @@
           if (!$found) {
             $x = array("id" => "", "status" => "new");
             foreach ($props as $prop) {
-              $prop_=strtolower($prop);
+              $prop_ = strtolower($prop);
               $x["o_" . $prop_] = $column[$prop];
               $x["o_" . $prop_ . "_linkid"] = "";
               $x["o_" . $prop_ . "_origvalue"] = "";
@@ -2069,7 +2069,7 @@
                   $this->builder_db->bind($boundVariables, "p_id", "integer", $o2["o_" . strtolower($prop) . "_linkid"]);
                   $this->builder_db->bind($boundVariables, "p_component_id", "integer", $o2["id"]);
                   $this->builder_db->bind($boundVariables, "p_property_id", "integer", $o2["o_" . strtolower($prop) . "_propertyid"]);
-                  $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($o2,"o_" . strtolower($prop),''));
+                  $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop), ''));
                   $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", "");
                   
                   $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_version"));
@@ -2238,7 +2238,7 @@
           if (!$found) {
             $x = array("id" => "", "status" => "new");
             foreach ($props as $prop) {
-              $prop_=strtolower($prop);
+              $prop_ = strtolower($prop);
               $x["o_" . $prop_] = $column[$prop];
               $x["o_" . $prop_ . "_linkid"] = "";
               $x["o_" . $prop_ . "_origvalue"] = "";
@@ -2254,7 +2254,7 @@
           foreach ($props as $prop) {
             $s .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.storedprocedure.result.property",
               array("status" => $o2["o_" . strtolower($prop) . "_status"],
-                "origvalue" => $this->safeHTML($o2["o_" . strtolower($prop) . "_origvalue"]),
+                "origvalue" => $this->safeHTML(Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_origvalue")),
                 "value" => $this->safeHTML($o2["o_" . strtolower($prop)]),
                 "prop_name" => $prop),
               false);
@@ -2314,7 +2314,7 @@
                   $this->builder_db->bind($boundVariables, "p_value", "text", $o2["o_" . strtolower($prop)]);
                   $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", "");
                   
-                  $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2,"o_" . strtolower($prop) . "_version"));
+                  $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_version"));
                   $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
                   if ($o2["o_" . strtolower($prop) . "_linkid"] == "") {
                     $this->builder_db->bind($boundVariables, "p_change", "text", "Y");
@@ -2436,6 +2436,7 @@
         // getting fields
         
         $responseArray = [];
+        $responseArray['html'] = '';
         
         $this->builder_db->startTransaction();
         
@@ -2495,11 +2496,9 @@
             $properties[$control]["DBField"] = array("value_component_id" => $dbField["id"]);
             if ($dbField["datatype"] == "integer" || $dbField["datatype"] == "float") {
               $properties[$control]["Align"] = array("value" => "right");
-            }
-            elseif ($dbField["datatype"] == "date" || $dbField["datatype"] == "datetime" || $dbField["datatype"] == "time") {
+            } elseif ($dbField["datatype"] == "date" || $dbField["datatype"] == "datetime" || $dbField["datatype"] == "time") {
               $properties[$control]["Align"] = array("value" => "center");
-            }
-            elseif ($dbField["datatype"] == "bool") {
+            } elseif ($dbField["datatype"] == "bool") {
               $properties[$control]["Align"] = array("value" => "center");
               $properties[$control]["ValueTemplate"] = array("value" => "grid.column.bool");
             }
@@ -2682,9 +2681,10 @@
      * @throws JsonException
      */
     private function EditFormWizardRun(): void {
-    
+      
       $responseArray = [];
-    
+      $responseArray['html'] = '';
+      
       try {
         
         // getting fields
@@ -2782,27 +2782,21 @@
             if (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TEdit")) {
               if ($dbField["datatype"] == "integer" || $dbField["datatype"] == "float") {
                 $properties[$control]["HTMLInputType"] = array("value" => "number");
-              }
-              elseif ($dbField["datatype"] == "string" || $dbField["datatype"] == "text") {
+              } elseif ($dbField["datatype"] == "string" || $dbField["datatype"] == "text") {
                 $properties[$control]["HTMLInputType"] = array("value" => "text");
               }
             } elseif (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TDateTimePicker")) {
               if ($dbField["datatype"] == "date") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSDateFormat");
-              }
-              elseif ($dbField["datatype"] == "datetime") {
+              } elseif ($dbField["datatype"] == "datetime") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSDateTimeFormat");
-              }
-              elseif ($dbField["datatype"] == "datetimehm") {
+              } elseif ($dbField["datatype"] == "datetimehm") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSDateTimeHMFormat");
-              }
-              elseif ($dbField["datatype"] == "time") {
+              } elseif ($dbField["datatype"] == "time") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSTimeFormat");
-              }
-              elseif ($dbField["datatype"] == "timestamp") {
+              } elseif ($dbField["datatype"] == "timestamp") {
                 $properties[$control]["JSDateTimeFormat"] = array("value" => "@(parameter) . JSTimestampFormat");
-              }
-              else {
+              } else {
                 $responseArray['html'] .= "!!!" . $properties[$control]["Name"] . ":TDateTimePicker is referring to a non - date type field!\n";
               }
             } elseif (Eisodos::$parameterHandler->eq("option" . $dbField["id"], "TText")) {
@@ -3230,7 +3224,7 @@
      * @throws JsonException
      */
     private function saveCommitChanges(): void {
-    
+      
       $result = '';
       
       try {
