@@ -1095,6 +1095,10 @@ function showComponentTypeDocumentation() {
   });
 }
 
+function downloadComponentTypeDocumentation() {
+  document.location.href = __TholosBuilderAppUrl + '?action=downloadComponentTypeDocumentation';
+}
+
 function compile(all) {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
