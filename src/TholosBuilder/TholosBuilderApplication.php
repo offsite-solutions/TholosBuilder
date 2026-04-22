@@ -1191,6 +1191,21 @@
     /**
      * @throws JsonException
      */
+    #[NoReturn]
+    private function downloadComponentTypeDocumentation(): void {
+      $response = '<html><body>'.Eisodos::$templateEngine->getTemplate($this->templateFolder . "docs.ctypes.main", array(), false).'</body></html>';
+
+      header('Content-Type: text/html');
+      header('Content-Disposition: attachment; filename="Tholos_Component_Types-'.date('YmdHis').'.html"');
+      header('Content-Length: ' . strlen($response));
+      Eisodos::$templateEngine->addToResponse($response);
+      Eisodos::$render->finishRaw();
+      exit;
+    }
+    
+    /**
+     * @throws JsonException
+     */
     private function editEvent(): void {
       try {
         

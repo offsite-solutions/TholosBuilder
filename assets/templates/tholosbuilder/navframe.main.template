@@ -40,6 +40,7 @@ $("#searchText").keyup(function (e) {
           <li><a class="dropdown-item" href="javascript:showEditFormWizard('','','');"><i class="fa-regular fa-external-link"></i> Edit form wizard</a></li>
           <li><a class="dropdown-item" href="javascript:showTranslate();"><i class="fa-regular fa-language"></i> Generate language file</a></li>
           <li><a class="dropdown-item" href="javascript:showComponentTypeDocumentation();"><i class="fa-regular fa-university"></i> Component type documentation</a></li>
+          <li><a class="dropdown-item" href="javascript:downloadComponentTypeDocumentation();"><i class="fa-regular fa-download"></i> Download component type documentation</a></li>
           <li><a class="dropdown-item" href="javascript:generateUserHelp();"><i class="fa-regular fa-question-circle"></i> Generate User Guide</a></li>
         </ul>
       </div>
