@@ -31,7 +31,7 @@ select v.name,
        v.runtime,
        v.nodata
   from def_component_type_prop_v v
-       join tholos.def_properties p on p.id=v.id
+       join def_properties p on p.id=v.id
  where root_class_name='$sqlclass_name'
        and v.disabled='N'
  order by v.name
@@ -51,14 +51,15 @@ select v.name,
 <thead>
 <tbody>
 <%SQL%
+DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/docs.ctypes.component.events;
 SQL=
 select v.name,
        v.type,
        '<a href="javascript:jumpToDoc('''||v.ancestor_class_name||''');">'||v.ancestor_class_name||'</a>' as ancestor_class_name,
        e.description
-  from tholos.def_component_type_event_v v
-       join tholos.def_events e on e.id=v.id
+  from def_component_type_event_v v
+       join def_events e on e.id=v.id
  where root_class_name='$sqlclass_name'
  order by v.type,v.name
 %SQL%>
@@ -76,13 +77,14 @@ select v.name,
 <thead>
 <tbody>
 <%SQL%
+DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/docs.ctypes.component.methods;
 SQL=
 select v.name||'()' as name,
        '<a href="javascript:jumpToDoc('''||v.ancestor_class_name||''');">'||v.ancestor_class_name||'</a>' as ancestor_class_name,
        m.description
-  from tholos.def_component_type_method_v v
-       join tholos.def_methods m on m.id=v.id
+  from def_component_type_method_v v
+       join def_methods m on m.id=v.id
  where root_class_name='$sqlclass_name'
  order by v.name
 %SQL%>

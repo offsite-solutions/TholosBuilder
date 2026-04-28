@@ -9,8 +9,8 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.text;
 SQL=
 SELECT lpad('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>',length('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>')+(level-1)*4,' ') as text
-  FROM tholos.def_component_types ct
-       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+  FROM def_component_types ct
+       left outer join def_component_types ct2 on ct2.id=ct.parent_component_type_id
  connect by prior ct.id = ct.ancestor_id
  start with ct.ancestor_id is null
  order siblings by ct.class_name
@@ -25,8 +25,8 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.text;
 SQL=
 SELECT lpad('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>',length('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>')+(level-1)*4,' ') as text
-  FROM tholos.def_component_types ct
-       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+  FROM def_component_types ct
+       left outer join def_component_types ct2 on ct2.id=ct.parent_component_type_id
  connect by prior ct.id = ct.parent_component_type_id
  start with ct.class_name='TApplication'
  order siblings by ct.class_name
@@ -39,8 +39,8 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.text;
 SQL=
 SELECT lpad('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>',length('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a><br/>')+(level-1)*4,' ') as text
-  FROM tholos.def_component_types ct
-       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+  FROM def_component_types ct
+       left outer join def_component_types ct2 on ct2.id=ct.parent_component_type_id
  connect by prior ct.id = ct.parent_component_type_id and ct.id!=ct.parent_component_type_id
  start with ct.class_name='TComponent'
  order siblings by ct.class_name
@@ -62,8 +62,8 @@ SELECT ct.id,
        end as parent_class_name,
        ct.description,
        substr(sys_connect_by_path('<a href="javascript:jumpToDoc('''||ct.class_name||''');">'||ct.class_name||'</a>',' / '),4) as path
-  FROM tholos.def_component_types ct
-       left outer join tholos.def_component_types ct2 on ct2.id=ct.parent_component_type_id
+  FROM def_component_types ct
+       left outer join def_component_types ct2 on ct2.id=ct.parent_component_type_id
  connect by prior ct.id = ct.ancestor_id
  start with ct.ancestor_id is null
  order siblings by ct.class_name
