@@ -1194,12 +1194,13 @@ function QueryWizardRun(p_component_id_, p_trans_root_, p_skip_label_, todo_) {
 }
 
 function QueryWizardRunSave() {
+  var formData = $('#wizardForm').serialize();
   showLoading($('#wizard_result'));
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
-    data: $('#wizardForm').serialize(),
+    data: formData,
     contentType: "application/x-www-form-urlencoded;charset=UTF-8",
     success: function (data) {
       if (data.success == 'OK') {
