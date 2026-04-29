@@ -1,5 +1,11 @@
-<div class="row" style="margin-top: 10px;">
-  <div class="col-sm-12 text-center">
-    <button class="button" onclick="QueryWizardRun($p_component_id,'$p_trans_root','$p_skip_label','save');">Save changes</button>
+  <input type="hidden" name="action" value="QueryWizardRun">
+  <input type="hidden" name="p_component_id" value="$p_component_id">
+  <input type="hidden" name="p_trans_root" value="$p_trans_root">
+  <input type="hidden" name="p_skip_label" value="$p_skip_label">
+  <input type="hidden" name="todo" value="save">
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-sm-12 text-center">
+      <button type="button" class="button" onclick="QueryWizardRunSave();">Save changes</button>
+    </div>
   </div>
-</div>
+</form>

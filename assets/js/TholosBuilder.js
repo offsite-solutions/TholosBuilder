@@ -1193,6 +1193,31 @@ function QueryWizardRun(p_component_id_, p_trans_root_, p_skip_label_, todo_) {
   });
 }
 
+function QueryWizardRunSave() {
+  var formData = $('#wizardForm').serialize();
+  showLoading($('#wizard_result'));
+  $.ajax({
+    url: __TholosBuilderAppUrl,
+    type: 'post',
+    dataType: 'json',
+    data: formData,
+    contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+    success: function (data) {
+      if (data.success == 'OK') {
+        $('#wizard_result').html(data.html);
+        loadAppTree('#app_tree');
+      } else {
+        if (data.html && data.html.length > 0) $('#wizard_result').html(data.html);
+        finishedLoading();
+      }
+    },
+    error: function (response, textStatus, errorThrown) {
+      bootbox.alert("AJAX call error");
+      finishedLoading();
+    }
+  });
+}
+
 function showStoredProcedureWizard(component_id_ = '') {
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
