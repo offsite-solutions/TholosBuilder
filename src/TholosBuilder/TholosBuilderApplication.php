@@ -2055,17 +2055,24 @@
             false
           );
         }
-        
+
         if (Eisodos::$parameterHandler->eq("todo", "save")) {
-          
+
           $responseArray['html'] = "";
           //$responseArray['html']="<h4 > Current properties </h4 ><pre > ".print_r($o_columns,true)."</pre > ";
           $responseArray['html'] .= "<pre > ";
-          
+
           $this->builder_db->startTransaction();
-          
-          foreach ($o_columns as $o2) {
-            if (Eisodos::$utils->safe_array_value($o2, "status", "") == "new") { // create new component
+
+          foreach ($o_columns as $col_index => $o2) {
+            $col_status = Eisodos::$utils->safe_array_value($o2, "status", "");
+
+            if ($col_status === "new"
+                && Eisodos::$parameterHandler->neq("create_col_" . $col_index, "Y")) {
+              continue;
+            }
+
+            if ($col_status == "new") { // create new component
               
               $boundVariables = [];
               $this->builder_db->bind($boundVariables, "p_id", "integer", "");
@@ -2093,19 +2100,28 @@
               
             }
             
-            if (Eisodos::$utils->safe_array_value($o2, "status", "") != "delete") {  // updating properties
-              
+            if ($col_status != "delete") {  // updating properties
+
               foreach ($props as $prop) {
-                
-                if ($o2["o_" . strtolower($prop) . "_status"] == "modify" || $o2["o_" . strtolower($prop) . "_status"] == "new") {
-                  
+
+                $prop_status = $o2["o_" . strtolower($prop) . "_status"];
+
+                if ($prop_status == "modify" || $prop_status == "new") {
+
+                  if ($prop_status == "modify") {
+                    $linkid = $o2["o_" . strtolower($prop) . "_linkid"];
+                    if (Eisodos::$parameterHandler->neq("apply_prop_" . $linkid, "Y")) {
+                      continue;
+                    }
+                  }
+
                   $boundVariables = [];
                   $this->builder_db->bind($boundVariables, "p_id", "integer", $o2["o_" . strtolower($prop) . "_linkid"]);
                   $this->builder_db->bind($boundVariables, "p_component_id", "integer", $o2["id"]);
                   $this->builder_db->bind($boundVariables, "p_property_id", "integer", $o2["o_" . strtolower($prop) . "_propertyid"]);
                   $this->builder_db->bind($boundVariables, "p_value", "text", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop), ''));
                   $this->builder_db->bind($boundVariables, "p_value_component_id", "integer", "");
-                  
+
                   $this->builder_db->bind($boundVariables, "p_version", "integer", Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_version"));
                   $this->builder_db->bind($boundVariables, "p_enabled", "text", "Y");
                   if ($o2["o_" . strtolower($prop) . "_linkid"] == "") {
@@ -2114,17 +2130,17 @@
                   $this->builder_db->bind($boundVariables, "p_error_msg", "text", "");
                   $this->builder_db->bind($boundVariables, "p_error_code", "integer", "");
                   $resultArray = array();
-                  
+
                   $this->builder_db->executeStoredProcedure(
                     ($this->getDBObject($this->builder_db, "sp.property_" . ($o2["o_" . strtolower($prop) . "_linkid"] == "" ? "insert" : "update"))),
                     $boundVariables,
                     $resultArray
                   );
-                  
+
                   $this->SPError($resultArray);
-                  
+
                   $responseArray['html'] .= "Component property " . ($o2["o_" . strtolower($prop) . "_linkid"] == "" ? "inserted" : "updated") . " with value: " . $o2["o_" . strtolower($prop)] . "\n";
-                  
+
                 }
               }
             } else {
