@@ -1,4 +1,5 @@
 <tr class="$status">
+  <td>$apply_checkbox</td>
   <td>$prop_name</td>
   <td>$origvalue</td>
   <td>$value</td>

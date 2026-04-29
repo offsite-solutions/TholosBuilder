@@ -1,6 +1,7 @@
-<h4><span class="$status">$o_fieldname - $status</h4>
+<h4><span class="$status">$create_checkbox$o_fieldname - $status</h4>
 <table class="table">
 <thead>
+  <th></th>
   <th>Property</th>
   <th>Original Value</th>
   <th>New Value</th>

@@ -2022,19 +2022,38 @@
           }
         }
         
-        foreach ($o_columns as $o2) {
+        $responseArray['html'] .= '<form id="wizardForm" onsubmit="return false;">';
+        foreach ($o_columns as $col_index => $o2) {
           $s = "";
           foreach ($props as $prop) {
-            $s .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.property",
-              array("status" => $o2["o_" . strtolower($prop) . "_status"],
-                "origvalue" => $this->safeHTML(Eisodos::$utils->safe_array_value($o2, "o_" . strtolower($prop) . "_origvalue")),
-                "value" => $this->safeHTML($o2["o_" . strtolower($prop)]),
-                "prop_name" => $prop),
-              false);
+            $prop_lc = strtolower($prop);
+            $prop_status = $o2["o_" . $prop_lc . "_status"];
+            $apply_checkbox = "";
+            if ($prop_status === "modify") {
+              $linkid = $o2["o_" . $prop_lc . "_linkid"];
+              $apply_checkbox = '<input type="checkbox" name="apply_prop_' . $linkid . '" value="Y" checked>';
+            }
+            $s .= Eisodos::$templateEngine->getTemplate(
+              $this->templateFolder . "wizards.query.result.property",
+              array(
+                "status" => $prop_status,
+                "origvalue" => $this->safeHTML(Eisodos::$utils->safe_array_value($o2, "o_" . $prop_lc . "_origvalue")),
+                "value" => $this->safeHTML($o2["o_" . $prop_lc]),
+                "prop_name" => $prop,
+                "apply_checkbox" => $apply_checkbox,
+              ),
+              false
+            );
           }
-          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.main",
-            array_merge($o2, array("properties" => $s)),
-            false);
+          $create_checkbox = "";
+          if (Eisodos::$utils->safe_array_value($o2, "status") === "new") {
+            $create_checkbox = '<input type="checkbox" name="create_col_' . $col_index . '" value="Y" checked> ';
+          }
+          $responseArray['html'] .= Eisodos::$templateEngine->getTemplate(
+            $this->templateFolder . "wizards.query.result.main",
+            array_merge($o2, array("properties" => $s, "create_checkbox" => $create_checkbox)),
+            false
+          );
         }
         
         if (Eisodos::$parameterHandler->eq("todo", "save")) {
