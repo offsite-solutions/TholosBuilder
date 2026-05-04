@@ -743,6 +743,14 @@ a:hover {
 
 /* === Prop editor restyle ================================== */
 
+/* Pane + tab-pane background — match the treeview's #f8f9fa light gray. */
+#prop_frame,
+#prop_frame .content,
+#prop_frame .tab-content,
+#prop_frame .tab-content > .tab-pane {
+  background-color: #f8f9fa;
+}
+
 /* Tab strip */
 .pf-tabs.nav-tabs {
   font-size: 12px;
@@ -856,7 +864,7 @@ table.table_props.pf-table pre {
 .pf-help-empty {
   text-align: center; padding: 2rem 1rem; color: #6c757d; font-size: 12px;
 }
-.pf-help-empty > .fa-circle-info { font-size: 24px; color: #adb5bd; display: block; margin-bottom: .5rem; }
+.pf-help-empty > .fa-circle-info { font-size: 24px; color: #adb5bd; display: block; margin: 0 auto .5rem; }
 .pf-help-empty a { display: inline-block; margin: .25rem .5rem; color: #236499; text-decoration: none; }
 .pf-help-empty a:hover { text-decoration: underline; }
 

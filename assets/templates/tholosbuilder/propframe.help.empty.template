@@ -1,2 +1,9 @@
-<div style="text-align: center; margin: 20px 0 20px 0;"><a href="javascript:EditHelp('',$p_component_id);"><i class="fa-regular fa-plus-circle"></i> No help defined, create one</a><br/>or<br/>
-<a href="javascript:pasteHelp($p_component_id);"><i class="fa-regular fa-clipboard"></i> Paste reference</a></div>
+<div class="pf-help-empty">
+  <i class="fa-regular fa-circle-info" aria-hidden="true"></i>
+  <div>No help defined for this component.</div>
+  <div class="pf-help-empty-actions">
+    <a href="javascript:EditHelp('',$p_component_id);"><i class="fa-regular fa-circle-plus me-1"></i>Create one</a>
+    ·
+    <a href="javascript:pasteHelp($p_component_id);"><i class="fa-regular fa-clipboard me-1"></i>Paste reference</a>
+  </div>
+</div>
