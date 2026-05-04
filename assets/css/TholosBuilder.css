@@ -188,13 +188,13 @@ html,body,td,th {
   padding: 10px;
 }
 
-.ui-resizable-e { 
-  cursor: ew-resize; 
-  width: 3px; 
-  right: -3px; 
-  top: 0; 
-  bottom: 0; 
-  background-color: #c0d7e8;
+.ui-resizable-e {
+  cursor: ew-resize;
+  width: 3px;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  background-color: #ced4da;
 }
 
 /* template tree */

@@ -14,7 +14,7 @@ function showLoading(container_) {
 }
 
 function finishedLoading() {
-  $('#globalLoading').removeClass('fa-spin').addClass('fa-regular');
+  $('#globalLoading').removeClass('fa-spin');
 }
 
 function getNavFrame() {
