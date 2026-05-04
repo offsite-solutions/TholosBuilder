@@ -1874,6 +1874,28 @@
     
     /* wizard */
     /**
+     * Remove Tholos-style parameter handlers (++<formula>[|<fallback>]++)
+     * from a SQL string so it can be executed by the wizard.
+     *
+     * - With a `|` fallback: keep only the fallback text.
+     * - Without a fallback: replace the whole block with `null`.
+     */
+    private function stripTholosParameterHandlers(string $sql_): string {
+      return preg_replace_callback(
+        '/\+\+(.*?)\+\+/s',
+        static function (array $matches): string {
+          $body = $matches[1];
+          $pipePos = strpos($body, '|');
+          if ($pipePos !== false) {
+            return substr($body, $pipePos + 1);
+          }
+          return 'null';
+        },
+        $sql_
+      );
+    }
+
+    /**
      * @throws JsonException
      */
     #[NoReturn]
@@ -1905,7 +1927,8 @@
         $component_SQL = Eisodos::$utils->replace_all($component_SQL, ":filter", " and 0=1");
         $component_SQL = Eisodos::$utils->replace_all($component_SQL, ":orderby", " 1");
         $component_SQL = Eisodos::$utils->replace_all($component_SQL, ":columns", "");
-        
+        $component_SQL = $this->stripTholosParameterHandlers($component_SQL);
+
         $boundVariables = [];
         if ($this->project_owner != "") {
           $this->project_db->bind($boundVariables, "p_owner", "text", $this->project_owner);
