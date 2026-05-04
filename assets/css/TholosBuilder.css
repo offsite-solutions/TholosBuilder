@@ -183,7 +183,7 @@ html,body,td,th {
 
 /* template tree */
 
-#app_tree_container { position: absolute; top: 23px; height: calc(100% - 23px); width: 100%; padding: 0px; background-color: #fff;}
+#app_tree_container { position: absolute; top: 0; height: 100%; width: 100%; padding: 0px; background-color: #fff;}
 #apps { height: 100%; width: 100%; overflow: auto; padding: 0px; }
 
 #app_tree { height: 100%; width: 100%; overflow: auto; padding-left: 0px;}
