@@ -1012,13 +1012,27 @@ tr:hover .pf-row-actions .btn,
   color: #495057;
 }
 .diff-status-new       { background: #d1e7dd; color: #0a3622; }
-.diff-status-modify    { background: #fff3cd; color: #664d03; }
+.diff-status-modify    { background: #d1e7dd; color: #0a3622; }
 .diff-status-delete    { background: #f8d7da; color: #58151c; }
+.diff-status-skip      { background: #fff3cd; color: #664d03; }
+.diff-status-uptodate  { background: #e9ecef; color: #6c757d; }
 .diff-status-unchanged { background: #e9ecef; color: #6c757d; }
 
-.diff-table tr.new       { background-color: rgba(25, 135, 84, .06); }
-.diff-table tr.modify    { background-color: rgba(255, 193, 7, .08); }
-.diff-table tr.delete    { background-color: rgba(220, 53, 69, .06); }
-.diff-table tr.unchanged { color: #6c757d; }
+/* parent-status default tint for the whole table */
+.diff-table-new       tbody tr { background-color: rgba(25, 135, 84, .06); }
+.diff-table-modify    tbody tr { background-color: rgba(25, 135, 84, .06); }
+.diff-table-delete    tbody tr { background-color: rgba(220, 53, 69, .06); }
+.diff-table-skip      tbody tr { background-color: rgba(255, 193, 7, .08); }
+.diff-table-uptodate  tbody tr { color: #6c757d; }
+.diff-table-unchanged tbody tr { color: #6c757d; }
+
+/* per-row override (stronger) */
+.diff-table tbody tr.new       { background-color: rgba(25, 135, 84, .14); }
+.diff-table tbody tr.modify    { background-color: rgba(25, 135, 84, .14); }
+.diff-table tbody tr.delete    { background-color: rgba(220, 53, 69, .14); }
+.diff-table tbody tr.skip      { background-color: rgba(255, 193, 7, .18); }
+.diff-table tbody tr.uptodate  { background-color: transparent; color: #6c757d; }
+.diff-table tbody tr.unchanged { background-color: transparent; color: #6c757d; }
+
 .diff-table td,
 .diff-table th { font-size: 12px; }

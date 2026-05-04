@@ -1,5 +1,5 @@
-<div class="row" style="margin-top: 10px;">
-  <div class="col-sm-12 text-center">
-    <button class="button" onclick="StoredProcedureWizardRun($p_component_id,'save');">Save changes</button>
-  </div>
+<div class="text-end mt-3">
+  <button type="button" class="btn btn-primary" onclick="StoredProcedureWizardRun($p_component_id,'save');">
+    <i class="fa-regular fa-floppy-disk me-1"></i>Save changes
+  </button>
 </div>
