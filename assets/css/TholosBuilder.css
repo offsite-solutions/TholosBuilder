@@ -850,16 +850,23 @@ table.table_props.pf-table pre {
   margin-left: .35rem;
 }
 .pf-row-actions .btn {
-  --bs-btn-padding-x: .4rem;
+  --bs-btn-padding-x: .25rem;
   --bs-btn-padding-y: .1rem;
-  --bs-btn-font-size: 11px;
+  --bs-btn-font-size: 12px;
   --bs-btn-line-height: 1;
-  color: #495057;
-  background: #fff;
-  border: 1px solid #dee2e6;
+  color: #6c757d;
+  background: transparent;
+  border: none;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+tr:hover .pf-row-actions .btn,
+.pf-list-row:hover .pf-row-actions .btn,
+.pf-row-actions .btn:focus {
+  opacity: 1;
 }
 .pf-row-actions .btn:hover {
-  background: #e9ecef;
-  border-color: #ced4da;
-  color: #212529;
+  background: transparent;
+  color: #236499;
+  opacity: 1;
 }
