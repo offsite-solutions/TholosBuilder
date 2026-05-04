@@ -14,6 +14,64 @@
   <link rel="stylesheet" href="$TholosBuilderAssetsDir/css/TholosBuilder.css"/>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark tb-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <span class="brand-icon-wrap"><img src="$TholosBuilderAssetsDir/images/favicon.png" alt="Tholos" class="brand-icon"></span>
+      Tholos Builder
+    </a>
+
+    <form class="d-flex me-2" role="search" onsubmit="searchApp($('#searchText').val()); return false;">
+      <div class="input-group input-group-sm">
+        <input id="searchText" class="form-control navbar-search" placeholder="Search components, queries, properties…">
+        <button id="searchButton" class="btn btn-outline-light" type="submit"><i class="fa-regular fa-search"></i></button>
+      </div>
+    </form>
+
+    <div class="btn-group me-2" role="group" aria-label="History">
+      <button class="btn nav-icon-btn" title="Back" onclick="historyStepBack();"><i class="fa-regular fa-chevron-left"></i></button>
+      <button class="btn nav-icon-btn" title="Forward" onclick="historyStepForward();"><i class="fa-regular fa-chevron-right"></i></button>
+    </div>
+
+    <button class="btn nav-icon-btn me-2" title="Refresh tree" onclick="loadAppTree('#app_tree');"><i class="fa-regular fa-refresh" id="globalLoading"></i></button>
+
+    <ul class="navbar-nav ms-auto align-items-center">
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:showTranslate();"><i class="fa-regular fa-language me-1"></i>Language</a>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fa-regular fa-book me-1"></i>Docs</a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="javascript:showComponentTypeDocumentation();"><i class="fa-regular fa-university me-2"></i>Component type documentation</a></li>
+          <li><a class="dropdown-item" href="javascript:downloadComponentTypeDocumentation();"><i class="fa-regular fa-download me-2"></i>Download component type documentation</a></li>
+          <li><a class="dropdown-item" href="javascript:generateUserHelp();"><i class="fa-regular fa-question-circle me-2"></i>Generate User Guide</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:showRoutes();"><i class="fa-regular fa-filter me-1"></i>Routes</a>
+      </li>
+
+      <li class="nav-item ms-2">
+        <button class="btn btn-primary" onclick="compile('T');"><i class="fa-regular fa-landmark me-1"></i>Build</button>
+      </li>
+
+      <li class="nav-item ms-2">
+        <button class="btn btn-success" onclick="compile('F');"><i class="fa-regular fa-circle-check me-1"></i>Compile</button>
+      </li>
+
+      <li class="nav-item dropdown ms-3">
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fa-regular fa-user me-1"></i>$user_name</a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="javascript:showUserProfile();"><i class="fa-regular fa-id-card me-2"></i>Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="$cgi?action=logout"><i class="fa-regular fa-sign-out me-2"></i>Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
 <div id="wrapper" class="container-fluid">
   <div id="container">
     <div id="task_frame"></div>

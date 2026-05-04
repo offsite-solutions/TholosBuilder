@@ -62,8 +62,8 @@ html,body,td,th {
 }
 
 #wrapper {
-  height: 100%; 
-  margin: 0px; 
+  height: calc(100% - 38px);
+  margin: 0px;
   padding: 0px;
   position: absolute;
   width: 100%;
@@ -554,4 +554,62 @@ pre.error {
 
 .tx-editor-wrapper {
   width: 100% !important;
+}
+
+/* === Top app-shell navbar (.tb-navbar) =================== */
+.navbar.tb-navbar {
+  background-color: #3a3f44;
+  --bs-navbar-padding-y: .25rem;
+  --bs-navbar-brand-font-size: 13px;
+  --bs-navbar-brand-padding-y: .15rem;
+  --bs-navbar-nav-link-padding-x: .55rem;
+  font-size: 12px;
+  min-height: 38px;
+}
+.navbar.tb-navbar .nav-link {
+  font-size: 12px;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.navbar.tb-navbar .navbar-brand {
+  font-size: 13px;
+  font-weight: 600;
+}
+.navbar.tb-navbar .brand-icon-wrap {
+  background: #fff;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar.tb-navbar .brand-icon {
+  width: 18px;
+  height: 18px;
+}
+.navbar.tb-navbar .form-control,
+.navbar.tb-navbar .btn {
+  font-size: 12px;
+  padding: .15rem .5rem;
+  line-height: 1.4;
+  height: 26px;
+}
+.navbar.tb-navbar .navbar-search {
+  width: 280px;
+}
+.navbar.tb-navbar .nav-icon-btn {
+  color: rgba(255,255,255,.85);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.18);
+}
+.navbar.tb-navbar .nav-icon-btn:hover {
+  background: rgba(255,255,255,.10);
+  color: #fff;
+}
+.navbar.tb-navbar .dropdown-menu {
+  font-size: 12px;
+}
+.navbar.tb-navbar .dropdown-item {
+  padding: .3rem .7rem;
 }
