@@ -3,7 +3,7 @@
     <option value=""></option>
     <option value="true" [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=p_value;value=true;true=selected;false=%]>true</option>
     <option value="false" [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=p_value;value=false;true=selected;false=%]>false</option>
-  <select>
+  </select>
   <button class="btn pf-form-btn" id="prop_button_$p_property_id" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val()==''?$('#prop_edit_$p_property_id').val():$('#prop_edit_2_$p_property_id').val(),'');" title="Save">
     <i class="fa-regular fa-check saveIcon"></i>
   </button>

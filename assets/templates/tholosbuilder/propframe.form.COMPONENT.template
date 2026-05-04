@@ -34,7 +34,7 @@ where atp.component_type_id in ( select ct.id
       and atp.route!=(select route from app_tree_path_v atp2 where atp2.id=$p_component_id)
 order by component_order
 %SQL% -->
-  <select>
+  </select>
   <button class="btn pf-form-btn" id="prop_button_$p_property_id" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val(),$('#prop_edit_$p_property_id').val());" title="Save">
     <i class="fa-regular fa-check saveIcon"></i>
   </button>
