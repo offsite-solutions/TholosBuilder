@@ -780,3 +780,126 @@ a:hover {
   border-color: #5e8517;
   color: #fff;
 }
+
+/* === Prop editor restyle ================================== */
+
+/* Tab strip */
+.pf-tabs.nav-tabs {
+  font-size: 12px;
+  --bs-nav-tabs-link-active-color: #236499;
+  --bs-nav-tabs-link-active-border-color: transparent transparent #236499;
+  --bs-nav-tabs-border-color: #dee2e6;
+  padding: 0 6px;
+}
+.pf-tabs .nav-link {
+  padding: .35rem .7rem;
+  color: #495057;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+}
+.pf-tabs .nav-link.active {
+  font-weight: 600;
+  border-bottom: 2px solid #236499;
+  background: transparent;
+  color: #236499;
+}
+.pf-tabs .nav-link:hover {
+  background: #f1f3f5;
+  color: #212529;
+  border-color: transparent;
+  border-bottom-color: #dee2e6;
+}
+.pf-tabs .nav-link.active:hover { border-bottom-color: #236499; }
+
+/* Property / Events tables (applied alongside the legacy .table_props hook) */
+table.table_props.pf-table { font-size: 12px; margin: 0; table-layout: fixed; border-collapse: collapse; }
+table.table_props.pf-table thead th {
+  background: #e9ecef; color: #495057; font-weight: 600;
+  border-bottom: 1px solid #dee2e6; padding: .35rem .55rem;
+}
+table.table_props.pf-table tbody td {
+  padding: .25rem .55rem; vertical-align: top;
+  border-bottom: 1px solid #f1f3f5;
+  overflow: hidden; word-break: break-word;
+}
+table.table_props.pf-table tbody tr:nth-child(odd) td  { background: #fff; }
+table.table_props.pf-table tbody tr:nth-child(even) td { background: #f8f9fa; }
+table.table_props.pf-table tbody tr:hover td           { background: rgba(136,189,33,0.15); }
+table.table_props.pf-table tbody tr.is-selected td     { background: rgba(136,189,33,0.22); box-shadow: inset 2px 0 0 #88bd21; }
+table.table_props.pf-table tbody tr.prop_mandatory td  { font-weight: 600; }
+table.table_props.pf-table .prop_name  {
+  color: #212529; border-right: 1px solid #f1f3f5; width: 30%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+table.table_props.pf-table .prop_value { color: #212529; }
+table.table_props.pf-table .prop_type  { color: #adb5bd; font-size: 11px; }
+table.table_props.pf-table .method_path { color: #6c757d; font-style: italic; font-size: 11px; }
+
+/* Events tab GUI / PHP group header rows */
+table.table_props.pf-table tbody td.event_type {
+  background: #e9ecef !important;
+  color: #495057; font-weight: 600;
+  font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+  padding: .25rem .55rem; border-bottom: 1px solid #dee2e6;
+}
+
+/* Inline SQL preview inside a property value cell */
+table.table_props.pf-table pre {
+  background: #f8f9fa; border: 1px solid #e9ecef; border-radius: .25rem;
+  padding: .35rem .5rem; font-size: 11px; color: #495057;
+  margin: .25rem 0 0 0; max-height: 100px; overflow: auto;
+}
+
+/* Methods / References list rows */
+.pf-list-row {
+  display: flex; align-items: flex-start;
+  padding: .25rem .55rem;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 12px;
+}
+.pf-list-row:nth-child(odd)  { background: #fff; }
+.pf-list-row:nth-child(even) { background: #f8f9fa; }
+.pf-list-row:hover           { background: rgba(136,189,33,0.15); }
+.pf-list-row .pf-list-main   { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-list-row .pf-list-actions{ flex-shrink: 0; margin-left: .5rem; display: inline-flex; gap: .15rem; }
+.pf-list-sub {
+  padding: .15rem .55rem .35rem 1.5rem;
+  font-size: 11px; color: #6c757d;
+  border-bottom: 1px solid #f1f3f5;
+  background: inherit;
+}
+.pf-list-sub a { color: #236499; text-decoration: none; }
+.pf-list-sub a:hover { text-decoration: underline; }
+.pf-list-sub .ref-kind { color: #495057; font-weight: 600; }
+
+/* Empty Help tab */
+.pf-help-empty {
+  text-align: center; padding: 2rem 1rem; color: #6c757d; font-size: 12px;
+}
+.pf-help-empty > .fa-circle-info { font-size: 24px; color: #adb5bd; display: block; margin-bottom: .5rem; }
+.pf-help-empty a { display: inline-block; margin: .25rem .5rem; color: #236499; text-decoration: none; }
+.pf-help-empty a:hover { text-decoration: underline; }
+
+/* Row-action button group used inside table cells and list rows */
+.pf-row-actions {
+  float: right;
+  display: inline-flex;
+  gap: .15rem;
+  margin-left: .35rem;
+}
+.pf-row-actions .btn {
+  --bs-btn-padding-x: .4rem;
+  --bs-btn-padding-y: .1rem;
+  --bs-btn-font-size: 11px;
+  --bs-btn-line-height: 1;
+  color: #495057;
+  background: #fff;
+  border: 1px solid #dee2e6;
+}
+.pf-row-actions .btn:hover {
+  background: #e9ecef;
+  border-color: #ced4da;
+  color: #212529;
+}
