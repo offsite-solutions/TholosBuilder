@@ -5,3 +5,4 @@
 /composer_update_prod.sh
 /composer.dev.json
 /composer.dev.lock
+/.superpowers
