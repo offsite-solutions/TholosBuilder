@@ -3,9 +3,9 @@
   <input type="hidden" name="p_trans_root" value="$p_trans_root">
   <input type="hidden" name="p_skip_label" value="$p_skip_label">
   <input type="hidden" name="todo" value="save">
-  <div class="row" style="margin-top: 10px;">
-    <div class="col-sm-12 text-center">
-      <button type="button" class="button" onclick="QueryWizardRunSave();">Save changes</button>
-    </div>
+  <div class="text-end mt-3">
+    <button type="button" class="btn btn-primary" onclick="QueryWizardRunSave();">
+      <i class="fa-regular fa-floppy-disk me-1"></i>Save changes
+    </button>
   </div>
 </form>
