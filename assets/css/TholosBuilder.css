@@ -1054,3 +1054,12 @@ tr:hover .pf-row-actions .btn,
   white-space: pre-wrap;
   word-break: break-word;
 }
+/* Redmine issues list — pair the meta-row with its subject row */
+.issues-table tbody tr td { border-bottom: 0; }
+.issues-table tbody tr.issue-subject td {
+  padding-top: .15rem;
+  border-bottom: 1px solid #e9ecef;
+}
+.issues-table tbody tr.issue-subject td a[target="_blank"] {
+  color: #495057;
+}

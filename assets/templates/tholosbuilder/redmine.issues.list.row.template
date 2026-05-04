@@ -1,10 +1,16 @@
 <tr>
-  <td>$id</td>
+  <td class="fw-semibold">$id</td>
   <td>$tracker</td>
   <td>$status</td>
   <td>$assigned_to</td>
-<tr>
+</tr>
 <tr class="issue-subject">
-  <td><a href="javascript:openTask('$id','$subject','$project');" title="Open task"><i class="fa-regular fa-pencil-square"></i> Open</a></td>
-  <td colspan="4"><a href="$RedmineURL/issues/$id" target="_blank">$subject</a></td>
+  <td>
+    <a href="javascript:openTask('$id','$subject','$project');" title="Open task">
+      <i class="fa-regular fa-pencil-square me-1"></i>Open
+    </a>
+  </td>
+  <td colspan="3">
+    <a href="$RedmineURL/issues/$id" target="_blank">$subject</a>
+  </td>
 </tr>
