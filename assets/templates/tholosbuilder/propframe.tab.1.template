@@ -1,4 +1,4 @@
-<table class="table table-condensed table_props">
+<table class="table table-sm table_props pf-table">
   <thead>
     <tr>
       <th style="width: 40%;">Name</th>
