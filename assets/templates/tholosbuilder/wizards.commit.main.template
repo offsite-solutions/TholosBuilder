@@ -1,40 +1,60 @@
-<h1 class="text-center">Tholos :: Committing changes</h1>
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-code-commit"></i> Committing changes</h5>
+  </div>
+  <div class="card-body">
+    <form id="issues">
+      <input type="hidden" name="action" value="saveCommitChanges">
+      <input type="hidden" name="p_routes" value="$routes">
+      <input type="hidden" name="p_rm_current_status" value="$rmstatus">
+      <input type="hidden" name="p_rm_current_assigned_to" value="$rmassigned_to">
 
-<form id="issues">
-  <input type="hidden" name="action" value="saveCommitChanges">
-  <input type="hidden" name="p_routes" value="$routes">
-  <p>Committing routes: $routes</p>
-  <p><b>Commit message:</b></p>
-  <textarea style="width: 100%; height: 100px;" name="p_message">$tasks
-  </textarea>
+      <p class="text-muted mb-2"><small>Committing routes: <code>$routes</code></small></p>
 
-<h3>Redmine options</h3>
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Commit message</label>
+        <textarea class="form-control" name="p_message" rows="4">$tasks
+        </textarea>
+      </div>
 
-  <table>
-    <tr>
-      <td><p><label>Issue new status</label><select name="p_rm_status">
-      $rmstatuses</select></p></td>
-      <td><p><label>Assign to</label><select name="p_rm_assigned_to">
-      $rmmembers</select></p></td>
-    </tr>
-  </table>
+      <div class="form-section-title">Redmine</div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Issue new status</label>
+          <select class="form-select" name="p_rm_status">
+            $rmstatuses
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Assign to</label>
+          <select class="form-select" name="p_rm_assigned_to">
+            $rmmembers
+          </select>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Note</label>
+        <textarea class="form-control" name="p_rm_note" rows="2"></textarea>
+      </div>
 
-  <input type="hidden" name="p_rm_current_status" value="$rmstatus">
-  <input type="hidden" name="p_rm_current_assigned_to" value="$rmassigned_to">
-
-  <p><b>Note:</b></p>
-  <textarea style="width: 100%; height: 100px;" name="p_rm_note"></textarea>
-  
-<h3>Time tracking</h3>
-
-  <table>
-    <tr>
-      <td><p><label>Time spent (hour)</label><input name="p_rm_time_spent" value=""></p></td>
-      <td><p><label>Activity</label><select name="p_rm_time_activity">
-      $rmactivities</select></p></td>
-    </tr>
-  </table>
-
-</form>
-
-<p class="text-center"><button onclick="saveCommitChanges();">Commit changes</button></p>
+      <div class="form-section-title">Time tracking</div>
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label">Time spent (hours)</label>
+          <input class="form-control" name="p_rm_time_spent" type="text" value="">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Activity</label>
+          <select class="form-select" name="p_rm_time_activity">
+            $rmactivities
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer text-end">
+    <button type="button" class="btn btn-primary" onclick="saveCommitChanges();">
+      <i class="fa-regular fa-cloud-arrow-up me-1"></i>Commit changes
+    </button>
+  </div>
+</div>
