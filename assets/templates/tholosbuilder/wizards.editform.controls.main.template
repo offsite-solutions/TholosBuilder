@@ -1,7 +1,13 @@
-<form id="editformForm" style="margin-top: 20px;">
-<input type="hidden" name="p_form_id" value="$p_form_id">
-<input type="hidden" name="p_query_id" value="$p_query_id">
-<input type="hidden" name="action" value="EditFormWizardRun">
+<div class="wiz-card card mt-3">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-list-check"></i> Suggested controls</h5>
+  </div>
+  <div class="card-body">
+    <form id="editformForm">
+      <input type="hidden" name="p_form_id" value="$p_form_id">
+      <input type="hidden" name="p_query_id" value="$p_query_id">
+      <input type="hidden" name="action" value="EditFormWizardRun">
+      <div class="ef-controls">
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/wizards.editform.controls.row;
@@ -47,9 +53,12 @@ SELECT atp.id, atp.name||':'||acp_datatype.value||case when acp_size.value is nu
    AND NOT exists(SELECT 1 FROM table(SPLIT('$p_editformwizardblacklist')) WHERE atp.name LIKE COLUMN_VALUE)
  ORDER BY atp.component_order
 %SQL%>
-</form>
-<div class="row" style="margin-top: 20px">
-  <div class="col-sm-12 text-center" id="editformFormPost">
-    <button onclick="EditFormWizardRun();">Create form controls</button>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer text-end" id="editformFormPost">
+    <button type="button" class="btn btn-primary" onclick="EditFormWizardRun();">
+      <i class="fa-regular fa-circle-plus me-1"></i>Create form controls
+    </button>
   </div>
 </div>

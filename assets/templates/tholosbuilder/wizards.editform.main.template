@@ -1,12 +1,13 @@
-<h1 class="text-center">Tholos :: Edit Form wizard</h1>
-
-<div class="row" style="margin-top: 20px;">
-  <div class="col-sm-2 text-right">
-    Form:
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-rectangle-list"></i> Edit Form wizard</h5>
   </div>
-  <div class="col-sm-10">
-	<select id="EditFormWizardComponentId">
-      <option value="">--- Please select TForm component ---</option>
+  <div class="card-body">
+    <div class="row mb-3">
+      <label class="col-md-3 col-form-label text-md-end" for="EditFormWizardComponentId">Form:</label>
+      <div class="col-md-9">
+        <select class="form-select" id="EditFormWizardComponentId">
+          <option value="">--- Please select TForm component ---</option>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.select;
@@ -17,16 +18,14 @@ where atp.class_name='TForm'
       and atp.route_id in ($route_filter~='-1';)
 order by path
 %SQL%>
-    </select>
-  </div>
-</div>
-<div class="row" style="margin-top: 10px;">
-  <div class="col-sm-2 text-right">
-    Query:
-  </div>
-  <div class="col-sm-10">
-    <select id="QueryComponentId">
-      <option value="">--- Please select TQuery component ---</option>
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-3 col-form-label text-md-end" for="QueryComponentId">Query:</label>
+      <div class="col-md-9">
+        <select class="form-select" id="QueryComponentId">
+          <option value="">--- Please select TQuery component ---</option>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.select;
@@ -37,26 +36,23 @@ where atp.class_name='TQuery'
       and atp.route_id in ($route_filter~='-1';)
 order by path
 %SQL%>
-    </select>
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-md-3 col-form-label text-md-end" for="Blacklist">Excluded columns:</label>
+      <div class="col-md-9">
+        <input class="form-control" id="Blacklist" type="text" value="$editformwizardblacklist">
+      </div>
+    </div>
   </div>
-</div>
-<div class="row" style="margin-top: 10px;">
-  <div class="col-sm-2 text-right">
-    Excluded columns:
-  </div>
-  <div class="col-sm-10">
-    <input id="Blacklist" value="$editformwizardblacklist" style="width: 100%;">
-  </div>
-</div>
-<div class="row" style="margin-top: 10px;">
-  <div class="col-sm-12 text-center">
-    <button class="button" onclick="showEditFormWizard($('#EditFormWizardComponentId').val(),
-                                                       $('#QueryComponentId').val(),
-                                                       $('#Blacklist').val());">Generate/Update inputs</button>
+  <div class="card-footer text-end">
+    <button type="button" class="btn btn-primary" onclick="showEditFormWizard($('#EditFormWizardComponentId').val(),$('#QueryComponentId').val(),$('#Blacklist').val());">
+      <i class="fa-regular fa-bolt me-1"></i>Generate / Update inputs
+    </button>
   </div>
 </div>
 
 [%_function_name=TholosBuilder\TholosBuilderCallback::_eq;param=p_form_id;value=;true=;false=tholosbuilder/wizards.editform.controls.main%]
 
-<div id="wizard_result" style="margin-top: 20px;">
-</div>
+<div id="wizard_result" class="wiz-result"></div>
