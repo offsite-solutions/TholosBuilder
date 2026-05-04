@@ -2086,7 +2086,11 @@
 
           $responseArray['html'] = "";
           //$responseArray['html']="<h4 > Current properties </h4 ><pre > ".print_r($o_columns,true)."</pre > ";
-          $responseArray['html'] .= "<pre > ";
+          $cardOpen = '<div class="wiz-card card">'
+                    . '<div class="card-header"><h5><i class="fa-regular fa-list-check"></i> Save log</h5></div>'
+                    . '<div class="card-body">'
+                    . '<pre class="wiz-pre wiz-pre-scroll mb-0">';
+          $responseArray['html'] .= $cardOpen;
 
           $this->builder_db->startTransaction();
 
@@ -2176,10 +2180,10 @@
             
           }
           
-          $responseArray['html'] .= ($responseArray['html'] == "<pre > " ? "All components and properties are up to date . " : "") . " </pre > ";
-          
+          $responseArray['html'] .= ($responseArray['html'] === $cardOpen ? "All components and properties are up to date." : "") . '</pre></div></div>';
+
           $this->builder_db->commit();
-          
+
         } else {
           $responseArray['html'] .= Eisodos::$templateEngine->getTemplate($this->templateFolder . "wizards.query.result.foot", array(), false);
         }
