@@ -896,3 +896,66 @@ tr:hover .pf-row-actions .btn,
   color: #236499;
   opacity: 1;
 }
+
+/* === Wizards =========================================== */
+.wiz-card {
+  max-width: 900px;
+  margin: 1rem auto;
+}
+.wiz-card .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: .55rem .9rem;
+}
+.wiz-card .card-header h5 {
+  font-size: .9rem;
+  font-weight: 600;
+  color: #236499;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+.wiz-card .card-header h5 .fa-solid,
+.wiz-card .card-header h5 .fa-regular {
+  color: #88bd21;
+  margin-right: .55rem;
+  font-size: 14px;
+}
+.wiz-card .card-body { padding: 1rem 1.1rem; }
+.wiz-card .card-footer {
+  background-color: #f8f9fa;
+  padding: .55rem .9rem;
+}
+.wiz-card .col-form-label { font-size: 13px; }
+.wiz-card .form-select,
+.wiz-card .form-control { font-size: 13px; }
+.wiz-card .form-check-label { font-size: 13px; }
+.wiz-card .help-text {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  margin-top: .25rem;
+}
+.wiz-card .form-section-title {
+  font-size: .7rem;
+  letter-spacing: .06em;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin: 1.1rem 0 .55rem 0;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+.wiz-card .btn-primary {
+  --bs-btn-bg: #236499;
+  --bs-btn-border-color: #236499;
+  --bs-btn-hover-bg: #1d527d;
+  --bs-btn-hover-border-color: #1d527d;
+  --bs-btn-active-bg: #1d527d;
+  --bs-btn-active-border-color: #1d527d;
+  font-size: 13px;
+}
+.wiz-result {
+  max-width: 900px;
+  margin: 1rem auto 0 auto;
+}
