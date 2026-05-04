@@ -1043,3 +1043,14 @@ tr:hover .pf-row-actions .btn,
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+/* search result value-row styling */
+.search-value {
+  background-color: #f8f9fa;
+  padding: .35rem .6rem !important;
+}
+.search-value pre {
+  margin: 0;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
