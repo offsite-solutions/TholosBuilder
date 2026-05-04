@@ -1,13 +1,22 @@
-<h4><span class="$status">$create_checkbox$o_fieldname - $status</h4>
-<table class="table">
-<thead>
-  <th></th>
-  <th>Property</th>
-  <th>Original Value</th>
-  <th>New Value</th>
-  <th>Status</th>
-</thead>
-<tbody>
-  $properties
-</tbody>
-</table>
+<div class="card mb-2 wiz-result-card">
+  <div class="card-header py-2 px-3">
+    <span class="diff-status diff-status-$status">$status</span>
+    <span class="ms-2 fw-semibold">$create_checkbox$o_fieldname</span>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-sm table-hover mb-0 diff-table diff-table-$status">
+      <thead class="table-light">
+        <tr>
+          <th style="width:1%"></th>
+          <th>Property</th>
+          <th>Original Value</th>
+          <th>New Value</th>
+          <th style="width:1%">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        $properties
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,6 +1,5 @@
-<div class="row">
-  <div class="col-sm-8">
-    <select id="prop_edit_$p_property_id" style="width: 100%;">
+<div class="pf-form">
+  <select class="form-select form-select-sm" id="prop_edit_$p_property_id">
 <option value=""></option>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
@@ -35,14 +34,15 @@ where atp.component_type_id in ( select ct.id
       and atp.route!=(select route from app_tree_path_v atp2 where atp2.id=$p_component_id)
 order by component_order
 %SQL% -->
-    <select>
-  </div>
-  <div class="col-sm-4">
-    <button id="prop_button_$p_property_id" class="btn btn-default btn-sm btn-xs pull-right" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val(),$('#prop_edit_$p_property_id').val());" title="Save"><i class="fa-regular fa-check saveIcon"></i></button>
-    <button class="btn btn-default btn-sm btn-xs pull-right" onclick="if (clipboardComponentID!='') saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version','',clipboardComponentID); else alert('Nothing to paste!');" title="Paste"><i class="fa-regular fa-clipboard"></i></button>
-  </div>
-  <div class="col-sm-10">
-    Selector:<br/>
-    <input id="prop_edit_2_$p_property_id" style="width: 100%;" value="$p_value2" onchange="$('#prop_edit_$p_property_id').val('');">
-  </div>
+  </select>
+  <button class="btn pf-form-btn" id="prop_button_$p_property_id" onclick="saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version',$('#prop_edit_2_$p_property_id').val(),$('#prop_edit_$p_property_id').val());" title="Save">
+    <i class="fa-regular fa-check saveIcon"></i>
+  </button>
+  <button class="btn pf-form-btn" onclick="if (clipboardComponentID!='') saveProperty($p_component_id,$p_property_id,'$p_link_id','$p_version','',clipboardComponentID); else alert('Nothing to paste!');" title="Paste">
+    <i class="fa-regular fa-clipboard"></i>
+  </button>
+</div>
+<div class="pf-form pf-form-stack">
+  <span class="pf-form-stack-label">Selector:</span>
+  <input class="form-control form-control-sm" id="prop_edit_2_$p_property_id" value="$p_value2" onchange="$('#prop_edit_$p_property_id').val('');">
 </div>

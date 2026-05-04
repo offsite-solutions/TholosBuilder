@@ -1,11 +1,14 @@
-<h3>Uncommitted issues - Your issues</h3>
-<table class="redmine-issues">
-  <tr>
-    <th width="10%">Issue #</th>
-    <th width="50%">Issue</th>
-    <th width="30%">Route</th>
-    <th width="10%">Owner</th>
-  </tr>
+<div class="form-section-title">Uncommitted issues &mdash; your issues</div>
+<table class="table table-sm table-hover mb-3">
+  <thead class="table-light">
+    <tr>
+      <th style="width:10%">Issue #</th>
+      <th>Issue</th>
+      <th style="width:30%">Route</th>
+      <th style="width:10%">Owner</th>
+    </tr>
+  </thead>
+  <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/wizards.commit.row;
@@ -19,4 +22,5 @@ select distinct at.task_number, at.subject, au.code, atp.route
        and at.closed='N'
  order by 3,1
 %SQL%>
+  </tbody>
 </table>

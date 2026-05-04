@@ -1,5 +1,17 @@
-<tr style="border-top: 1px solid #ccc;">
-  <td style="padding: 2px;"><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node', '#$sqlid').trigger('select_node.jstree');">$sqlname_with_type</a></td>
-  <td style="padding: 2px;"><small><a href="javascript:addRoute('$sqlroute_id');"><i class="fa-regular fa-plus"></i> $sqlroute</a></small></td>
-  <td style="padding: 2px;"><small>$sqlpath</small></td>
+<tr>
+  <td><a href="javascript:$('#app_tree').jstree('deselect_all');$('#app_tree').jstree('select_node', '#$sqlid').trigger('select_node.jstree');">$sqlname_with_type</a></td>
+  <td>
+    <a href="javascript:addRoute('$sqlroute_id');" class="me-2">
+      <i class="fa-regular fa-plus me-1"></i>$sqlroute
+    </a>
+    <br>
+    <small class="text-muted">$sqlpath</small>
+  </td>
 </tr>
+<%FUNC%
+_function_name=TholosBuilder\TholosBuilderCallback::_eqs
+param=sqlvalue
+value=
+true=
+false=<tr><td colspan="2">$sqlvalue</td></tr>
+%FUNC%>

@@ -1,12 +1,19 @@
-<h1 class="text-center">Tholos :: Commit history</h1>
-<table class="redmine-issues">
-  <tr>
-    <th width="10%">Committed on</th>
-    <th width="10%">Issue #</th>
-    <th width="40%">Issue</th>
-    <th width="30%">Route</th>
-    <th width="10%">Owner</th>
-  </tr>
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-clock-rotate-left"></i> Commit history</h5>
+  </div>
+  <div class="card-body">
+    <table class="table table-sm table-hover mb-0">
+      <thead class="table-light">
+        <tr>
+          <th style="width:14%">Committed on</th>
+          <th style="width:8%">Issue #</th>
+          <th>Issue</th>
+          <th style="width:30%">Route</th>
+          <th style="width:8%">Owner</th>
+        </tr>
+      </thead>
+      <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/wizards.commit.history.row;
@@ -20,4 +27,7 @@ select distinct to_char(at.committed,'YYYY.MM.DD. hh24:mi:ss') as committed, at.
        and atp.route is not null
  order by 1 desc, 2, 5
 %SQL%>
-</table>
+      </tbody>
+    </table>
+  </div>
+</div>

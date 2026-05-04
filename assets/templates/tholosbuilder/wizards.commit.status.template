@@ -1,6 +1,15 @@
-<h1 class="text-center">Tholos :: Issue status</h1>
-$templateabs_tholosbuilder__wizards_commit_opened
-$templateabs_tholosbuilder__wizards_commit_uncommitted_all
-$templateabs_tholosbuilder__wizards_commit_multiuser_main
-
-<p style="margin-top: 20px;"><a href="javascript:showCommitHistory()"><i class="fa-regular fa-history"></i> Show commit history</a></p>
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-clipboard-list"></i> Issue status</h5>
+  </div>
+  <div class="card-body">
+    $templateabs_tholosbuilder__wizards_commit_opened
+    $templateabs_tholosbuilder__wizards_commit_uncommitted_all
+    $templateabs_tholosbuilder__wizards_commit_multiuser_main
+  </div>
+  <div class="card-footer text-end">
+    <a href="javascript:showCommitHistory()" class="btn btn-link">
+      <i class="fa-regular fa-clock-rotate-left me-1"></i>Show commit history
+    </a>
+  </div>
+</div>

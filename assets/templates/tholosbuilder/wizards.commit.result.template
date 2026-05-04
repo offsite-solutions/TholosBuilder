@@ -1,7 +1,12 @@
-<h1 class="text-center">Tholos :: Commit result</h1>
-
-<div id="wizard_result" style="margin-top: 20px;">
-$result
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-circle-check"></i> Commit result</h5>
+  </div>
+  <div class="card-body">
+    <div id="wizard_result">
+      $result
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">

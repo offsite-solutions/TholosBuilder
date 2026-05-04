@@ -1,5 +1,20 @@
-<p><label>SVN Username</label><input type="text" name="p_svn_username" value="$sqlsvn_username"></p>
-<p><label>SVN Password</label><input type="text" name="p_svn_password" value="$sqlsvn_password"></p>
-<p><label>Redmine secretkey</label><input type="text" name="p_rm_secretkey" value="$sqlrm_secretkey"></p>
-<p><label>Redmine Project ID</label><input type="text" name="p_rm_project_id" value="$sqlrm_project_id"></p>
-<p><label>Redmine Subprojects</label><input type="text" name="p_rm_subprojects" value="$sqlrm_subprojects"></p>
+<div class="row mb-3">
+  <label class="col-md-3 col-form-label text-md-end">SVN username:</label>
+  <div class="col-md-9"><input class="form-control" type="text" name="p_svn_username" value="$sqlsvn_username"></div>
+</div>
+<div class="row mb-3">
+  <label class="col-md-3 col-form-label text-md-end">SVN password:</label>
+  <div class="col-md-9"><input class="form-control" type="text" name="p_svn_password" value="$sqlsvn_password"></div>
+</div>
+<div class="row mb-3">
+  <label class="col-md-3 col-form-label text-md-end">Redmine secret key:</label>
+  <div class="col-md-9"><input class="form-control" type="text" name="p_rm_secretkey" value="$sqlrm_secretkey"></div>
+</div>
+<div class="row mb-3">
+  <label class="col-md-3 col-form-label text-md-end">Redmine project ID:</label>
+  <div class="col-md-9"><input class="form-control" type="text" name="p_rm_project_id" value="$sqlrm_project_id"></div>
+</div>
+<div class="row mb-3">
+  <label class="col-md-3 col-form-label text-md-end">Redmine subprojects:</label>
+  <div class="col-md-9"><input class="form-control" type="text" name="p_rm_subprojects" value="$sqlrm_subprojects"></div>
+</div>

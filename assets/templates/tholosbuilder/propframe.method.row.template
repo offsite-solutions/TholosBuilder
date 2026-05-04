@@ -1,6 +1,11 @@
-<div class="row" style="padding-top: 5px; padding-bottom: 5px; border-bottom: 1px solid #ddd; background-color: #f7f7f7;">
-  <div class="col-sm-10">$sqlmethod_name</div>
-  <div class="col-sm-2"><button class="btn btn-default btn-sm btn-xs pull-right" onclick="copyMethod($p_component_id,$sqlid);" title="Copy"><i class="fa-regular fa-copy"></i></button></div>
+<div class="pf-list-row">
+  <span class="pf-list-main">$sqlmethod_name</span>
+  <span class="pf-list-actions">
+    <span class="pf-row-actions">
+      <button class="btn" onclick="copyMethod($p_component_id,$sqlid);" title="Copy"><i class="fa-regular fa-copy"></i></button>
+    </span>
+  </span>
+</div>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/propframe.method.referer;
@@ -12,4 +17,3 @@ select tp.short_path as referer_component, ce.name as event_name, tp.id as refer
        and ce.value_method_id=$sqlid
        and tp.id=ce.component_id
 %SQL%>
-</div>

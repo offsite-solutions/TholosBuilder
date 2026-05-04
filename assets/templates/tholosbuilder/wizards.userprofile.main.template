@@ -1,6 +1,10 @@
-<h1 class="text-center">User profile</h1>
-<form onsubmit="javascript:void();" id="userprofile">
-<input type="hidden" name="action" value="saveUserProfile">
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-user-gear"></i> User profile</h5>
+  </div>
+  <div class="card-body">
+    <form id="userprofile" onsubmit="javascript:void();">
+      <input type="hidden" name="action" value="saveUserProfile">
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/wizards.userprofile.row;
@@ -13,5 +17,11 @@ select au.svn_username,
   from app_users au
  where au.id=app_session_pkg.user_id
 %SQL%>
-</form>
-<p style="text-align: center"><button onclick="saveUserProfile();">Save</button></p>
+    </form>
+  </div>
+  <div class="card-footer text-end">
+    <button type="button" class="btn btn-primary" onclick="saveUserProfile();">
+      <i class="fa-regular fa-floppy-disk me-1"></i>Save
+    </button>
+  </div>
+</div>

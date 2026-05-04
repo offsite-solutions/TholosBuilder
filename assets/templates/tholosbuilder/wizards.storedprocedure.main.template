@@ -1,12 +1,13 @@
-<h1 class="text-center">Tholos :: StoredProcedure wizard</h1>
-
-<div class="row" style="margin-top: 20px;">
-  <div class="col-sm-4 text-right">
-    Stored procedure:
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-gears"></i> Stored Procedure wizard</h5>
   </div>
-  <div class="col-sm-8">
-	<select id="SPWizardComponentId">
-      <option value="">--- Please select TStoredProcedure component ---</option>
+  <div class="card-body">
+    <div class="row mb-3">
+      <label class="col-md-3 col-form-label text-md-end" for="SPWizardComponentId">Stored procedure:</label>
+      <div class="col-md-9">
+        <select class="form-select" id="SPWizardComponentId">
+          <option value="">--- Please select TStoredProcedure component ---</option>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.select;
@@ -17,14 +18,15 @@ where atp.class_name='TStoredProcedure'
       and atp.route_id in ($route_filter~='-1';)
 order by path
 %SQL%>
-    </select>
+        </select>
+      </div>
+    </div>
   </div>
-</div>
-<div class="row" style="margin-top: 10px;">
-  <div class="col-sm-12 text-center">
-    <button class="button" onclick="StoredProcedureWizardRun($('#SPWizardComponentId').val(),'');">Generate/Update TDBParams</button>
+  <div class="card-footer text-end">
+    <button type="button" class="btn btn-primary" onclick="StoredProcedureWizardRun($('#SPWizardComponentId').val(),'');">
+      <i class="fa-regular fa-bolt me-1"></i>Generate / Update TDBParams
+    </button>
   </div>
 </div>
 
-<div id="wizard_result" style="margin-top: 20px;">
-</div>
+<div id="wizard_result" class="wiz-result"></div>

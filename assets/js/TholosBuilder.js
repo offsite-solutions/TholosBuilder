@@ -74,6 +74,7 @@ function loadAppTree(treeid_) {
                 return {
                   "Edit": {
                     "label": "Edit",
+                    "icon": "fa-regular fa-pen-to-square",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -84,6 +85,7 @@ function loadAppTree(treeid_) {
                   },
                   "Create child": {
                     "label": "Create child",
+                    "icon": "fa-regular fa-square-plus",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -94,6 +96,7 @@ function loadAppTree(treeid_) {
                   },
                   "Run Query wizard": {
                     "label": "Run Query wizard",
+                    "icon": "fa-regular fa-database",
                     "separator_before": true,
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
@@ -103,6 +106,7 @@ function loadAppTree(treeid_) {
                   },
                   "Run Stored Procedure wizard": {
                     "label": "Run Stored Procedure wizard",
+                    "icon": "fa-regular fa-download",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -111,6 +115,7 @@ function loadAppTree(treeid_) {
                   },
                   "Run Grid wizard": {
                     "label": "Run Grid wizard",
+                    "icon": "fa-regular fa-table",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -119,6 +124,7 @@ function loadAppTree(treeid_) {
                   },
                   "Run Form wizard": {
                     "label": "Run Form wizard",
+                    "icon": "fa-regular fa-rectangle-list",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -127,6 +133,7 @@ function loadAppTree(treeid_) {
                   },
                   "Copy": {
                     "label": "Copy",
+                    "icon": "fa-regular fa-copy",
                     "separator_before": true,
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
@@ -136,6 +143,7 @@ function loadAppTree(treeid_) {
                   },
                   "Paste": {
                     "label": "Paste",
+                    "icon": "fa-regular fa-paste",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -144,6 +152,7 @@ function loadAppTree(treeid_) {
                   },
                   "Clone all": {
                     "label": "Clone all selected",
+                    "icon": "fa-regular fa-clone",
                     "separator_before": true,
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference);
@@ -162,6 +171,7 @@ function loadAppTree(treeid_) {
                   },
                   "Delete": {
                     "label": "Delete",
+                    "icon": "fa-regular fa-trash-can",
                     "separator_before": true,
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
@@ -176,6 +186,7 @@ function loadAppTree(treeid_) {
                   },
                   "Delete all": {
                     "label": "Delete all",
+                    "icon": "fa-regular fa-trash-can-arrow-up",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference);
                       bootbox.confirm("Are you sure to delete " + inst.get_selected().length + " component(s)?",
@@ -193,6 +204,7 @@ function loadAppTree(treeid_) {
                   },
                   "Move to first": {
                     "label": "Move to first",
+                    "icon": "fa-regular fa-angles-up",
                     "separator_before": true,
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
@@ -202,6 +214,7 @@ function loadAppTree(treeid_) {
                   },
                   "Move up": {
                     "label": "Move up",
+                    "icon": "fa-regular fa-angle-up",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -210,6 +223,7 @@ function loadAppTree(treeid_) {
                   },
                   "Move down": {
                     "label": "Move down",
+                    "icon": "fa-regular fa-angle-down",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -218,6 +232,7 @@ function loadAppTree(treeid_) {
                   },
                   "Move to last": {
                     "label": "Move to last",
+                    "icon": "fa-regular fa-angles-down",
                     "action": function (data) {
                       var inst = $.jstree.reference(data.reference),
                         obj = inst.get_node(data.reference);
@@ -847,11 +862,10 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
       success: function (data) {
         if (data.success == 'OK') {
           $('#prop_frame').find('.content').html(data.html);
-          $('#prop_frame .content').tabs({active: 0});
-          $('#prop_frame .content').tabs({
-            activate: function (event, ui) {
-              showPropertiesAndEvents('', '', '');
-            }
+          // Bootstrap 5 nav-tabs: first tab is .show.active in the template;
+          // refresh the panel content whenever the user switches tabs.
+          $('#prop_tabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            showPropertiesAndEvents('', '', '');
           });
           showPropertiesAndEvents(component_id_, property_id_, event_id_);
         } else {
@@ -864,7 +878,10 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
       }
     });
   } else {
-    var tabIndex = $('#prop_frame .content').tabs('option', 'active');
+    // Bootstrap 5 nav-tabs: derive the active tab's 0..4 index from the
+    // active button's data-bs-target ("#tab_prop_N").
+    var activeTarget = $('#prop_tabs button.nav-link.active').attr('data-bs-target') || '#tab_prop_0';
+    var tabIndex = parseInt(activeTarget.replace('#tab_prop_', ''), 10);
     if (component_id_ == '') component_id_ = lastComponentId;
     else lastComponentId = component_id_;
     if (property_id_ == '' && event_id_ == '')
@@ -1097,6 +1114,20 @@ function showComponentTypeDocumentation() {
 
 function downloadComponentTypeDocumentation() {
   document.location.href = __TholosBuilderAppUrl + '?action=downloadComponentTypeDocumentation';
+}
+
+function confirmBuild() {
+  bootbox.confirm({
+    title: 'Confirm full build',
+    message: 'A full build can take up to 40 minutes on large projects. Continue?',
+    buttons: {
+      confirm: { label: '<i class="fa-regular fa-landmark me-1"></i>Build', className: 'btn-danger' },
+      cancel:  { label: 'Cancel', className: 'btn-secondary' }
+    },
+    callback: function (result) {
+      if (result === true) compile('T');
+    }
+  });
 }
 
 function compile(all) {

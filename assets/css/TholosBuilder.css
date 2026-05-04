@@ -9,61 +9,83 @@ html,body,td,th {
   font-size: 9pt;
 }
 
-#login {
+.login-page {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 300px;
-  margin-left: -150px;
-  margin-top: -150px;
-  border: 1px solid lightgrey;
-  border-radius: 5px;
-  padding: 10px;
-  background: #f6f6f6;
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,f9f9f9+100 */
-  background: rgb(239,239,239); /* Old browsers */
-  background: -moz-linear-gradient(top, rgba(239,239,239,1) 0%, rgba(249,249,249,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, rgba(239,239,239,1) 0%,rgba(249,249,249,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, rgba(239,239,239,1) 0%,rgba(249,249,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#f9f9f9',GradientType=0 ); /* IE6-9 */
-  -webkit-box-shadow: 5px 5px 10px 0px rgba(230,230,230,0.5);
-  -moz-box-shadow: 5px 5px 10px 0px rgba(230,230,230,0.5);
-  box-shadow: 5px 5px 10px 0px rgba(230,230,230,0.5);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #3a3f44 0%, #495057 100%);
 }
 
-#login h1 {
-  color: #0b58a2;
-  font-size: 12pt;
+.login-card {
+  width: 320px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  padding: 28px 28px 24px;
+  font-size: 13px;
+}
+
+.login-card .login-head {
   text-align: center;
-  margin: 5px 5px 10px 5px;
+  margin-bottom: 18px;
 }
 
-#login p {
-  display: block;
+.login-card .login-head .icon-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #f1f3f5;
+  margin-bottom: 10px;
 }
 
-#login p label {
-  display: block;
-  margin-bottom: 5px;
+.login-card .login-head .icon-pill img {
+  width: 30px;
+  height: 30px;
 }
 
-#login p input {
-  margin-left: 40px;
-  width: 240px;
-  border: 1px solid lightgrey;
-  background-color: white;
-  padding: 3px;
+.login-card .login-head h1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
 }
 
-#login button {
-  background-color: #0b58a2;
-  color: white;
-  border-style: none;
+.login-card .login-head .subtitle {
+  font-size: 11px;
+  color: #6c757d;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.login-card .form-label {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.login-card .form-control {
+  font-size: 13px;
+}
+
+.login-card .alert-sm {
+  font-size: 12px;
+  padding: .4rem .6rem;
+}
+
+.login-card .btn-primary {
+  font-size: 13px;
+  padding: .4rem 1rem;
 }
 
 #wrapper {
-  height: 100%; 
-  margin: 0px; 
+  height: calc(100% - 38px);
+  margin: 0px;
   padding: 0px;
   position: absolute;
   width: 100%;
@@ -75,34 +97,62 @@ html,body,td,th {
   padding: 0px;
 }
 
-#task_frame {
-  position: absolute;
-  background-color: #8cb0cb;;
-  border:1px solid #3d6c91;
-  border-radius: 5px;
-  padding: 3px;
-  right: 5px;
-  top: 5px;
-  width: auto;
-  height: auto;
+/* Negate the navbar's vertical padding so a child can extend to the navbar's
+   absolute outer edges (used by the task notch wrapper). */
+.tb-navbar-stretch-y {
+  margin-top: calc(var(--bs-navbar-padding-y) * -1);
+  margin-bottom: calc(var(--bs-navbar-padding-y) * -1);
+}
+
+/* Task / issue chooser slot — a real notch sticking down from the navbar's top
+   edge, centered horizontally between Refresh and the right-hand nav items.
+   Server populates innerHTML via reloadTaskFrame() AJAX (taskframe.main.template). */
+.tb-task-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  background: #236499;
   color: #fff;
-  font-size: 8pt;
-  opacity: 0.5;
+  padding: 0 .65rem;
+  border-radius: 0 0 .5rem .5rem;
+  height: calc(100% - 5px);
+  max-width: 380px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1;
+  overflow: hidden;
+  position: relative;
+  z-index: 1030;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .18);
+  margin-top: -2px;
+  border: 1px solid #777;
+  border-top: none;
 }
-
-#task_frame:hover {
-  opacity: 1;
-  z-index: 999;
+.tb-task-slot:empty {
+  display: none;                             /* hide notch entirely until server populates it */
 }
-
-#task_frame a {
-  font-size: 8pt;
+.tb-task-slot a {
   color: #fff;
   text-decoration: none;
 }
-
-#task_frame p {
-  margin: 2px;
+.tb-task-slot a:hover {
+  color: rgba(255,255,255,.85);
+}
+.tb-task-slot .task-link {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 280px;
+}
+.tb-task-slot .task-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .2rem;
+  height: 100%;
 }
 
 #nav_frame, #prop_frame {
@@ -138,101 +188,21 @@ html,body,td,th {
   padding: 10px;
 }
 
-.ui-resizable-e { 
-  cursor: ew-resize; 
-  width: 3px; 
-  right: -3px; 
-  top: 0; 
-  bottom: 0; 
-  background-color: #c0d7e8;
+.ui-resizable-e {
+  cursor: ew-resize;
+  width: 3px;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  background-color: #ced4da;
 }
-
-/* left frame */
-
-#portalinfo_container { position:absolute; width: 100%; }
-#portalinfo_container .logo { background-color: #3d6c91; color: #fff; font-size: 14pt; padding-left: 5px; }
-#portalinfo_container .portal-info { background-color: #8cb0cb; color: #fff; font-size: 10px; padding-left: 5px; }
-
-#options_container {
-  margin-bottom: 0px;
-  position: absolute;
-  top: 0px;
-  width: 100%;
-  height: 23px;
-  z-index: 500;
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-
-#options_container:hover {
-  height: auto;
-}
-
-#options_container .info {
-  font-size: 8pt;
-}
-
-#options_container .hovered {
-  display: none;
-}
-
-#options_container:hover .hovered {
-  display: flex;
-}
-/* #options_container .dropdown-menu { position: relative; } */
 
 /* template tree */
 
-#app_tree_container { position: absolute; top: 23px; height: calc(100% - 23px); width: 100%; padding: 0px; background-color: #fff;}
+#app_tree_container { position: absolute; top: 0; height: 100%; width: 100%; padding: 0px; background-color: #f8f9fa;}
 #apps { height: 100%; width: 100%; overflow: auto; padding: 0px; }
 
 #app_tree { height: 100%; width: 100%; overflow: auto; padding-left: 0px;}
-#app_tree .folder { background:url('/assets/images/file_sprite.png') right bottom no-repeat; }
-#app_tree .file { background:url('/assets/images/file_sprite.png') 0 0 no-repeat; }
-
-#search_result_tree { height: 100%; width: 100%; overflow: auto; padding-left: 0px;}
-#search_result_tree .folder { background:url('/assets/images/file_sprite.png') right bottom no-repeat; }
-#search_result_tree .file { background:url('/assets/images/file_sprite.png') 0 0 no-repeat; }
-
-/* .nav-tabs > li > a {
-  padding: 5px !important;
-  font-size: 12px !important;
-}
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus{
-    color: #fff !important;
-    background-color: #8cb0cb !important;
-} */
-
-#prop_frame .ui-tabs-nav {
-  padding-left: 0px;
-  background: transparent;
-  border-width: 0px 0px 1px 0px;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
-}
-#prop_frame .ui-tabs-panel {
-  background: #fff;
-  border: 0;
-  padding: 0;
-}
-
-#prop_frame .ui-tabs-anchor {
-  padding: 5px;
-  font-size: 12px;
-}
-
-#prop_frame .ui-state-focus {
-  border: 0;
-}
-
-#prop_frame .ui-tabs-active {
-  background-color: #8cb0cb;
-  border-style: none;
-}
 
 .tab-content {
   height: 100%;
@@ -268,11 +238,8 @@ div.checkbox {
 
 .tree_class_name {
   font-size: 9px;
-  color: #fff;
-  background-color: #999;
-  padding: 1px 2px;
-  margin-left: 5px;
-  border-radius: 3px;
+  flex-shrink: 0;
+  margin-left: 6px;
 }
 
 #prop_tree, #event_tree {
@@ -468,23 +435,6 @@ div.tooltip-inner {
   color: lightgrey;
 }
 
-table.redmine-issues {
-  width: 100%;
-}
-
-table.redmine-issues th {
-  background-color: lightgrey;
-  font-weight: bold;
-}
-
-table.redmine-issues tr.issue-subject {
-  border-bottom: 1px solid lightgrey;
-}
-
-table.redmine-issues tr.issue-subject td {
-  padding: 5px;
-}
-
 #userprofile p label {
   display: block;
   margin-bottom: 5px;
@@ -554,4 +504,553 @@ pre.error {
 
 .tx-editor-wrapper {
   width: 100% !important;
+}
+
+/* === Top app-shell navbar (.tb-navbar) =================== */
+.navbar.tb-navbar {
+  background-color: #3a3f44;
+  --bs-navbar-padding-y: .25rem;
+  --bs-navbar-brand-font-size: 13px;
+  --bs-navbar-brand-padding-y: .15rem;
+  --bs-navbar-nav-link-padding-x: .55rem;
+  font-size: 12px;
+  min-height: 38px;
+}
+.navbar.tb-navbar .nav-link {
+  font-size: 12px;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.navbar.tb-navbar .navbar-brand {
+  font-size: 13px;
+  font-weight: 600;
+}
+.navbar.tb-navbar .brand-icon-wrap {
+  background: #fff;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar.tb-navbar .brand-icon {
+  width: 18px;
+  height: 18px;
+}
+.navbar.tb-navbar .form-control,
+.navbar.tb-navbar .btn {
+  font-size: 12px;
+  padding: .15rem .5rem;
+  line-height: 1.4;
+  height: 26px;
+}
+.navbar.tb-navbar .navbar-search {
+  width: 280px;
+}
+.navbar.tb-navbar .nav-icon-btn {
+  color: rgba(255,255,255,.85);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.18);
+}
+.navbar.tb-navbar .nav-icon-btn:hover {
+  background: rgba(255,255,255,.10);
+  color: #fff;
+}
+.navbar.tb-navbar .dropdown-menu {
+  font-size: 12px;
+}
+.navbar.tb-navbar .dropdown-item {
+  padding: .3rem .7rem;
+}
+
+/* === Treeview restyle ==================================== */
+
+/* Anchor uses inline-flex so the label can ellipsize without breaking jstree's
+   inline-block adjacency to the .jstree-ocl expand/collapse icon. */
+.jstree-anchor {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: calc(100% - 22px);   /* leave room for the 18px OCL + jstree's margin */
+}
+
+/* Node label wrapper emitted by loadAppTree() — see TholosBuilderApplication::loadAppTree(). */
+.tree_node_label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Selected and hovered tree rows tinted with the offsite brand green (#88bd21). */
+.jstree-default .jstree-hovered,
+.jstree-default-small .jstree-hovered {
+  background: rgba(136, 189, 33, 0.15);
+  box-shadow: none;
+  border-radius: 3px;
+}
+.jstree-default .jstree-clicked,
+.jstree-default-small .jstree-clicked {
+  background: rgba(136, 189, 33, 0.40);
+  box-shadow: inset 0 0 0 1px #88bd21;
+  border-radius: 3px;
+}
+.jstree-default > .jstree-wholerow-ul .jstree-wholerow-hovered {
+  background: rgba(136, 189, 33, 0.15);
+}
+.jstree-default > .jstree-wholerow-ul .jstree-wholerow-clicked {
+  background: rgba(136, 189, 33, 0.40);
+  box-shadow: inset 0 0 0 1px #88bd21;
+}
+
+/* Badge text inherits the node icon's color via general-sibling selector — one rule per existing color-* class. */
+.jstree-anchor .svg-inline--fa.color-grey       ~ .tree_class_name { color: #c8c8c8; }
+.jstree-anchor .svg-inline--fa.color-green      ~ .tree_class_name { color: green; }
+.jstree-anchor .svg-inline--fa.color-lightgreen ~ .tree_class_name { color: limegreen; }
+.jstree-anchor .svg-inline--fa.color-green3     ~ .tree_class_name { color: mediumseagreen; }
+.jstree-anchor .svg-inline--fa.color-blue       ~ .tree_class_name { color: dodgerblue; }
+.jstree-anchor .svg-inline--fa.color-lightblue  ~ .tree_class_name { color: deepskyblue; }
+.jstree-anchor .svg-inline--fa.color-maroon     ~ .tree_class_name { color: maroon; }
+.jstree-anchor .svg-inline--fa.color-purple     ~ .tree_class_name { color: purple; }
+.jstree-anchor .svg-inline--fa.color-purple2    ~ .tree_class_name { color: mediumpurple; }
+.jstree-anchor .svg-inline--fa.color-brown      ~ .tree_class_name { color: sandybrown; }
+.jstree-anchor .svg-inline--fa.color-red        ~ .tree_class_name { color: red; }
+.jstree-anchor .svg-inline--fa.color-control    ~ .tree_class_name { color: #ca7841; }
+.jstree-anchor .svg-inline--fa.color-grid       ~ .tree_class_name { color: goldenrod; }
+.jstree-anchor .svg-inline--fa.color-gridcolumn ~ .tree_class_name { color: darkgoldenrod; }
+
+/* Right-click context menu — match Bootstrap dropdown look, tight rows. Overrides jstree default theme. */
+.vakata-context,
+.vakata-context ul {
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,.15) !important;
+  border-radius: .25rem !important;
+  box-shadow: 0 .25rem .5rem rgba(0,0,0,.15) !important;
+  padding: .15rem 0 !important;
+  font-size: 12px !important;
+  min-width: 0;
+}
+.vakata-context li {
+  line-height: 1.3 !important;
+}
+.vakata-context li > a {
+  padding: .15rem .65rem !important;
+  line-height: 1.3 !important;
+  min-height: 0 !important;
+  color: #212529 !important;
+  text-shadow: none !important;
+  font-size: 12px !important;
+}
+/* The empty icon slot <i> defaults to 2.4em x 2.4em — that's what was making rows huge.
+   FontAwesome converts <i class="fa-*"> to <svg class="svg-inline--fa">, so the same
+   sizing must apply to both element types. */
+.vakata-context li > a > i,
+.vakata-context li > a > i:empty,
+.vakata-context li > a > svg.svg-inline--fa {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  line-height: 1.2em !important;
+  vertical-align: middle !important;
+  margin-right: .35em !important;
+  color: #495057;
+}
+.vakata-context li > a .vakata-contextmenu-sep {
+  height: 1.2em !important;
+  margin: 0 .35em 0 0 !important;
+}
+.vakata-context li > a:hover,
+.vakata-context .vakata-context-hover > a {
+  background-color: #e9ecef !important;
+  box-shadow: none !important;
+  color: #212529 !important;
+}
+.vakata-context .vakata-context-separator > a,
+.vakata-context .vakata-context-separator > a:hover {
+  border-top-color: #dee2e6 !important;
+  margin: .15rem 0 !important;
+  padding: 0 !important;
+  line-height: 1px !important;
+  min-height: 1px !important;
+  height: 1px !important;
+}
+.vakata-context .vakata-contextmenu-disabled a,
+.vakata-context .vakata-contextmenu-disabled a:hover {
+  color: #adb5bd !important;
+}
+.vakata-context .vakata-contextmenu-shortcut {
+  font-size: 11px;
+  color: #6c757d;
+}
+
+/* === Offsite brand palette ============================== */
+/*  Green:  #88bd21   (logo's leaf paths)
+ *  Blue:   #236499   (logo's blue path)
+ *  Grey:   #7c7c7d   (logo's neutral grey path) */
+
+/* Portal-wide link color → offsite blue. Bootstrap button/nav-link/dropdown
+   classes win specificity (class selector beats element selector) so their
+   own color rules stay intact — no exclusion needed here. */
+:root {
+  --bs-link-color: #236499;
+  --bs-link-color-rgb: 35, 100, 153;
+  --bs-link-hover-color: #1a4d75;
+  --bs-link-hover-color-rgb: 26, 77, 117;
+}
+a {
+  color: #236499;
+}
+a:hover {
+  color: #1a4d75;
+}
+
+/* Offsite-green button — used by Compile in the navbar. */
+.btn-offsite-green {
+  background-color: #88bd21;
+  border-color: #88bd21;
+  color: #fff;
+}
+.btn-offsite-green:hover,
+.btn-offsite-green:focus {
+  background-color: #74a31c;
+  border-color: #74a31c;
+  color: #fff;
+}
+.btn-offsite-green:active,
+.btn-offsite-green.active {
+  background-color: #5e8517;
+  border-color: #5e8517;
+  color: #fff;
+}
+
+/* === Prop editor restyle ================================== */
+
+/* Pane + tab-pane background — match the treeview's #f8f9fa light gray. */
+#prop_frame,
+#prop_frame .content,
+#prop_frame .tab-content,
+#prop_frame .tab-content > .tab-pane {
+  background-color: #f8f9fa;
+}
+
+/* Tab strip */
+.pf-tabs.nav-tabs {
+  font-size: 12px;
+  --bs-nav-tabs-link-active-color: #236499;
+  --bs-nav-tabs-link-active-border-color: transparent transparent #236499;
+  --bs-nav-tabs-border-color: #dee2e6;
+  padding: 0 6px;
+}
+.pf-tabs .nav-link {
+  padding: .35rem .7rem;
+  color: #495057;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+}
+.pf-tabs .nav-link.active {
+  font-weight: 600;
+  border-bottom: 2px solid #236499;
+  background: transparent;
+  color: #236499;
+}
+.pf-tabs .nav-link:hover {
+  background: #f1f3f5;
+  color: #212529;
+  border-color: transparent;
+  border-bottom-color: #dee2e6;
+}
+.pf-tabs .nav-link.active:hover { border-bottom-color: #236499; }
+
+/* Property / Events tables (applied alongside the legacy .table_props hook) */
+table.table_props.pf-table { font-size: 12px; margin: 0; table-layout: fixed; border-collapse: collapse; }
+table.table_props.pf-table thead th {
+  background: #e9ecef; color: #495057; font-weight: 600;
+  border-bottom: 1px solid #dee2e6; padding: .35rem .55rem;
+}
+table.table_props.pf-table tbody td {
+  padding: .25rem .55rem; vertical-align: top;
+  border-bottom: 1px solid #f1f3f5;
+  overflow: hidden; word-break: break-word;
+}
+table.table_props.pf-table tbody tr:nth-child(odd) td  { background: #fff; }
+table.table_props.pf-table tbody tr:nth-child(even) td { background: #f8f9fa; }
+table.table_props.pf-table tbody tr:hover td           { background: rgba(136,189,33,0.15); }
+table.table_props.pf-table tbody tr.is-selected td     { background: rgba(136,189,33,0.22); box-shadow: inset 2px 0 0 #88bd21; }
+table.table_props.pf-table tbody tr.prop_mandatory td  { font-weight: 600; }
+table.table_props.pf-table .prop_name  {
+  color: #212529; border-right: 1px solid #f1f3f5; width: 30%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+table.table_props.pf-table .prop_value { color: #212529; }
+table.table_props.pf-table .prop_type  { color: #adb5bd; font-size: 11px; }
+table.table_props.pf-table .method_path { color: #6c757d; font-style: italic; font-size: 11px; }
+
+/* Events tab GUI / PHP group header rows */
+table.table_props.pf-table tbody td.event_type {
+  background: #e9ecef !important;
+  color: #495057; font-weight: 600;
+  font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+  padding: .25rem .55rem; border-bottom: 1px solid #dee2e6;
+}
+
+/* Inline SQL preview inside a property value cell */
+table.table_props.pf-table pre {
+  background: #f8f9fa; border: 1px solid #e9ecef; border-radius: .25rem;
+  padding: .35rem .5rem; font-size: 11px; color: #495057;
+  margin: .25rem 0 0 0; max-height: 100px; overflow: auto;
+}
+
+/* Methods / References list rows */
+.pf-list-row {
+  display: flex; align-items: flex-start;
+  padding: .25rem .55rem;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 12px;
+}
+.pf-list-row:nth-child(odd)  { background: #fff; }
+.pf-list-row:nth-child(even) { background: #f8f9fa; }
+.pf-list-row:hover           { background: rgba(136,189,33,0.15); }
+.pf-list-row .pf-list-main   { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-list-row .pf-list-actions{ flex-shrink: 0; margin-left: .5rem; display: inline-flex; gap: .15rem; }
+.pf-list-sub {
+  padding: .15rem .55rem .35rem 1.5rem;
+  font-size: 11px; color: #6c757d;
+  border-bottom: 1px solid #f1f3f5;
+  background: inherit;
+}
+.pf-list-sub a { color: #236499; text-decoration: none; }
+.pf-list-sub a:hover { text-decoration: underline; }
+.pf-list-sub .ref-kind { color: #495057; font-weight: 600; }
+
+/* References-tab two-line variant: kind:type on first line, indented link below */
+.pf-list-row.pf-ref-row {
+  flex-direction: column;
+  align-items: stretch;
+}
+.pf-list-row.pf-ref-row .pf-ref-head {
+  font-size: 12px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pf-list-row.pf-ref-row .pf-ref-link {
+  padding-left: 1.25rem;
+  font-size: 11px;
+  color: #6c757d;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pf-list-row.pf-ref-row .pf-ref-link a { color: #236499; text-decoration: none; }
+.pf-list-row.pf-ref-row .pf-ref-link a:hover { text-decoration: underline; }
+
+/* Empty Help tab */
+.pf-help-empty {
+  text-align: center; padding: 2rem 1rem; color: #6c757d; font-size: 12px;
+}
+.pf-help-empty > .fa-circle-info { font-size: 24px; color: #adb5bd; display: block; margin: 0 auto .5rem; }
+.pf-help-empty a { display: inline-block; margin: .25rem .5rem; color: #236499; text-decoration: none; }
+.pf-help-empty a:hover { text-decoration: underline; }
+
+/* Row-action button group used inside table cells and list rows */
+.pf-row-actions {
+  float: right;
+  display: inline-flex;
+  gap: .15rem;
+  margin-left: .35rem;
+}
+.pf-row-actions .btn {
+  --bs-btn-padding-x: .25rem;
+  --bs-btn-padding-y: .1rem;
+  --bs-btn-font-size: 12px;
+  --bs-btn-line-height: 1;
+  color: #6c757d;
+  background: transparent;
+  border: none;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+tr:hover .pf-row-actions .btn,
+.pf-list-row:hover .pf-row-actions .btn,
+.pf-row-actions .btn:focus {
+  opacity: 1;
+}
+.pf-row-actions .btn:hover {
+  background: transparent;
+  color: #236499;
+  opacity: 1;
+}
+
+/* === Wizards =========================================== */
+.wiz-card {
+  max-width: 900px;
+  margin: 1rem auto;
+}
+.wiz-card .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: .55rem .9rem;
+}
+.wiz-card .card-header h5 {
+  font-size: .9rem;
+  font-weight: 600;
+  color: #236499;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+.wiz-card .card-header h5 .fa-solid,
+.wiz-card .card-header h5 .fa-regular,
+.wiz-card .card-header h5 .svg-inline--fa {
+  color: #236499;
+  margin-right: .75rem;
+  font-size: 14px;
+}
+.wiz-card .card-body { padding: 1rem 1.1rem; }
+.wiz-card .card-footer {
+  background-color: #f8f9fa;
+  padding: .55rem .9rem;
+}
+.wiz-card .col-form-label { font-size: 13px; }
+.wiz-card .form-select,
+.wiz-card .form-control { font-size: 13px; }
+.wiz-card .form-check-label { font-size: 13px; }
+.wiz-card .help-text {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  margin-top: .25rem;
+}
+.wiz-card .form-section-title {
+  font-size: .7rem;
+  letter-spacing: .06em;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin: 1.1rem 0 .55rem 0;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+.wiz-card .btn-primary {
+  --bs-btn-bg: #236499;
+  --bs-btn-border-color: #236499;
+  --bs-btn-hover-bg: #1d527d;
+  --bs-btn-hover-border-color: #1d527d;
+  --bs-btn-active-bg: #1d527d;
+  --bs-btn-active-border-color: #1d527d;
+  font-size: 13px;
+}
+.wiz-result {
+  max-width: 900px;
+  margin: 1rem auto 0 auto;
+}
+
+/* === Property form editors ============================== */
+.pf-form {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+.pf-form .form-control,
+.pf-form .form-select {
+  flex: 1;
+  font-size: 12px;
+  padding: .15rem .4rem;
+  min-height: 0;
+  height: auto;
+}
+.pf-form textarea.form-control {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  min-height: 60px;
+}
+.pf-form .pf-form-btn {
+  --bs-btn-padding-x: .35rem;
+  --bs-btn-padding-y: .15rem;
+  --bs-btn-font-size: 12px;
+  --bs-btn-line-height: 1;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+}
+.pf-form .pf-form-btn:hover {
+  background: transparent;
+  color: #236499;
+}
+.pf-form .pf-form-btn .saveIcon {
+  color: #88bd21;
+}
+.pf-form.pf-form-stack {
+  display: block;
+  margin-top: .35rem;
+}
+.pf-form-stack-label {
+  font-size: 11px;
+  color: #6c757d;
+  margin-bottom: .15rem;
+  display: block;
+}
+
+/* === Wizard inner results ============================== */
+.wiz-result-card {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wiz-result-card .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 13px;
+}
+.diff-status {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  padding: .1rem .4rem;
+  border-radius: 3px;
+  background: #e9ecef;
+  color: #495057;
+}
+.diff-status-new       { background: #d1e7dd; color: #0a3622; }
+.diff-status-modify    { background: #d1e7dd; color: #0a3622; }
+.diff-status-delete    { background: #f8d7da; color: #58151c; }
+.diff-status-skip      { background: #fff3cd; color: #664d03; }
+.diff-status-uptodate  { background: #e9ecef; color: #6c757d; }
+.diff-status-unchanged { background: #e9ecef; color: #6c757d; }
+
+/* parent-status default tint for the whole table */
+.diff-table-new       tbody tr { background-color: rgba(25, 135, 84, .06); }
+.diff-table-modify    tbody tr { background-color: rgba(25, 135, 84, .06); }
+.diff-table-delete    tbody tr { background-color: rgba(220, 53, 69, .06); }
+.diff-table-skip      tbody tr { background-color: rgba(255, 193, 7, .08); }
+.diff-table-uptodate  tbody tr { color: #6c757d; }
+.diff-table-unchanged tbody tr { color: #6c757d; }
+
+/* per-row override (stronger) */
+.diff-table tbody tr.new       { background-color: rgba(25, 135, 84, .14); }
+.diff-table tbody tr.modify    { background-color: rgba(25, 135, 84, .14); }
+.diff-table tbody tr.delete    { background-color: rgba(220, 53, 69, .14); }
+.diff-table tbody tr.skip      { background-color: rgba(255, 193, 7, .18); }
+.diff-table tbody tr.uptodate  { background-color: transparent; color: #6c757d; }
+.diff-table tbody tr.unchanged { background-color: transparent; color: #6c757d; }
+
+.diff-table td,
+.diff-table th { font-size: 12px; }
+
+/* let long dotted component paths wrap inside table cells */
+.wiz-card .table small,
+.wiz-card .table .text-muted {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* search result value-row styling */
+.search-value {
+  background-color: #f8f9fa;
+  padding: .35rem .6rem !important;
+}
+.search-value pre {
+  margin: 0;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }

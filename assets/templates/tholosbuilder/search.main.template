@@ -1,15 +1,20 @@
-<h1 class="text-center">Tholos :: Search result</h1>
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-magnifying-glass"></i> Search results</h5>
+  </div>
+  <div class="card-body">
+    <p class="mb-3">Search term: <code>$searchfor</code></p>
 
-<div id="search_result">
-<p>Search term: <b>$searchfor</b></p>
-
-<h4>Component</h4>
-<table style="width: auto;">
-  <tr>
-    <th style="padding: 2px;">Component</th>
-    <th style="padding: 2px;">Route</th>
-    <th style="padding: 2px;">Path</th>
-  </tr>
+    <div id="search_result">
+      <div class="form-section-title">Components</div>
+      <table class="table table-sm table-hover mb-3">
+        <thead class="table-light">
+          <tr>
+            <th style="width:30%">Component</th>
+            <th>Route</th>
+          </tr>
+        </thead>
+        <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.rowcomponent;
@@ -21,14 +26,18 @@ select tpv.id, tpv.name_with_type, tpv.path, null as component_name, null as val
  where lower(tpv.name_with_type) like lower('%$searchFor%')
  order by tpv.route, tpv.path
 %SQL%>
-</table>
+        </tbody>
+      </table>
 
-<h4>Properties</h4>
-<table style="width: 100%;">
-  <tr>
-    <th>Property</th>
-    <th>Component</th>
-  </tr>
+      <div class="form-section-title">Properties</div>
+      <table class="table table-sm table-hover mb-3">
+        <thead class="table-light">
+          <tr>
+            <th style="width:30%">Property</th>
+            <th>Component</th>
+          </tr>
+        </thead>
+        <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.row;
@@ -42,14 +51,18 @@ select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'
        and tpv.id=cpv.component_id
  order by tpv.route, tpv.path, cpv.name
 %SQL%>
-</table>
+        </tbody>
+      </table>
 
-<h4>Event values</h4>
-<table style="width: 100%;">
-  <tr>
-    <th>Event</th>
-    <th>Component</th>
-  </tr>
+      <div class="form-section-title">Event values</div>
+      <table class="table table-sm table-hover mb-3">
+        <thead class="table-light">
+          <tr>
+            <th style="width:30%">Event</th>
+            <th>Component</th>
+          </tr>
+        </thead>
+        <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.row;
@@ -63,14 +76,18 @@ select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'
        and tpv.id=cpv.component_id
  order by tpv.route, tpv.path, cpv.name
 %SQL%>
-</table>
+        </tbody>
+      </table>
 
-<h4>Event parameters</h4>
-<table style="width: 100%;">
-  <tr>
-    <th>Event</th>
-    <th>Component</th>
-  </tr>
+      <div class="form-section-title">Event parameters</div>
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th style="width:30%">Event</th>
+            <th>Component</th>
+          </tr>
+        </thead>
+        <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.row;
@@ -84,4 +101,8 @@ select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'
        and tpv.id=cpv.component_id
  order by tpv.route, tpv.path, cpv.name
 %SQL%>
-</table>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
