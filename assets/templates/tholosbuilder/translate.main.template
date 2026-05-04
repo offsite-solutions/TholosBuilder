@@ -1,6 +1,9 @@
-<h1 class="text-center">Tholos :: Translate language tags</h1>
-
-<pre>
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-language"></i> Translate language tags</h5>
+  </div>
+  <div class="card-body">
+    <pre class="bg-light border rounded p-2 mb-0" style="font-size: 12px; white-space: pre-wrap; word-break: break-word; max-height: 70vh; overflow-y: auto;">
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/translate.row;
@@ -8,10 +11,12 @@ SQL=
 select value as text
   from app_component_properties_v cpv
  where value like '%['||':%'
-union all 
+union all
 select value as text
   from app_component_events_v cpv
  where value like '%['||':%'
   order by 1
 %SQL%>
-</pre>
+    </pre>
+  </div>
+</div>
