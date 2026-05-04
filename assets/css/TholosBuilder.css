@@ -435,23 +435,6 @@ div.tooltip-inner {
   color: lightgrey;
 }
 
-table.redmine-issues {
-  width: 100%;
-}
-
-table.redmine-issues th {
-  background-color: lightgrey;
-  font-weight: bold;
-}
-
-table.redmine-issues tr.issue-subject {
-  border-bottom: 1px solid lightgrey;
-}
-
-table.redmine-issues tr.issue-subject td {
-  padding: 5px;
-}
-
 #userprofile p label {
   display: block;
   margin-bottom: 5px;
@@ -1005,3 +988,37 @@ tr:hover .pf-row-actions .btn,
   margin-bottom: .15rem;
   display: block;
 }
+
+/* === Wizard inner results ============================== */
+.wiz-result-card {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wiz-result-card .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 13px;
+}
+.diff-status {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  padding: .1rem .4rem;
+  border-radius: 3px;
+  background: #e9ecef;
+  color: #495057;
+}
+.diff-status-new       { background: #d1e7dd; color: #0a3622; }
+.diff-status-modify    { background: #fff3cd; color: #664d03; }
+.diff-status-delete    { background: #f8d7da; color: #58151c; }
+.diff-status-unchanged { background: #e9ecef; color: #6c757d; }
+
+.diff-table tr.new       { background-color: rgba(25, 135, 84, .06); }
+.diff-table tr.modify    { background-color: rgba(255, 193, 7, .08); }
+.diff-table tr.delete    { background-color: rgba(220, 53, 69, .06); }
+.diff-table tr.unchanged { color: #6c757d; }
+.diff-table td,
+.diff-table th { font-size: 12px; }
