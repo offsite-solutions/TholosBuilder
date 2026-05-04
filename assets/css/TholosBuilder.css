@@ -834,6 +834,24 @@ table.table_props.pf-table pre {
 .pf-list-sub a:hover { text-decoration: underline; }
 .pf-list-sub .ref-kind { color: #495057; font-weight: 600; }
 
+/* References-tab two-line variant: kind:type on first line, indented link below */
+.pf-list-row.pf-ref-row {
+  flex-direction: column;
+  align-items: stretch;
+}
+.pf-list-row.pf-ref-row .pf-ref-head {
+  font-size: 12px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pf-list-row.pf-ref-row .pf-ref-link {
+  padding-left: 1.25rem;
+  font-size: 11px;
+  color: #6c757d;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pf-list-row.pf-ref-row .pf-ref-link a { color: #236499; text-decoration: none; }
+.pf-list-row.pf-ref-row .pf-ref-link a:hover { text-decoration: underline; }
+
 /* Empty Help tab */
 .pf-help-empty {
   text-align: center; padding: 2rem 1rem; color: #6c757d; font-size: 12px;
