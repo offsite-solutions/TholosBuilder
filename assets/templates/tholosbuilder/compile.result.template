@@ -1,20 +1,24 @@
-<h3>Compile result</h3>
-<pre>
-Application Cache: $TholosApplicationCache
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-circle-check"></i> Compile result</h5>
+  </div>
+  <div class="card-body">
+    <pre class="bg-light border rounded p-2 mb-3" style="font-size: 12px;">Application Cache: $TholosApplicationCache
 Compiled: $compiled
-Compilation time: $CompilationTime seconds
-</pre>
+Compilation time: $CompilationTime seconds</pre>
 
-<p class="text-center">[%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;true=;false=<button onclick="commitChanges()" title="Commit your changes"><i class="fa-regular fa-floppy"></i> Commit</button>%]</p>
+    <div class="form-section-title">Compilation errors</div>
+    <p class="text-muted small mb-3">Please note that routes starting with underscore (_) character are excluded from syntax checking.</p>
 
-<h4>Compilation errors</h4>
-<i>Please note that routes starting with underscore (_) character are excluded from syntax checking</i>
-<h5>Empty mandatory properties</h5>
-<table>
-  <tr>
-    <th>Component</th>
-    <th>Property</th>
-  </tr>
+    <div class="form-section-title">Empty mandatory properties</div>
+    <table class="table table-sm table-hover mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Component</th>
+          <th style="width:25%">Property</th>
+        </tr>
+      </thead>
+      <tbody>
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/compile.mandatoryproperties;
@@ -28,4 +32,10 @@ select tpv.id,tpv.name_with_type, tpv.path, cpv.name as component_name
        and (tpv. route is null or tpv.route not like '\_%' escape '\')
  order by tpv.route, tpv.path, cpv.name
 %SQL%>
-</table>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer text-end">
+    [%_function_name=TholosBuilder\TholosBuilderCallback::_eqs;param=task_number;value=;true=;false=<button type="button" class="btn btn-primary" onclick="commitChanges()" title="Commit your changes"><i class="fa-regular fa-floppy-disk me-1"></i>Commit</button>%]
+  </div>
+</div>

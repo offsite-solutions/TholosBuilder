@@ -1036,3 +1036,10 @@ tr:hover .pf-row-actions .btn,
 
 .diff-table td,
 .diff-table th { font-size: 12px; }
+
+/* let long dotted component paths wrap inside table cells */
+.wiz-card .table small,
+.wiz-card .table .text-muted {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
