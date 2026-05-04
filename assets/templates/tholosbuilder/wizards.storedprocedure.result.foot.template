@@ -1,5 +1,7 @@
-<div class="text-end mt-3">
-  <button type="button" class="btn btn-primary" onclick="StoredProcedureWizardRun($p_component_id,'save');">
-    <i class="fa-regular fa-floppy-disk me-1"></i>Save changes
-  </button>
+  </div>
+  <div class="card-footer text-end">
+    <button type="button" class="btn btn-primary" onclick="StoredProcedureWizardRun($p_component_id,'save');">
+      <i class="fa-regular fa-floppy-disk me-1"></i>Save changes
+    </button>
+  </div>
 </div>

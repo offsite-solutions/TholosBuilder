@@ -2022,7 +2022,10 @@
           }
         }
         
-        $responseArray['html'] .= '<form id="wizardForm" onsubmit="return false;">';
+        $responseArray['html'] .= '<div class="wiz-card card">'
+                                . '<div class="card-header"><h5><i class="fa-regular fa-table-list"></i> Generated TDBField columns</h5></div>'
+                                . '<div class="card-body">'
+                                . '<form id="wizardForm" onsubmit="return false;">';
         foreach ($o_columns as $col_index => $o2) {
           $s = "";
           foreach ($props as $prop) {
@@ -2299,6 +2302,9 @@
           }
         }
         
+        $responseArray['html'] .= '<div class="wiz-card card">'
+                                . '<div class="card-header"><h5><i class="fa-regular fa-table-list"></i> Generated TDBParam parameters</h5></div>'
+                                . '<div class="card-body">';
         foreach ($o_columns as $o2) {
           $s = "";
           foreach ($props as $prop) {

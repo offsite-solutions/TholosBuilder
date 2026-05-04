@@ -1,11 +1,13 @@
-  <input type="hidden" name="action" value="QueryWizardRun">
-  <input type="hidden" name="p_component_id" value="$p_component_id">
-  <input type="hidden" name="p_trans_root" value="$p_trans_root">
-  <input type="hidden" name="p_skip_label" value="$p_skip_label">
-  <input type="hidden" name="todo" value="save">
-  <div class="text-end mt-3">
+      <input type="hidden" name="action" value="QueryWizardRun">
+      <input type="hidden" name="p_component_id" value="$p_component_id">
+      <input type="hidden" name="p_trans_root" value="$p_trans_root">
+      <input type="hidden" name="p_skip_label" value="$p_skip_label">
+      <input type="hidden" name="todo" value="save">
+    </form>
+  </div>
+  <div class="card-footer text-end">
     <button type="button" class="btn btn-primary" onclick="QueryWizardRunSave();">
       <i class="fa-regular fa-floppy-disk me-1"></i>Save changes
     </button>
   </div>
-</form>
+</div>

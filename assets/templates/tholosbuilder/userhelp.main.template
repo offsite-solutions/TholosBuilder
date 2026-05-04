@@ -1,4 +1,9 @@
-<div id="userguide">
+<div class="wiz-card card">
+  <div class="card-header">
+    <h5><i class="fa-regular fa-book-open"></i> User guide</h5>
+  </div>
+  <div class="card-body">
+    <div id="userguide">
 <%SQL%
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/userhelp.row;
@@ -12,4 +17,6 @@ select atp.name, ah.text,
        and ah.help_id is null
  order by atp.component_order
 %SQL%>
+    </div>
+  </div>
 </div>
