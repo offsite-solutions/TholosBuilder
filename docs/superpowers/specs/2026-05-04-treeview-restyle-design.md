@@ -35,6 +35,7 @@ remain out of scope for follow-up specs on the same branch.
 - Tree pane background: change from white to light gray.
 - Type badge (`.tree_class_name`): drop the pill (white-on-grey rect) and color the text to match its node's icon color. No casing transform — data is already PascalCase.
 - Long node labels: truncate with `…` ellipsis while keeping the type badge anchored on the right.
+- Right-click context menu (`.vakata-context` from jstree): restyle to match the new chrome — drop the dated 2.4em-line / blue-shadow look in favor of a Bootstrap-dropdown-like appearance (white background, subtle border, compact padding, neutral hover).
 - Dead-code cleanup in `TholosBuilder.css`:
   - `#search_result_tree`, `#search_result_tree .folder`, `#search_result_tree .file` (3 rules).
   - `#app_tree .folder`, `#app_tree .file` (2 rules).
@@ -155,7 +156,55 @@ Mirrors the existing `.color-*` declarations in `TholosBuilder.css` (lines
 Each rule has the form
 `.jstree-anchor .svg-inline--fa.<color-class> ~ .tree_class_name { color: <value>; }`.
 
-### 3.5 Dead-code cleanup
+### 3.5 Context menu restyle (`.vakata-context`)
+
+jstree's contextmenu plugin renders right-click menus as a `<ul class="vakata-context">`
+appended to `<body>`. The default theme styles it with a 2.4em-tall row,
+`#f5f5f5` background, `#979797` border, a 2px box-shadow, and a `#e8eff7`
+hover background with a `#0a6aa1` glow. That visual idiom is dated and
+clashes with the Bootstrap-5 chrome elsewhere.
+
+We target the same selectors with project-level overrides in `TholosBuilder.css`,
+producing a dropdown that visually matches the navbar's `.dropdown-menu`:
+
+```css
+.vakata-context,
+.vakata-context ul {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: .375rem;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  padding: .25rem 0;
+  font-size: 12px;
+}
+.vakata-context li > a {
+  padding: .3rem .9rem;
+  line-height: 1.5;
+  color: #212529;
+  text-shadow: none;
+}
+.vakata-context li > a:hover,
+.vakata-context .vakata-context-hover > a {
+  background-color: #e9ecef;
+  box-shadow: none;
+  color: #212529;
+}
+.vakata-context .vakata-context-separator > a,
+.vakata-context .vakata-context-separator > a:hover {
+  border-top-color: #dee2e6;
+  margin: .25rem 0;
+}
+.vakata-context .vakata-contextmenu-disabled a,
+.vakata-context .vakata-contextmenu-disabled a:hover {
+  color: #adb5bd;
+}
+```
+
+These overrides are added to `TholosBuilder.css` near the other `#app_tree`
+treeview rules. The jstree contextmenu plugin's behavior, item set, and
+JS callbacks are not touched.
+
+### 3.6 Dead-code cleanup
 
 Verified via repo-wide grep at design time:
 
@@ -169,7 +218,7 @@ Verified via repo-wide grep at design time:
 | File | Change |
 |---|---|
 | `src/TholosBuilder/TholosBuilderApplication.php` | In `loadAppTree()` (around line 652), wrap the label expression: change `t.name\|\|'<span class="tree_class_name">'\|\|...` to `'<span class="tree_node_label">'\|\|t.name\|\|'</span><span class="tree_class_name">'\|\|...`. No other PHP changes. |
-| `assets/css/TholosBuilder.css` | (a) Change `#app_tree_container` background from `#fff` to `#f8f9fa`. (b) Replace the `.tree_class_name` rule body — keep `font-size: 9px`, drop `color: #fff`, `background-color: #999`, `padding`, `margin-left`, `border-radius`. (c) Add 14 `.jstree-anchor .svg-inline--fa.color-* ~ .tree_class_name { color: …; }` rules. (d) Add `.jstree-anchor` flex rules and the `.tree_node_label` rule. (e) Delete `#search_result_tree`, `#search_result_tree .folder`, `#search_result_tree .file` rules. (f) Delete `#app_tree .folder` and `#app_tree .file` rules. |
+| `assets/css/TholosBuilder.css` | (a) Change `#app_tree_container` background from `#fff` to `#f8f9fa`. (b) Replace the `.tree_class_name` rule body — keep `font-size: 9px`, drop `color: #fff`, `background-color: #999`, `padding`, `margin-left`, `border-radius`. (c) Add 14 `.jstree-anchor .svg-inline--fa.color-* ~ .tree_class_name { color: …; }` rules. (d) Add `.jstree-anchor` flex rules and the `.tree_node_label` rule. (e) Add `.vakata-context*` overrides for the right-click context menu (see §3.5). (f) Delete `#search_result_tree`, `#search_result_tree .folder`, `#search_result_tree .file` rules. (g) Delete `#app_tree .folder` and `#app_tree .file` rules. |
 | `assets/images/file_sprite.png` | Delete. |
 | `assets/js/TholosBuilder.js` | No change. |
 | `assets/templates/tholosbuilder/*.template` | No change. |
@@ -186,7 +235,7 @@ Verified via repo-wide grep at design time:
 2. Every visible node's `.tree_class_name` text uses the same color as that node's FontAwesome icon — verifiable for at least one node per icon color class present in the tree.
 3. A node whose label exceeds its container's width (e.g. `filterSEAT_BELT_PASSENGER` under a deeply nested grid filter) renders as `filterSEAT_BELT_PASS…` followed immediately by its `TGridFilter` badge on the right edge.
 4. The type label appears in the original PascalCase as stored in the database (e.g. `TQuery`, not `tquery` or `TQUERY`).
-5. Right-click context menu still opens with Edit, Create child, and the four wizard entries; selection still works; expand/collapse still works; refresh button still reloads the tree.
+5. Right-click context menu still opens with Edit, Create child, and the four wizard entries; the menu now renders with a white background, subtle 1px border, soft shadow, compact rows (no 2.4em-tall items), and a neutral grey hover (no blue glow) — matching the navbar dropdown look. Selection still works; expand/collapse still works; refresh button still reloads the tree.
 6. After the cleanup commit, no template or script references `#search_result_tree`, `#app_tree .folder`, `#app_tree .file`, or `file_sprite.png`. The PNG file is gone from `assets/images/`.
 7. No console errors during tree load or interaction.
 
