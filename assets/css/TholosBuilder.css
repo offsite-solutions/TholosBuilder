@@ -204,46 +204,6 @@ html,body,td,th {
 
 #app_tree { height: 100%; width: 100%; overflow: auto; padding-left: 0px;}
 
-/* .nav-tabs > li > a {
-  padding: 5px !important;
-  font-size: 12px !important;
-}
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus{
-    color: #fff !important;
-    background-color: #8cb0cb !important;
-} */
-
-#prop_frame .ui-tabs-nav {
-  padding-left: 0px;
-  background: transparent;
-  border-width: 0px 0px 1px 0px;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
-}
-#prop_frame .ui-tabs-panel {
-  background: #fff;
-  border: 0;
-  padding: 0;
-}
-
-#prop_frame .ui-tabs-anchor {
-  padding: 5px;
-  font-size: 12px;
-}
-
-#prop_frame .ui-state-focus {
-  border: 0;
-}
-
-#prop_frame .ui-tabs-active {
-  background-color: #8cb0cb;
-  border-style: none;
-}
-
 .tab-content {
   height: 100%;
 }

@@ -1,15 +1,30 @@
-<ul id="prop_tabs">
-  <li><a href="#tab_prop_0">Properties</a></li>
-  <li><a href="#tab_prop_1">Events</a></li>
-  <li><a href="#tab_prop_2">Methods</a></li>
-  <li><a href="#tab_prop_3">References</a></li>
-  <li><a href="#tab_prop_4">Help</a></li>
+<ul id="prop_tabs" class="nav nav-tabs pf-tabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" type="button" role="tab"
+            data-bs-toggle="tab" data-bs-target="#tab_prop_0">Properties</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab"
+            data-bs-toggle="tab" data-bs-target="#tab_prop_1">Events</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab"
+            data-bs-toggle="tab" data-bs-target="#tab_prop_2">Methods</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab"
+            data-bs-toggle="tab" data-bs-target="#tab_prop_3">References</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab"
+            data-bs-toggle="tab" data-bs-target="#tab_prop_4">Help</button>
+  </li>
 </ul>
 
 <div class="tab-content">
-  <div id="tab_prop_0" class="col-sm-12"></div>
-  <div id="tab_prop_1" class="col-sm-12"></div>
-  <div id="tab_prop_2" class="col-sm-12"></div>
-  <div id="tab_prop_3" class="col-sm-12"></div>
-  <div id="tab_prop_4" class="col-sm-12"></div>
+  <div id="tab_prop_0" class="col-sm-12 tab-pane fade show active" role="tabpanel" tabindex="0"></div>
+  <div id="tab_prop_1" class="col-sm-12 tab-pane fade" role="tabpanel" tabindex="0"></div>
+  <div id="tab_prop_2" class="col-sm-12 tab-pane fade" role="tabpanel" tabindex="0"></div>
+  <div id="tab_prop_3" class="col-sm-12 tab-pane fade" role="tabpanel" tabindex="0"></div>
+  <div id="tab_prop_4" class="col-sm-12 tab-pane fade" role="tabpanel" tabindex="0"></div>
 </div>

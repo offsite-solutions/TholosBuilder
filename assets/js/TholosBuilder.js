@@ -862,11 +862,10 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
       success: function (data) {
         if (data.success == 'OK') {
           $('#prop_frame').find('.content').html(data.html);
-          $('#prop_frame .content').tabs({active: 0});
-          $('#prop_frame .content').tabs({
-            activate: function (event, ui) {
-              showPropertiesAndEvents('', '', '');
-            }
+          // Bootstrap 5 nav-tabs: first tab is .show.active in the template;
+          // refresh the panel content whenever the user switches tabs.
+          $('#prop_tabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            showPropertiesAndEvents('', '', '');
           });
           showPropertiesAndEvents(component_id_, property_id_, event_id_);
         } else {
@@ -879,7 +878,10 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
       }
     });
   } else {
-    var tabIndex = $('#prop_frame .content').tabs('option', 'active');
+    // Bootstrap 5 nav-tabs: derive the active tab's 0..4 index from the
+    // active button's data-bs-target ("#tab_prop_N").
+    var activeTarget = $('#prop_tabs button.nav-link.active').attr('data-bs-target') || '#tab_prop_0';
+    var tabIndex = parseInt(activeTarget.replace('#tab_prop_', ''), 10);
     if (component_id_ == '') component_id_ = lastComponentId;
     else lastComponentId = component_id_;
     if (property_id_ == '' && event_id_ == '')
