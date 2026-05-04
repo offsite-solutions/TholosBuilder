@@ -97,34 +97,62 @@ html,body,td,th {
   padding: 0px;
 }
 
-#task_frame {
-  position: absolute;
-  background-color: #8cb0cb;;
-  border:1px solid #3d6c91;
-  border-radius: 5px;
-  padding: 3px;
-  right: 5px;
-  top: 5px;
-  width: auto;
-  height: auto;
+/* Negate the navbar's vertical padding so a child can extend to the navbar's
+   absolute outer edges (used by the task notch wrapper). */
+.tb-navbar-stretch-y {
+  margin-top: calc(var(--bs-navbar-padding-y) * -1);
+  margin-bottom: calc(var(--bs-navbar-padding-y) * -1);
+}
+
+/* Task / issue chooser slot — a real notch sticking down from the navbar's top
+   edge, centered horizontally between Refresh and the right-hand nav items.
+   Server populates innerHTML via reloadTaskFrame() AJAX (taskframe.main.template). */
+.tb-task-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  background: #236499;
   color: #fff;
-  font-size: 8pt;
-  opacity: 0.5;
+  padding: 0 .65rem;
+  border-radius: 0 0 .5rem .5rem;
+  height: calc(100% - 5px);
+  max-width: 380px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1;
+  overflow: hidden;
+  position: relative;
+  z-index: 1030;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .18);
+  margin-top: -2px;
+  border: 1px solid #777;
+  border-top: none;
 }
-
-#task_frame:hover {
-  opacity: 1;
-  z-index: 999;
+.tb-task-slot:empty {
+  display: none;                             /* hide notch entirely until server populates it */
 }
-
-#task_frame a {
-  font-size: 8pt;
+.tb-task-slot a {
   color: #fff;
   text-decoration: none;
 }
-
-#task_frame p {
-  margin: 2px;
+.tb-task-slot a:hover {
+  color: rgba(255,255,255,.85);
+}
+.tb-task-slot .task-link {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 280px;
+}
+.tb-task-slot .task-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .2rem;
+  height: 100%;
 }
 
 #nav_frame, #prop_frame {
@@ -613,6 +641,27 @@ pre.error {
   white-space: nowrap;
 }
 
+/* Selected and hovered tree rows tinted with the offsite brand green (#88bd21). */
+.jstree-default .jstree-hovered,
+.jstree-default-small .jstree-hovered {
+  background: rgba(136, 189, 33, 0.15);
+  box-shadow: none;
+  border-radius: 3px;
+}
+.jstree-default .jstree-clicked,
+.jstree-default-small .jstree-clicked {
+  background: rgba(136, 189, 33, 0.40);
+  box-shadow: inset 0 0 0 1px #88bd21;
+  border-radius: 3px;
+}
+.jstree-default > .jstree-wholerow-ul .jstree-wholerow-hovered {
+  background: rgba(136, 189, 33, 0.15);
+}
+.jstree-default > .jstree-wholerow-ul .jstree-wholerow-clicked {
+  background: rgba(136, 189, 33, 0.40);
+  box-shadow: inset 0 0 0 1px #88bd21;
+}
+
 /* Badge text inherits the node icon's color via general-sibling selector — one rule per existing color-* class. */
 .jstree-anchor .svg-inline--fa.color-grey       ~ .tree_class_name { color: #c8c8c8; }
 .jstree-anchor .svg-inline--fa.color-green      ~ .tree_class_name { color: green; }
@@ -632,48 +681,102 @@ pre.error {
 /* Right-click context menu — match Bootstrap dropdown look, tight rows. Overrides jstree default theme. */
 .vakata-context,
 .vakata-context ul {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.15);
-  border-radius: .25rem;
-  box-shadow: 0 .25rem .5rem rgba(0,0,0,.15);
-  padding: .15rem 0;
-  font-size: 12px;
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,.15) !important;
+  border-radius: .25rem !important;
+  box-shadow: 0 .25rem .5rem rgba(0,0,0,.15) !important;
+  padding: .15rem 0 !important;
+  font-size: 12px !important;
   min-width: 0;
 }
 .vakata-context li {
-  line-height: 1.3;
+  line-height: 1.3 !important;
 }
 .vakata-context li > a {
   padding: .15rem .65rem !important;
   line-height: 1.3 !important;
-  min-height: 0;
-  color: #212529;
-  text-shadow: none;
-  font-size: 12px;
+  min-height: 0 !important;
+  color: #212529 !important;
+  text-shadow: none !important;
+  font-size: 12px !important;
+}
+/* The empty icon slot <i> defaults to 2.4em x 2.4em — that's what was making rows huge.
+   FontAwesome converts <i class="fa-*"> to <svg class="svg-inline--fa">, so the same
+   sizing must apply to both element types. */
+.vakata-context li > a > i,
+.vakata-context li > a > i:empty,
+.vakata-context li > a > svg.svg-inline--fa {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  line-height: 1.2em !important;
+  vertical-align: middle !important;
+  margin-right: .35em !important;
+  color: #495057;
+}
+.vakata-context li > a .vakata-contextmenu-sep {
+  height: 1.2em !important;
+  margin: 0 .35em 0 0 !important;
 }
 .vakata-context li > a:hover,
 .vakata-context .vakata-context-hover > a {
-  background-color: #e9ecef;
-  box-shadow: none;
-  color: #212529;
+  background-color: #e9ecef !important;
+  box-shadow: none !important;
+  color: #212529 !important;
 }
 .vakata-context .vakata-context-separator > a,
 .vakata-context .vakata-context-separator > a:hover {
-  border-top-color: #dee2e6;
-  margin: .15rem 0;
+  border-top-color: #dee2e6 !important;
+  margin: .15rem 0 !important;
   padding: 0 !important;
-  line-height: 0 !important;
+  line-height: 1px !important;
+  min-height: 1px !important;
+  height: 1px !important;
 }
 .vakata-context .vakata-contextmenu-disabled a,
 .vakata-context .vakata-contextmenu-disabled a:hover {
-  color: #adb5bd;
-}
-.vakata-context li > a > i,
-.vakata-context li > a > i.jstree-icon {
-  width: 1.4em;
-  margin-right: .25em;
+  color: #adb5bd !important;
 }
 .vakata-context .vakata-contextmenu-shortcut {
   font-size: 11px;
   color: #6c757d;
+}
+
+/* === Offsite brand palette ============================== */
+/*  Green:  #88bd21   (logo's leaf paths)
+ *  Blue:   #236499   (logo's blue path)
+ *  Grey:   #7c7c7d   (logo's neutral grey path) */
+
+/* Portal-wide link color → offsite blue. Bootstrap button/nav-link/dropdown
+   classes win specificity (class selector beats element selector) so their
+   own color rules stay intact — no exclusion needed here. */
+:root {
+  --bs-link-color: #236499;
+  --bs-link-color-rgb: 35, 100, 153;
+  --bs-link-hover-color: #1a4d75;
+  --bs-link-hover-color-rgb: 26, 77, 117;
+}
+a {
+  color: #236499;
+}
+a:hover {
+  color: #1a4d75;
+}
+
+/* Offsite-green button — used by Compile in the navbar. */
+.btn-offsite-green {
+  background-color: #88bd21;
+  border-color: #88bd21;
+  color: #fff;
+}
+.btn-offsite-green:hover,
+.btn-offsite-green:focus {
+  background-color: #74a31c;
+  border-color: #74a31c;
+  color: #fff;
+}
+.btn-offsite-green:active,
+.btn-offsite-green.active {
+  background-color: #5e8517;
+  border-color: #5e8517;
+  color: #fff;
 }

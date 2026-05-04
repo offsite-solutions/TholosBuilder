@@ -35,7 +35,11 @@
 
     <button class="btn nav-icon-btn me-2" title="Refresh tree" onclick="loadAppTree('#app_tree');"><i class="fa-regular fa-refresh" id="globalLoading"></i></button>
 
-    <ul class="navbar-nav ms-auto align-items-center">
+    <div class="flex-grow-1 d-flex justify-content-center align-self-stretch mx-2 tb-navbar-stretch-y">
+      <div id="task_frame" class="tb-task-slot"></div>
+    </div>
+
+    <ul class="navbar-nav align-items-center">
       <li class="nav-item">
         <a class="nav-link" href="javascript:showTranslate();"><i class="fa-regular fa-language me-1"></i>Language</a>
       </li>
@@ -54,11 +58,11 @@
       </li>
 
       <li class="nav-item ms-2">
-        <button class="btn btn-primary" onclick="compile('T');"><i class="fa-regular fa-landmark me-1"></i>Build</button>
+        <button class="btn btn-danger" onclick="confirmBuild();"><i class="fa-regular fa-landmark me-1"></i>Build</button>
       </li>
 
       <li class="nav-item ms-2">
-        <button class="btn btn-success" onclick="compile('F');"><i class="fa-regular fa-circle-check me-1"></i>Compile</button>
+        <button class="btn btn-offsite-green" onclick="compile('F');"><i class="fa-regular fa-circle-check me-1"></i>Compile</button>
       </li>
 
       <li class="nav-item dropdown ms-3">
@@ -74,7 +78,6 @@
 </nav>
 <div id="wrapper" class="container-fluid">
   <div id="container">
-    <div id="task_frame"></div>
     <div id="nav_frame" class="resizable">
       <div class="content"></div>
     </div>
