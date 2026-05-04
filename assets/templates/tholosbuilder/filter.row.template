@@ -1,1 +1,6 @@
-<input type="checkbox" name="filter_route_$id" $checked value="T"> $name<br/>
+<div class="col">
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="filter_route_$id" name="filter_route_$id" $checked value="T">
+    <label class="form-check-label" for="filter_route_$id">$name</label>
+  </div>
+</div>
