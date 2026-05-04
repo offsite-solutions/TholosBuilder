@@ -1054,6 +1054,20 @@ tr:hover .pf-row-actions .btn,
   white-space: pre-wrap;
   word-break: break-word;
 }
+/* Unified <pre> block used inside wiz-card bodies */
+.wiz-pre {
+  font-size: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: .25rem;
+  padding: .5rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.wiz-pre-scroll {
+  max-height: 70vh;
+  overflow-y: auto;
+}
 /* Redmine issues list — pair the meta-row with its subject row */
 .issues-table tbody tr td { border-bottom: 0; }
 .issues-table tbody tr.issue-subject td {

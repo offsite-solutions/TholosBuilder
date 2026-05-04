@@ -3,7 +3,7 @@
     <h5><i class="fa-regular fa-circle-check"></i> Compile result</h5>
   </div>
   <div class="card-body">
-    <pre class="bg-light border rounded p-2 mb-3" style="font-size: 12px;">Application Cache: $TholosApplicationCache
+    <pre class="wiz-pre mb-3">Application Cache: $TholosApplicationCache
 Compiled: $compiled
 Compilation time: $CompilationTime seconds</pre>
 
