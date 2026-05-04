@@ -960,3 +960,48 @@ tr:hover .pf-row-actions .btn,
   max-width: 900px;
   margin: 1rem auto 0 auto;
 }
+
+/* === Property form editors ============================== */
+.pf-form {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+.pf-form .form-control,
+.pf-form .form-select {
+  flex: 1;
+  font-size: 12px;
+  padding: .15rem .4rem;
+  min-height: 0;
+  height: auto;
+}
+.pf-form textarea.form-control {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  min-height: 60px;
+}
+.pf-form .pf-form-btn {
+  --bs-btn-padding-x: .35rem;
+  --bs-btn-padding-y: .15rem;
+  --bs-btn-font-size: 12px;
+  --bs-btn-line-height: 1;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+}
+.pf-form .pf-form-btn:hover {
+  background: transparent;
+  color: #236499;
+}
+.pf-form .pf-form-btn .saveIcon {
+  color: #88bd21;
+}
+.pf-form.pf-form-stack {
+  display: block;
+  margin-top: .35rem;
+}
+.pf-form-stack-label {
+  font-size: 11px;
+  color: #6c757d;
+  margin-bottom: .15rem;
+  display: block;
+}
