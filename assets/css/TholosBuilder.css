@@ -916,9 +916,10 @@ tr:hover .pf-row-actions .btn,
   align-items: center;
 }
 .wiz-card .card-header h5 .fa-solid,
-.wiz-card .card-header h5 .fa-regular {
-  color: #88bd21;
-  margin-right: .55rem;
+.wiz-card .card-header h5 .fa-regular,
+.wiz-card .card-header h5 .svg-inline--fa {
+  color: #236499;
+  margin-right: .75rem;
   font-size: 14px;
 }
 .wiz-card .card-body { padding: 1rem 1.1rem; }
