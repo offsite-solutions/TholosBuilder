@@ -649,7 +649,7 @@
         $apptree_ = array();
         $this->builder_db->query(RT_ALL_ROWS,
           "select t.id, \n" .
-          "       t.name||'<span class=\"tree_class_name\">'||t.class_name||'</span>' as text, \n" .
+          "       '<span class=\"tree_node_label\">'||t.name||'</span><span class=\"tree_class_name\">'||t.class_name||'</span>' as text, \n" .
           "       case when ''||t.parent_id is null then '#' else ''||t.parent_id end as parent, \n" .
           "       t.name as name, \n" .
           "       t.class_name as type, \n" .
