@@ -251,7 +251,7 @@ div.checkbox {
 .tree_class_name {
   font-size: 9px;
   flex-shrink: 0;
-  margin-left: auto;
+  margin-left: 6px;
 }
 
 #prop_tree, #event_tree {
