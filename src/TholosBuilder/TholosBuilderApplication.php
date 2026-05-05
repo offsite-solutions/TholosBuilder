@@ -3700,7 +3700,8 @@
     #[NoReturn]
     private function addRoute(): void {
       $responseArray['success'] = 'OK';
-      $route_filter = explode(",", Eisodos::$parameterHandler->getParam("route_filter", ""));
+      $current = Eisodos::$parameterHandler->getParam("route_filter", "");
+      $route_filter = $current === "" ? [] : explode(",", $current);
       if (!in_array(Eisodos::$parameterHandler->getParam("route_id"), $route_filter, false)) {
         $route_filter[] = Eisodos::$parameterHandler->getParam("route_id");
         Eisodos::$parameterHandler->setParam("route_filter", implode(",", $route_filter), true);
