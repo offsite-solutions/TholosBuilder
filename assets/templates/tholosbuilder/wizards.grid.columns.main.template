@@ -10,10 +10,10 @@
         <thead class="table-light">
           <tr>
             <th>Column</th>
-            <th class="text-center">Column and Filter</th>
-            <th class="text-center">Column only</th>
-            <th class="text-center">Export only</th>
-            <th class="text-center">Skip</th>
+            <th class="text-center"><a href="javascript:void(0)" title="Select all" onclick="$('#gridForm input[type=radio][value=2]').prop('checked', true);">Column and Filter</a></th>
+            <th class="text-center"><a href="javascript:void(0)" title="Select all" onclick="$('#gridForm input[type=radio][value=1]').prop('checked', true);">Column only</a></th>
+            <th class="text-center"><a href="javascript:void(0)" title="Select all" onclick="$('#gridForm input[type=radio][value=3]').prop('checked', true);">Export only</a></th>
+            <th class="text-center"><a href="javascript:void(0)" title="Select all" onclick="$('#gridForm input[type=radio][value=0]').prop('checked', true);">Skip</a></th>
           </tr>
         </thead>
         <tbody>

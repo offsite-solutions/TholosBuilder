@@ -2703,23 +2703,27 @@
         }
         
         $responseArray['success'] = 'OK';
-        $responseArray['html'] = "<pre > " . $responseArray['html'] . "</pre > ";
-        
+        $responseArray['html'] = '<div class="wiz-card card">'
+          . '<div class="card-header"><h5><i class="fa-regular fa-list-check"></i> Create log</h5></div>'
+          . '<div class="card-body">'
+          . '<pre class="wiz-pre wiz-pre-scroll mb-0">' . $responseArray['html'] . '</pre>'
+          . '</div></div>';
+
         $this->builder_db->commit();
-        
+
       } catch (Exception $e) {
         if ($this->builder_db->inTransaction()) {
           $this->builder_db->rollback();
         }
-        
+
         if ($e->getMessage() != "") {
           $responseArray['errormsg'] = $e->getMessage();
-          $responseArray['html'] = "<pre > " . $responseArray['errormsg'] . "</pre > ";
+          $responseArray['html'] = '<pre class="error">' . $responseArray['errormsg'] . '</pre>';
           if (Eisodos::$parameterHandler->neq('SPError', 'T')) {
             Eisodos::$logger->writeErrorLog($e);
           }
         }
-        
+
         $responseArray['success'] = 'ERROR';
       }
       header('Content-type: application/json');
@@ -2727,7 +2731,7 @@
       Eisodos::$render->finishRaw();
       exit;
     }
-    
+
     /**
      * @throws JsonException
      */
