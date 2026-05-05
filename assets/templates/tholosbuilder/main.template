@@ -33,7 +33,9 @@
       <button class="btn nav-icon-btn" title="Forward" onclick="historyStepForward();"><i class="fa-regular fa-chevron-right"></i></button>
     </div>
 
-    <button class="btn nav-icon-btn me-2" title="Refresh tree" onclick="loadAppTree('#app_tree');"><i class="fa-regular fa-refresh" id="globalLoading"></i></button>
+    <button class="btn nav-icon-btn me-2" title="Refresh tree" onclick="loadAppTree('#app_tree');"><i class="fa-regular fa-refresh"></i></button>
+
+    <div id="globalLoading" class="me-2"><i class="fa-regular fa-spinner fa-spin"></i><span>LOADING</span></div>
 
     <div class="flex-grow-1 d-flex justify-content-center align-self-stretch mx-2 tb-navbar-stretch-y">
       <div id="task_frame" class="tb-task-slot"></div>

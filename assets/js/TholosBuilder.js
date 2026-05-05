@@ -7,15 +7,21 @@ var movedNodes = "";
 var lastComponentId = "";
 var componentHistory = [];
 
+// Local panel-replacing loader. The no-arg form is a no-op — global AJAX
+// activity is shown by the navbar #globalLoading badge, driven by jQuery's
+// ajaxStart/ajaxStop handlers below.
 function showLoading(container_) {
   if (container_ !== undefined)
-    container_.html('<div class="text-center"><i class="fa-regular fa-refresh fa-spin fa-lg"></i></div>');
-  else $('#globalLoading').addClass('fa-spin');
+    container_.html('<div class="tb-loading-wrap"><span class="tb-loading-badge"><i class="fa-regular fa-spinner fa-spin"></i><span>Loading…</span></span></div>');
 }
 
 function finishedLoading() {
-  $('#globalLoading').removeClass('fa-spin').addClass('fa-regular');
 }
+
+$(function () {
+  $(document).ajaxStart(function () { $('#globalLoading').addClass('is-active'); });
+  $(document).ajaxStop(function () { $('#globalLoading').removeClass('is-active'); });
+});
 
 function getNavFrame() {
   showLoading($('#nav_frame').find('.content'));
@@ -40,7 +46,6 @@ function getNavFrame() {
 }
 
 function loadAppTree(treeid_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -560,7 +565,6 @@ function addComponent(parent_id_) {
 }
 
 function saveComponent(parent_id_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -582,7 +586,6 @@ function saveComponent(parent_id_) {
 }
 
 function pasteComponent(parent_id_, component_id_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -632,7 +635,6 @@ function moveMultiple() {
 }
 
 function moveFirstComponent(component_id_, version_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -654,7 +656,6 @@ function moveFirstComponent(component_id_, version_) {
 }
 
 function moveUpComponent(component_id_, version_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -676,7 +677,6 @@ function moveUpComponent(component_id_, version_) {
 }
 
 function moveDownComponent(component_id_, version_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -698,7 +698,6 @@ function moveDownComponent(component_id_, version_) {
 }
 
 function moveLastComponent(component_id_, version_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -742,7 +741,6 @@ function moveLastComponent(component_id_, version_) {
 // }
 
 function deleteComponent(component_id_, version_) {
-  showLoading();
   showPropertiesAndEvents(-1, '', '');
   $.ajax({
     url: __TholosBuilderAppUrl,
@@ -765,7 +763,6 @@ function deleteComponent(component_id_, version_) {
 }
 
 function deleteComponents(component_ids_) {
-  showLoading();
   showPropertiesAndEvents(-1, '', '');
   $.ajax({
     url: __TholosBuilderAppUrl,
@@ -788,7 +785,6 @@ function deleteComponents(component_ids_) {
 }
 
 function cloneComponents(component_ids_) {
-  showLoading();
   showPropertiesAndEvents(-1, '', '');
   $.ajax({
     url: __TholosBuilderAppUrl,
@@ -886,7 +882,6 @@ function showPropertiesAndEvents(component_id_, property_id_, event_id_) {
     else lastComponentId = component_id_;
     if (property_id_ == '' && event_id_ == '')
       showLoading($('#prop_frame').find('#tab_prop_' + tabIndex));
-    else showLoading();
     $.ajax({
       url: __TholosBuilderAppUrl,
       type: 'post',
@@ -946,7 +941,7 @@ function editProperty(component_id_, property_id_, type_, link_id_, version_) {
 }
 
 function saveProperty(component_id_, property_id_, link_id_, version_, value_, value_component_id_) {
-  $('#prop_frame #prop_row_' + property_id_ + ' .saveIcon').addClass('fa-spin');
+  $('#prop_button_' + property_id_).addClass('is-saving');
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -966,7 +961,7 @@ function saveProperty(component_id_, property_id_, link_id_, version_, value_, v
         if (data.refreshtree == 'Y') loadAppTree('#app_tree');
         else showPropertiesAndEvents(component_id_, property_id_, '');
       } else {
-        $('#prop_frame #prop_row_' + property_id_ + ' .saveIcon').removeClass('fa-spin').addClass('fa-regular');
+        $('#prop_button_' + property_id_).removeClass('is-saving');
         bootbox.alert(data.errormsg);
       }
     },
@@ -1056,7 +1051,7 @@ function loadMethods(event_id_, component_id_) {
 }
 
 function saveEvent(component_id_, event_id_, link_id_, version_, value_, value_component_id_, value_method_id_, parameters_) {
-  $('#prop_frame #event_row_' + event_id_ + ' .saveIcon').addClass('fa-spin');
+  $('#event_button_' + event_id_).addClass('is-saving');
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -1078,7 +1073,7 @@ function saveEvent(component_id_, event_id_, link_id_, version_, value_, value_c
         if (data.refreshtree == 'Y') loadAppTree('#app_tree');
         else showPropertiesAndEvents(component_id_, '', event_id_);
       } else {
-        $('#prop_frame #event_row_' + event_id_ + ' .saveIcon').removeClass('fa-spin').addClass('fa-regular');
+        $('#event_button_' + event_id_).removeClass('is-saving');
         bootbox.alert(data.errormsg);
       }
     },
@@ -1387,7 +1382,6 @@ function EditFormWizardRun() {
 }
 
 function EditHelp(p_help_id_, p_component_id_) {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -1430,7 +1424,6 @@ function refreshHelp(p_component_id_) {
 }
 
 function saveHelp() {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -1661,7 +1654,6 @@ function showUserProfile() {
 }
 
 function saveUserProfile() {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',
@@ -1820,7 +1812,6 @@ function addRoute($route_id) {
 }
 
 function setFilterRoute() {
-  showLoading();
   $.ajax({
     url: __TholosBuilderAppUrl,
     type: 'post',

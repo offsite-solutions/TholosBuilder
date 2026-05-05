@@ -564,6 +564,79 @@ pre.error {
   padding: .3rem .7rem;
 }
 
+/* Global AJAX activity badge — driven by jQuery ajaxStart/ajaxStop in
+   TholosBuilder.js. Always laid out so toggling its visibility doesn't
+   shove the navbar's task slot around (visibility: hidden keeps the
+   reserved width). Becomes visible while at least one request is in
+   flight. */
+#globalLoading {
+  visibility: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background-color: var(--bs-danger);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .05em;
+  font-size: 11px;
+  padding: .25rem .55rem;
+  border-radius: 3px;
+  height: 26px;
+  line-height: 1;
+}
+#globalLoading.is-active {
+  visibility: visible;
+}
+
+/* Local "Loading…" pill — used by showLoading(container_) when a panel,
+   tab pane, or row is being replaced. Muted gray on transparent so it sits
+   quietly inside a card/list without competing with the navbar badge. */
+.tb-loading-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .3rem .7rem;
+  background-color: rgba(0, 0, 0, .05);
+  color: #6c757d;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+.tb-loading-wrap {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* In-progress state for save buttons — hides the inline SVG icon (which
+   flickers when Font Awesome's auto-replace observer reacts to class
+   changes) and overlays a pure-CSS spinner ring instead. Toggled by
+   saveProperty / saveEvent in TholosBuilder.js. */
+.is-saving {
+  position: relative;
+}
+.is-saving .saveIcon,
+.is-saving > svg.saveIcon {
+  visibility: hidden;
+}
+.is-saving::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  height: 1em;
+  margin-top: -.5em;
+  margin-left: -.5em;
+  border: 2px solid var(--bs-danger);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: tb-spin .7s linear infinite;
+}
+@keyframes tb-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* === Treeview restyle ==================================== */
 
 /* Anchor uses inline-flex so the label can ellipsize without breaking jstree's
