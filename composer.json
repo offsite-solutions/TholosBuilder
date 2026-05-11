@@ -20,14 +20,14 @@
     "offsite-solutions/eisodos": "@dev",
     "offsite-solutions/eisodos-sqlparser": "@dev",
     "kbsali/redmine-api": "2.8.0",
-    "bower-asset/bootstrap": "5.2.3",
-    "bower-asset/jquery": "3.6.4",
+    "bower-asset/bootstrap": "5.3.8",
+    "bower-asset/jquery": "4.0.0",
     "bower-asset/jquery-ui": "1.12.1",
     "bower-asset/select2": "4.0.13",
-    "bower-asset/store2": "2.14.2",
-    "bower-asset/jstree": "3.3.16",
-    "bower-asset/toastr": "2.1.2",
-    "bower-asset/bootbox": "6.0.0"
+    "bower-asset/store2": "2.14.4",
+    "bower-asset/jstree": "3.3.17",
+    "bower-asset/toastr": "2.1.3",
+    "bower-asset/bootbox": "6.0.4"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest"
