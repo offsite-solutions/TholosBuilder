@@ -2202,16 +2202,24 @@
             Eisodos::$logger->writeErrorLog($e);
           }
         }
-        
+
+        if (isset($component_SQL) && $component_SQL !== "") {
+          $responseArray['html'] .= '<div class="wiz-card card">'
+                                  . '<div class="card-header"><h5><i class="fa-regular fa-code"></i> Replaced SQL</h5></div>'
+                                  . '<div class="card-body">'
+                                  . '<pre class="wiz-pre wiz-pre-scroll mb-0">' . $this->safeHTML($component_SQL) . '</pre>'
+                                  . '</div></div>';
+        }
+
         $responseArray['success'] = 'ERROR';
-        
+
       }
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
     }
-    
+
     /**
      * @throws JsonException
      */
