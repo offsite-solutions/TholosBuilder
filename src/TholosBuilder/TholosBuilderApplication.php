@@ -1884,10 +1884,12 @@
       return preg_replace_callback(
         '/\+\+(.*?)\+\+/s',
         static function (array $matches): string {
-          $body = $matches[1];
-          $pipePos = strpos($body, '|');
-          if ($pipePos !== false) {
-            return substr($body, $pipePos + 1);
+          $segments = explode('|', $matches[1]);
+          for ($i = count($segments) - 1; $i >= 0; $i--) {
+            $seg = trim($segments[$i]);
+            if ($seg !== '' && !str_starts_with($seg, '@')) {
+              return $segments[$i];
+            }
           }
           return 'null';
         },
