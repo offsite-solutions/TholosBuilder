@@ -152,7 +152,7 @@
       
       if (Eisodos::$parameterHandler->eq("action", "")) {
         Eisodos::$templateEngine->getTemplate($this->templateFolder . "main",
-          array("CompileProgress" => Eisodos::$parameterHandler->getParam("TholosBuilder.CompileProgress", "F"),
+          array("CompileProgress" => Eisodos::$parameterHandler->getParam("TholosBuilder.CompileProgress", "T"),
             "AssetsVersion" => max(filemtime(__DIR__ . "/../../assets/js/TholosBuilder.js"), filemtime(__DIR__ . "/../../assets/css/TholosBuilder.css"))),
           true);
         Eisodos::$render->finish();
@@ -1569,7 +1569,8 @@
     }
     
     /**
-     * Step by step compilation, used when TholosBuilder.CompileProgress=T.
+     * Step by step compilation, the default (TholosBuilder.CompileProgress=T).
+     * TholosBuilder.CompileProgress=F falls back to compile2 (single request) in case of problems.
      * The client calls step=prepare, then step=route for every returned route, then step=finish,
      * so the edit frame can list the compiled routes one by one.
      *
