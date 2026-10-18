@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="$TholosBuilderVendorDir/bower-asset/jstree/dist/themes/default/style.min.css"/>
   <link rel="stylesheet" href="$TholosBuilderVendorDir/bower-asset/toastr/toastr.min.css"/>
   <link rel="stylesheet" href="$TholosBuilderAssetsDir/css/textareafullscreen.css"/>
-  <link rel="stylesheet" href="$TholosBuilderAssetsDir/css/TholosBuilder.css"/>
+  <link rel="stylesheet" href="$TholosBuilderAssetsDir/css/TholosBuilder.css?v=$AssetsVersion"/>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark tb-navbar">
@@ -93,6 +93,7 @@
 </div>
 
 <script type="text/javascript">var __TholosBuilderAppUrl = '$TholosBuilderAppURL';</script>
+<script type="text/javascript">var __TholosBuilderCompileProgress = '$CompileProgress';</script>
 
 <script src="$TholosBuilderVendorDir/bower-asset/jquery/dist/jquery.min.js"></script>
 <script src="$TholosBuilderVendorDir/bower-asset/jquery-ui/jquery-ui.min.js"></script>
@@ -106,7 +107,7 @@
 <script src="$TholosBuilderAssetsDir/js/jquery.textareafullscreen.js"></script>
 
 <script type="text/javascript">const skipframeloading = false;</script>
-<script src="$TholosBuilderAssetsDir/js/TholosBuilder.js"></script>
+<script src="$TholosBuilderAssetsDir/js/TholosBuilder.js?v=$AssetsVersion"></script>
 
 </body>
 </html>

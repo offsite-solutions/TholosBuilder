@@ -1017,6 +1017,36 @@ tr:hover .pf-row-actions .btn,
   margin: 1rem auto 0 auto;
 }
 
+/* === Compile progress =================================== */
+.tb-compile-progress .progress { height: 6px; }
+.tb-compile-progress .progress-bar {
+  background-color: #236499;
+  transition: width .2s ease;
+}
+.tb-compile-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .5rem;
+  padding: .2rem 0;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 12px;
+}
+.tb-compile-list .tb-compile-icon { width: 14px; color: #6c757d; }
+.tb-compile-list li.is-done .tb-compile-icon { color: #88bd21; }
+.tb-compile-list li.is-error .tb-compile-icon,
+.tb-compile-list .tb-compile-error { color: #dc3545; }
+.tb-compile-list .tb-compile-time {
+  margin-left: auto;
+  color: #6c757d;
+  font-variant-numeric: tabular-nums;
+}
+.tb-compile-list .tb-compile-error {
+  flex-basis: 100%;
+  padding-left: calc(14px + .5rem);
+  white-space: pre-wrap;
+}
+
 /* === Property form editors ============================== */
 .pf-form {
   display: flex;

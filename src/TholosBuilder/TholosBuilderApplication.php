@@ -151,7 +151,10 @@
       $this->initSession();
       
       if (Eisodos::$parameterHandler->eq("action", "")) {
-        Eisodos::$templateEngine->getTemplate($this->templateFolder . "main", array(), true);
+        Eisodos::$templateEngine->getTemplate($this->templateFolder . "main",
+          array("CompileProgress" => Eisodos::$parameterHandler->getParam("TholosBuilder.CompileProgress", "F"),
+            "AssetsVersion" => max(filemtime(__DIR__ . "/../../assets/js/TholosBuilder.js"), filemtime(__DIR__ . "/../../assets/css/TholosBuilder.css"))),
+          true);
         Eisodos::$render->finish();
         exit;
       }
@@ -1493,349 +1496,42 @@
      */
     private function compile2(): void {
       
-      $routeSourceCode = '';
-      
       try {
         
         set_time_limit(60 * 60);
         
         $start = microtime(true);
         
-        $this->builder_db->startTransaction();
-        /* deleting deferred properties */
-        $sql = "delete \n" .
-          "  from app_component_properties cp \n" .
-          " where cp.property_id not in (select ctp.property_id from def_component_type_properties ctp)";
-        $this->builder_db->executeDML($sql);
-        
-        // Eisodos::$logger->debug("Step  1: ".(microtime(true) - $start));
-        
-        /* deleting deferred events */
-        $sql = "delete \n" .
-          "  from app_component_events ce \n" .
-          " where ce.event_id not in (select cte.event_id from def_component_type_events cte)";
-        $this->builder_db->executeDML($sql);
-        
-        $this->builder_db->commit();
-        
-        // Eisodos::$logger->debug("Step  2: ".(microtime(true) - $start));
-        
-        $sql = "select ct.class_name, ct2.class_name as ancestor_name \n" .
-          "  from def_component_types ct \n" .
-          "  join def_component_types ct2 on ct2.id=ct.ancestor_id \n" .
-          "  order by 1";
-        $componentTypes = array();
-        $this->builder_db->query(RT_ALL_KEY_VALUE_PAIRS, $sql, $componentTypes);
-        
-        // Eisodos::$logger->debug("Step  3: ".(microtime(true) - $start));
-        
-        /* component type index */
-        $sql = "select ctm.id as n, \n" .
-          "       (select max(substr(sys_connect_by_path(ct3.class_name,'.'),2)) \n" .
-          "          from def_component_types ct3 \n" .
-          "       connect by prior ct3.ancestor_id=ct3.id \n" .
-          "       start with ct3.id=ctm.id) as h \n" .
-          "  from def_component_types ctm \n" .
-          "  order by id";
-        $componentTypeIndex = array();
-        $this->builder_db->query(RT_ALL_ROWS_ASSOC, $sql, $componentTypeIndex, ['indexFieldName' => 'n']);
-        
-        // Eisodos::$logger->debug("Step  4: ".(microtime(true) - $start));
-        
-        /* component id route index */
-        
-        $sql = "select c.id, \n" .
-          "       c.parent_id as pid, \n" .
-          "       ct.id as p, \n" .
-          "       acp.value as n, \n" .
-          "       tpv.route as c, \n" .
-          "       tpv.route_id as r, \n" .
-          "       tpv.action_id as a \n" .
-          "  from app_components c, \n" .
-          "       def_component_types ct, \n" .
-          "       app_component_properties_v acp, \n" .
-          "       app_tree_path_v tpv \n" .
-          " where ct.id=c.component_type_id \n" .
-          "       and acp.l_name='name' \n" .
-          "       and acp.component_id=c.id \n" .
-          "       and tpv.id=c.id \n" .
-          " order by c.parent_id nulls first, c.creation_order";
-        
-        $componentIndex = array();
-        $this->builder_db->query(RT_ALL_ROWS_ASSOC, $sql, $componentIndex, ['indexFieldName' => 'id']);
-        
-        // Eisodos::$logger->debug("Step  5: ".(microtime(true) - $start));
-        
-        $applicationCachePHP = "<?php \n" .
-          "  \$this->componentTypes=" . var_export($componentTypes, true) . "; \n" .
-          "  \$this->componentTypeIndex=" . var_export($componentTypeIndex, true) . "; \n" .
-          "  \$this->componentIndex=" . var_export($componentIndex, true) . "; \n" .
-          "?>";
+        $applicationCachePHP = $this->compileApplicationCache();
         
         if (Eisodos::$parameterHandler->eq("action", "remoteCompile2")) {
           $responseArray['CompiledApplication'] = base64_encode($applicationCachePHP);
         }
         
         if (Eisodos::$parameterHandler->neq("action", "remoteCompile2") || Eisodos::$parameterHandler->eq("localCompile", "T")) {
-          
-          if (file_exists(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status") && Eisodos::$parameterHandler->neq("compileall", "T")) {
-            $last_compilation_time = file_get_contents(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status");
-          } else {
-            $last_compilation_time = "2000-01-01 00:00:00";
-          }
-          
-          Eisodos::$parameterHandler->setParam("LAST_COMPILATION_TIME", $last_compilation_time);
-          
-          $statusfile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status", 'wb');
-          fwrite($statusfile, $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') FROM DUAL"));
-          fclose($statusfile);
-          
-          ($applicationFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_tholos.init", 'wb'))
-          || die("can't open Tholos Application Cache file (" . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_tholos.init" . ")");
-          fwrite($applicationFile, $applicationCachePHP);
-          fclose($applicationFile);
+          $this->compileWriteApplicationCache($applicationCachePHP);
         }
         
         // free up
         unset($applicationCachePHP);
         
-        // Eisodos::$logger->debug("Step  6: ".(microtime(true) - $start));
+        $routes = $this->compileGetRoutes();
         
-        /* TRoutes */
-        $sql = " select distinct route from (\n" .
-          " select route \n" .
-          "  from app_routes_v a \n" .
-          " where to_char(a.last_update_date,'YYYY-MM-DD HH24:MI:SS')>='" . Eisodos::$parameterHandler->getParam("LAST_COMPILATION_TIME", "2000-01-01 00:00:00") . "' \n" .
-          " union \n" .
-          " select atp.route \n" .
-          "   from app_tasks at \n" .
-          "   join app_users au on au.id=at.created_by and au.id=app_session_pkg.user_id \n" .
-          "   left outer join app_changes ac on at.id=ac.task_id \n" .
-          "   left outer join app_tree_path_v atp on ac.component_id=atp.id \n" .
-          "  where at.committed is null \n" .
-          "        and at.closed='N'  \n" .
-          "  ) \n" .
-          " where route is not null \n" .
-          " order by 1";
-        
-        $routes = array();
-        $this->builder_db->query(RT_ALL_FIRST_COLUMN_VALUES, $sql, $routes);
-        
-        // Eisodos::$logger->debug("Step  8: ".(microtime(true) - $start));
-        
-        /* all events */
-        $sql = "SELECT ce.component_id    AS id, \n" .
-          "       l_name             AS n, \n" .
-          "       TYPE               AS t, \n" .
-          "       VALUE              AS v, \n" .
-          "       method_name        AS m, \n" .
-          "       method_path        AS p, \n" .
-          "       value_component_id AS c, \n" .
-          "       value_method_id    AS i, \n" .
-          "       ce.parameters      AS a \n" .
-          "  FROM app_component_events_v ce \n" .
-          " WHERE (VALUE IS NOT NULL OR value_method_id IS NOT NULL) \n" .
-          " ORDER BY ce.component_id";
-        $events = array();
-        $this->builder_db->query(RT_ALL_ROWS, $sql, $events);
-        
-        $eventids = array_column($events, "id");
-        
-        // Eisodos::$logger->debug("Step  9: ".(microtime(true) - $start));
+        $eventsById = $this->compileGroupById($this->compileGetEvents());
         
         foreach ($routes as $route) {
           
-          /*          $sql = "select c.id, \n".
-                   "       parent_id as pid, \n".
-                   "       c.component_type_id as t, \n".
-                   "       acp.value as o \n".
-                   "  from app_components c, \n".
-                   "       def_component_types ct, \n".
-                   "       app_component_properties_v acp \n".
-                   " where ct.id=c.component_type_id \n".
-                   "       and acp.l_name='name' \n".
-                   "       and acp.component_id=c.id \n".
-                   "       and c.id in (select tv.id \n".
-                   "                      from app_tree_path_v tv \n".
-                   "                     where coalesce(tv.route,'application')='".$route."') \n".
-                   " order by c.parent_id nulls first, c.creation_order"; */
-          
-          /* 2017.12.11. - included help_id as h */
-          
-          $sql = "select c.id, \n" .
-            "       parent_id as pid, \n" .
-            "       c.component_type_id as t, \n" .
-            "       acp.value as o, \n" .
-            "       coalesce(ah.help_id,ah.id) as h \n" .
-            "  from app_components c \n" .
-            "  join def_component_types ct on ct.id=c.component_type_id \n" .
-            "  join app_component_properties_v acp on acp.l_name='name' and acp.component_id=c.id \n" .
-            "  left outer join app_help ah on ah.component_id=c.id \n" .
-            " where c.id in (select tv.id \n" .
-            "                  from app_tree_path_v tv \n" .
-            "                 where coalesce(tv.route,'application')='" . $route . "') \n" .
-            " order by c.parent_id nulls first, c.creation_order \n";
-          
-          $back4 = array();
-          $this->builder_db->query(RT_ALL_ROWS_ASSOC, $sql, $back4, ['indexFieldName' => 'id']);
-          
-          // Eisodos::$logger->debug("Step 10-".($step++).": ".(microtime(true) - $start));
-          
-          /* all properties */
-          $sql = "SELECT cp.component_id    AS id, \n" .
-            "       l_name             AS n, \n" .
-            "       TYPE               AS t, \n" .
-            "       VALUE              AS v, \n" .
-            "       value_component_id AS c, \n" .
-            "       nodata             AS d \n" .
-            "  FROM app_component_properties_v cp \n" .
-            " WHERE cp.component_id in (select tv.id \n" .
-            "                             from app_tree_path_v tv \n" .
-            "                            where coalesce(tv.route,'application')='" . $route . "') \n" .
-            " ORDER BY cp.component_id, 2";
-          $properties = array();
-          $this->builder_db->query(RT_ALL_ROWS, $sql, $properties);
-          
-          // setting helpindex to the corresponding component
-          foreach ($back4 as $id => $row) {
-            if ($row["h"]) {
-              $properties[] = array("id" => $id, "n" => "helpindex", "t" => "NUMBER", "v" => $row["h"], "c" => NULL, "d" => "N");
-            }
-          }
-          
-          $propids = array_column($properties, "id");
-          
-          /* getting properties */
-          foreach ($back4 as $id => $row) {
-            $a = array();
-            foreach (array_keys($propids, $id) as $prrowkey) {
-              $prrow = $properties[$prrowkey];
-              unset($prrow["id"]);
-              $a[] = $prrow;
-            }
-            $back4[$id]["p"] = json_encode($a, JSON_THROW_ON_ERROR);
-          }
-          
-          // Eisodos::$logger->debug("Step 11-".($step++).": ".(microtime(true) - $start));
-          
-          /* getting events */
-          foreach ($back4 as $id => $row) {
-            $a = array();
-            foreach (array_keys($eventids, $id) as $prrowkey) {
-              $prrow = $events[$prrowkey];
-              unset($prrow["id"]);
-              $a[] = $prrow;
-            }
-            $back4[$id]["e"] = json_encode($a, JSON_THROW_ON_ERROR);
-          }
-          
-          // Eisodos::$logger->debug("Step 12-".($step++).": ".(microtime(true) - $start));
-          
-          $routeCachePHP = "<?php \n" .
-            "  \$this->componentDefinitions=\$this->componentDefinitions + " . var_export($back4, true) . "; \n" .
-            "?>";
-          
-          // generating source code for SVN
-          if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
-            $sourcecodesql =
-              "SELECT CASE \n" .
-              "        WHEN lag(q.path, \n" .
-              "                  1, \n" .
-              "                  NULL) over(ORDER BY q.path) = q.path THEN \n" .
-              "          NULL \n" .
-              "         ELSE \n" .
-              "          q.path || ':'||q.class_name||' = {' || chr(13) || chr(10) \n" .
-              "       END || CASE \n" .
-              "         WHEN ord = 0 THEN \n" .
-              "          '  ' || q.name || ' = ' || CASE \n" .
-              "            WHEN q.value_component_id IS NOT NULL THEN \n" .
-              "             '-> ' || q.path2 \n" .
-              "            ELSE \n" .
-              "             q.value \n" .
-              "          END \n" .
-              "         ELSE \n" .
-              "          '  ' || q.name || ' = ' || CASE \n" .
-              "            WHEN q.value_component_id IS NOT NULL THEN \n" .
-              "             '-> ' || q.path2 || '.' || q.method_name \n" .
-              "            ELSE \n" .
-              "             q.value \n" .
-              "          END || CASE \n" .
-              "            WHEN q.parameters IS NOT NULL THEN \n" .
-              "             '(' || q.parameters || ')' \n" .
-              "            ELSE \n" .
-              "             '' \n" .
-              "          END \n" .
-              "       END || CASE \n" .
-              "         WHEN lead(q.path, \n" .
-              "                   1, \n" .
-              "                   NULL) over(ORDER BY q.path) != q.path THEN \n" .
-              "          chr(13) || chr(10) || '}' || chr(13) || chr(10) \n" .
-              "         ELSE \n" .
-              "          NULL \n" .
-              "       END AS text \n" .
-              "  FROM (SELECT tp.route, \n" .
-              "               tp.path, \n" .
-              "               0                     AS ord, \n" .
-              "               cp.name, \n" .
-              "               cp.value, \n" .
-              "               cp.value_component_id, \n" .
-              "               tp2.path              AS path2, \n" .
-              "               NULL                  AS method_name, \n" .
-              "               NULL                  AS PARAMETERS, \n" .
-              "               tp.component_order, \n" .
-              "               tp.class_name \n" .
-              "          FROM app_tree_path_v tp \n" .
-              "          JOIN app_component_properties_v cp ON cp.component_id = tp.id \n" .
-              "          LEFT OUTER JOIN app_tree_path_v tp2 ON tp2.id = cp.value_component_id \n" .
-              "         WHERE (cp.value IS NOT NULL OR tp2.id IS NOT NULL) \n" .
-              "           AND coalesce(tp.route,'application')='" . $route . "' \n" .
-              "        UNION \n" .
-              "        SELECT tp.route, \n" .
-              "               tp.path, \n" .
-              "               1                     AS ord, \n" .
-              "               cp.name, \n" .
-              "               cp.value, \n" .
-              "               cp.value_component_id, \n" .
-              "               tp2.path              AS path2, \n" .
-              "               cp.method_name, \n" .
-              "               cp.parameters, \n" .
-              "               tp.component_order, \n" .
-              "               tp.class_name \n" .
-              "          FROM app_tree_path_v tp \n" .
-              "          JOIN app_component_events_v cp ON cp.component_id = tp.id \n" .
-              "          LEFT OUTER JOIN app_tree_path_v tp2 ON tp2.id = cp.value_component_id \n" .
-              "         WHERE (cp.value IS NOT NULL OR tp2.id IS NOT NULL) \n" .
-              "           AND coalesce(tp.route,'application')='" . $route . "') q \n" .
-              " ORDER BY q.path, \n" .
-              "          q.ord, \n" .
-              "          q.component_order, \n" .
-              "          q.name \n";
-            
-            $sourcecode_ = array();
-            $this->builder_db->query(RT_ALL_FIRST_COLUMN_VALUES, $sourcecodesql, $sourcecode_);
-            $routeSourceCode = implode("\n", $sourcecode_);
-          }
+          [$routeCachePHP, $routeSourceCode] = $this->compileRoute($route, $eventsById);
           
           if (Eisodos::$parameterHandler->eq("action", "remoteCompile2")) {
             $responseArray['routeCachePHP'][$route] = base64_encode($routeCachePHP);
-            if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
+            if ($this->compileSourceCodeEnabled()) {
               $responseArray['routeSourceCode'][$route] = base64_encode($routeSourceCode);
             }
           }
           
           if (Eisodos::$parameterHandler->neq("action", "remoteCompile2") || Eisodos::$parameterHandler->eq("localCompile", "T")) {
-            $routeFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . $route . ".tcd", 'wb');
-            fwrite($routeFile, $routeCachePHP);
-            fclose($routeFile);
-            if (Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")) {
-              $sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name");
-              if (!is_dir($sourceWorkingDir) && !mkdir($sourceWorkingDir) && !is_dir($sourceWorkingDir)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
-              }
-              $routeSourceFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name") . "/" . $route . ".tcs", 'wb');
-              fwrite($routeSourceFile, $routeSourceCode);
-              fclose($routeSourceFile);
-            }
+            $this->compileWriteRoute($route, $routeCachePHP, $routeSourceCode);
           }
           
         }
@@ -1870,6 +1566,483 @@
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
       Eisodos::$render->finishRaw();
       exit;
+    }
+    
+    /**
+     * Step by step compilation, used when TholosBuilder.CompileProgress=T.
+     * The client calls step=prepare, then step=route for every returned route, then step=finish,
+     * so the edit frame can list the compiled routes one by one.
+     *
+     * @throws JsonException
+     */
+    private function compile3(): void {
+      
+      try {
+        
+        set_time_limit(60 * 60);
+        
+        $step = Eisodos::$parameterHandler->getParam("step");
+        
+        if ($step === "prepare") {
+          
+          Eisodos::$parameterHandler->setParam("Compile3Start", (string)microtime(true), true);
+          $this->compileWriteApplicationCache($this->compileApplicationCache());
+          $routes = $this->compileGetRoutes();
+          Eisodos::$parameterHandler->setParam("Compile3Routes", json_encode($routes, JSON_THROW_ON_ERROR), true);
+          $responseArray['routes'] = $routes;
+          
+        } elseif ($step === "route") {
+          
+          $route = Eisodos::$parameterHandler->getParam("route");
+          $routes = json_decode(Eisodos::$parameterHandler->getParam("Compile3Routes") ?: "[]", true, 512, JSON_THROW_ON_ERROR);
+          if (!in_array($route, $routes, true) || str_contains($route, "'")) {
+            throw new RuntimeException("Route is not part of the running compilation: " . $route);
+          }
+          
+          $start = microtime(true);
+          [$routeCachePHP, $routeSourceCode] = $this->compileRoute($route, $this->compileGroupById($this->compileGetEvents($route)));
+          $this->compileWriteRoute($route, $routeCachePHP, $routeSourceCode);
+          $responseArray['time'] = round(microtime(true) - $start, 2);
+          
+        } elseif ($step === "finish") {
+          
+          $routes = json_decode(Eisodos::$parameterHandler->getParam("Compile3Routes") ?: "[]", true, 512, JSON_THROW_ON_ERROR);
+          $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "compile.result",
+            array("TholosApplicationCache" => Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCache"),
+              "CompilationTime" => round(microtime(true) - (float)Eisodos::$parameterHandler->getParam("Compile3Start"), 2),
+              "Compiled" => implode(",", $routes)
+            ),
+            false);
+          Eisodos::$parameterHandler->setParam("Compile3Routes", "", true);
+          Eisodos::$parameterHandler->setParam("Compile3Start", "", true);
+          
+        } else {
+          throw new RuntimeException("Unknown compile step: " . $step);
+        }
+        
+        $responseArray['success'] = "OK";
+        
+      } catch (Exception $e) {
+        if ($this->builder_db->inTransaction()) {
+          $this->builder_db->rollback();
+        }
+        
+        if ($e->getMessage() != "") {
+          $responseArray['errormsg'] = $e->getMessage();
+          if (Eisodos::$parameterHandler->neq('SPError', 'T')) {
+            Eisodos::$logger->writeErrorLog($e);
+          }
+        }
+        
+        $responseArray['success'] = 'ERROR';
+      }
+      header('Content-type: application/json');
+      Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
+      Eisodos::$render->finishRaw(true); // step state (Compile3Routes) lives in the session
+      exit;
+    }
+    
+    /**
+     * Deletes deferred properties and events, returns the application cache (_tholos.init) source
+     */
+    private function compileApplicationCache(): string {
+      
+      $this->builder_db->startTransaction();
+      /* deleting deferred properties */
+      $sql = "delete \n" .
+        "  from app_component_properties cp \n" .
+        " where cp.property_id not in (select ctp.property_id from def_component_type_properties ctp)";
+      $this->builder_db->executeDML($sql);
+      
+      // Eisodos::$logger->debug("Step  1: ".(microtime(true) - $start));
+      
+      /* deleting deferred events */
+      $sql = "delete \n" .
+        "  from app_component_events ce \n" .
+        " where ce.event_id not in (select cte.event_id from def_component_type_events cte)";
+      $this->builder_db->executeDML($sql);
+      
+      $this->builder_db->commit();
+      
+      // Eisodos::$logger->debug("Step  2: ".(microtime(true) - $start));
+      
+      $sql = "select ct.class_name, ct2.class_name as ancestor_name \n" .
+        "  from def_component_types ct \n" .
+        "  join def_component_types ct2 on ct2.id=ct.ancestor_id \n" .
+        "  order by 1";
+      $componentTypes = array();
+      $this->builder_db->query(RT_ALL_KEY_VALUE_PAIRS, $sql, $componentTypes);
+      
+      // Eisodos::$logger->debug("Step  3: ".(microtime(true) - $start));
+      
+      /* component type index */
+      $sql = "select ctm.id as n, \n" .
+        "       (select max(substr(sys_connect_by_path(ct3.class_name,'.'),2)) \n" .
+        "          from def_component_types ct3 \n" .
+        "       connect by prior ct3.ancestor_id=ct3.id \n" .
+        "       start with ct3.id=ctm.id) as h \n" .
+        "  from def_component_types ctm \n" .
+        "  order by id";
+      $componentTypeIndex = array();
+      $this->builder_db->query(RT_ALL_ROWS_ASSOC, $sql, $componentTypeIndex, ['indexFieldName' => 'n']);
+      
+      // Eisodos::$logger->debug("Step  4: ".(microtime(true) - $start));
+      
+      /* component id route index - straight from the tree, every column is there already */
+      
+      $sql = "select tpv.id, \n" .
+        "       tpv.parent_id as pid, \n" .
+        "       tpv.component_type_id as p, \n" .
+        "       tpv.name as n, \n" .
+        "       tpv.route as c, \n" .
+        "       tpv.route_id as r, \n" .
+        "       tpv.action_id as a \n" .
+        "  from app_tree_path_v tpv \n" .
+        "  join app_components c on c.id = tpv.id \n" .
+        " order by c.parent_id nulls first, c.creation_order, c.id";
+      
+      $componentIndex = array();
+      $this->builder_db->query(RT_ALL_ROWS_ASSOC, $sql, $componentIndex, ['indexFieldName' => 'id']);
+      
+      // Eisodos::$logger->debug("Step  5: ".(microtime(true) - $start));
+      
+      $applicationCachePHP = "<?php \n" .
+        "  \$this->componentTypes=" . var_export($componentTypes, true) . "; \n" .
+        "  \$this->componentTypeIndex=" . var_export($componentTypeIndex, true) . "; \n" .
+        "  \$this->componentIndex=" . var_export($componentIndex, true) . "; \n" .
+        "?>";
+      
+      return $applicationCachePHP;
+    }
+    
+    /**
+     * Writes the application cache and the compilation status file, sets LAST_COMPILATION_TIME
+     */
+    private function compileWriteApplicationCache(string $applicationCachePHP): void {
+      
+      if (file_exists(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status") && Eisodos::$parameterHandler->neq("compileall", "T")) {
+        $last_compilation_time = file_get_contents(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status");
+      } else {
+        $last_compilation_time = "2000-01-01 00:00:00";
+      }
+      
+      Eisodos::$parameterHandler->setParam("LAST_COMPILATION_TIME", $last_compilation_time);
+      
+      $statusfile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_compilation.status", 'wb');
+      fwrite($statusfile, $this->builder_db->query(RT_FIRST_ROW_FIRST_COLUMN, "SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') FROM DUAL"));
+      fclose($statusfile);
+      
+      ($applicationFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_tholos.init", 'wb'))
+      || die("can't open Tholos Application Cache file (" . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . "_tholos.init" . ")");
+      fwrite($applicationFile, $applicationCachePHP);
+      fclose($applicationFile);
+    }
+    
+    /**
+     * Routes changed since LAST_COMPILATION_TIME or touched by the user's open tasks
+     */
+    private function compileGetRoutes(): array {
+      
+      /* TRoutes */
+      $sql = " select distinct route from (\n" .
+        " select route \n" .
+        "  from app_routes_v a \n" .
+        " where to_char(a.last_update_date,'YYYY-MM-DD HH24:MI:SS')>='" . Eisodos::$parameterHandler->getParam("LAST_COMPILATION_TIME", "2000-01-01 00:00:00") . "' \n" .
+        " union \n" .
+        " select atp.route \n" .
+        "   from app_tasks at \n" .
+        "   join app_users au on au.id=at.created_by and au.id=app_session_pkg.user_id \n" .
+        "   left outer join app_changes ac on at.id=ac.task_id \n" .
+        "   left outer join app_tree_path_v atp on ac.component_id=atp.id \n" .
+        "  where at.committed is null \n" .
+        "        and at.closed='N'  \n" .
+        "  ) \n" .
+        " where route is not null \n" .
+        " order by 1";
+      
+      $routes = array();
+      $this->builder_db->query(RT_ALL_FIRST_COLUMN_VALUES, $sql, $routes);
+      
+      return $routes;
+    }
+    
+    /**
+     * All events with value, or only the events of the given route.
+     * Same rows as app_component_events_v, but method_path is built by walking up from the referenced
+     * components only, instead of joining app_tree_path_v (the tree of the whole application).
+     */
+    private function compileGetEvents(?string $route = null): array {
+      
+      $routeFilter = ($route === null ? "" : "   AND ace.component_id in (" . $this->compileRouteIdsSQL($route) . ") \n");
+      
+      $sql = "SELECT c.id               AS id, \n" .
+        "       lower(cte.name)    AS n, \n" .
+        "       cte.type           AS t, \n" .
+        "       ace.value          AS v, \n" .
+        "       dm.name            AS m, \n" .
+        "       case when rp.class_name is not null and rp.complete = 1 \n" .
+        "            then substr(rp.path,instr(rp.path,'.')+1)||':'||rp.class_name end AS p, \n" .
+        "       ace.value_component_id AS c, \n" .
+        "       ace.value_method_id    AS i, \n" .
+        "       ace.parameters     AS a \n" .
+        "  FROM app_components c \n" .
+        "  JOIN def_component_type_event_v cte ON cte.root_component_id = c.component_type_id \n" .
+        "  JOIN app_component_events ace ON ace.event_id = cte.id \n" .
+        "                               AND ace.component_id = c.id \n" .
+        "  LEFT OUTER JOIN (SELECT rid, \n" .
+        "                          listagg(name, '.') within group (order by lvl desc) AS path, \n" .
+        "                          max(case when lvl = 1 then class_name end) AS class_name, \n" .
+        "                          max(case when parent_id is null then 1 else 0 end) AS complete \n" .
+        "                     FROM (SELECT connect_by_root(n.id) AS rid, level AS lvl, n.name, n.class_name, n.parent_id \n" .
+        "                             FROM (" . $this->compileNamedComponentsSQL() . ") n \n" .
+        "                            START WITH n.id in (SELECT ace.value_component_id \n" .
+        "                                                  FROM app_component_events ace \n" .
+        "                                                 WHERE ace.value_component_id IS NOT NULL \n" .
+        $routeFilter .
+        "                                               ) \n" .
+        "                          CONNECT BY PRIOR n.parent_id = n.id) \n" .
+        "                    GROUP BY rid) rp ON rp.rid = ace.value_component_id \n" .
+        "  LEFT OUTER JOIN def_methods dm ON dm.id = ace.value_method_id \n" .
+        " WHERE (ace.value IS NOT NULL OR ace.value_method_id IS NOT NULL) \n" .
+        $routeFilter .
+        " ORDER BY c.id, lower(cte.name)";
+      $events = array();
+      $this->builder_db->query(RT_ALL_ROWS, $sql, $events);
+      
+      return $events;
+    }
+    
+    /**
+     * Components as app_tree_path_v sees them (a component needs a type and a name property to be in the tree)
+     */
+    private function compileNamedComponentsSQL(): string {
+      return "select c.id, c.parent_id, cp.value as name, ct.class_name \n" .
+        "  from app_components c \n" .
+        "  join def_component_types ct on ct.id = c.component_type_id \n" .
+        "  join app_component_properties cp on cp.component_id = c.id \n" .
+        "  join def_properties p on p.id = cp.property_id and lower(p.name) = 'name' \n";
+    }
+    
+    /**
+     * Component ids of a route. Walks only the route's subtree, returns the same ids as
+     * select id from app_tree_path_v where coalesce(route,'application')=$route
+     * (which computes the tree of the whole application on every use).
+     */
+    private function compileRouteIdsSQL(string $route): string {
+      $roots = "select r.id from (" . $this->compileNamedComponentsSQL() . ") r where r.parent_id is null";
+      
+      if ($route === "application") {
+        return $roots;
+      }
+      
+      return "select t.id from (" . $this->compileNamedComponentsSQL() . ") t \n" .
+        " start with t.id in (select rt.id from (" . $this->compileNamedComponentsSQL() . ") rt \n" .
+        "                      where rt.name = '" . $route . "' and rt.parent_id in (" . $roots . ")) \n" .
+        "connect by prior t.id = t.parent_id";
+    }
+    
+    /**
+     * Generates a route's cache (.tcd) and source (.tcs) code
+     *
+     * @return array [routeCachePHP, routeSourceCode]
+     * @throws JsonException
+     */
+    private function compileRoute(string $route, array $eventsById): array {
+      
+      $routeSourceCode = '';
+      /*          $sql = "select c.id, \n".
+               "       parent_id as pid, \n".
+               "       c.component_type_id as t, \n".
+               "       acp.value as o \n".
+               "  from app_components c, \n".
+               "       def_component_types ct, \n".
+               "       app_component_properties_v acp \n".
+               " where ct.id=c.component_type_id \n".
+               "       and acp.l_name='name' \n".
+               "       and acp.component_id=c.id \n".
+               "       and c.id in (select tv.id \n".
+               "                      from app_tree_path_v tv \n".
+               "                     where coalesce(tv.route,'application')='".$route."') \n".
+               " order by c.parent_id nulls first, c.creation_order"; */
+      
+      /* 2017.12.11. - included help_id as h */
+      
+      $sql = "select c.id, \n" .
+        "       parent_id as pid, \n" .
+        "       c.component_type_id as t, \n" .
+        "       acp.value as o, \n" .
+        "       coalesce(ah.help_id,ah.id) as h \n" .
+        "  from app_components c \n" .
+        "  join def_component_types ct on ct.id=c.component_type_id \n" .
+        "  join app_component_properties_v acp on acp.l_name='name' and acp.component_id=c.id \n" .
+        "  left outer join app_help ah on ah.component_id=c.id \n" .
+        " where c.id in (" . $this->compileRouteIdsSQL($route) . ") \n" .
+        " order by c.parent_id nulls first, c.creation_order \n";
+      
+      $back4 = array();
+      $this->builder_db->query(RT_ALL_ROWS_ASSOC, $sql, $back4, ['indexFieldName' => 'id']);
+      
+      // Eisodos::$logger->debug("Step 10-".($step++).": ".(microtime(true) - $start));
+      
+      /* all properties */
+      $sql = "SELECT cp.component_id    AS id, \n" .
+        "       l_name             AS n, \n" .
+        "       TYPE               AS t, \n" .
+        "       VALUE              AS v, \n" .
+        "       value_component_id AS c, \n" .
+        "       nodata             AS d \n" .
+        "  FROM app_component_properties_v cp \n" .
+        " WHERE cp.component_id in (" . $this->compileRouteIdsSQL($route) . ") \n" .
+        " ORDER BY cp.component_id, 2";
+      $properties = array();
+      $this->builder_db->query(RT_ALL_ROWS, $sql, $properties);
+      
+      // setting helpindex to the corresponding component
+      foreach ($back4 as $id => $row) {
+        if ($row["h"]) {
+          $properties[] = array("id" => $id, "n" => "helpindex", "t" => "NUMBER", "v" => $row["h"], "c" => NULL, "d" => "N");
+        }
+      }
+      
+      $propertiesById = $this->compileGroupById($properties);
+      
+      /* getting properties and events */
+      foreach ($back4 as $id => $row) {
+        $back4[$id]["p"] = json_encode($propertiesById[$id] ?? array(), JSON_THROW_ON_ERROR);
+      }
+      foreach ($back4 as $id => $row) {
+        $back4[$id]["e"] = json_encode($eventsById[$id] ?? array(), JSON_THROW_ON_ERROR);
+      }
+      
+      // Eisodos::$logger->debug("Step 12-".($step++).": ".(microtime(true) - $start));
+      
+      $routeCachePHP = "<?php \n" .
+        "  \$this->componentDefinitions=\$this->componentDefinitions + " . var_export($back4, true) . "; \n" .
+        "?>";
+      
+      // generating source code for SVN
+      if ($this->compileSourceCodeEnabled()) {
+        $sourcecodesql =
+          "SELECT CASE \n" .
+          "        WHEN lag(q.path, \n" .
+          "                  1, \n" .
+          "                  NULL) over(ORDER BY q.path) = q.path THEN \n" .
+          "          NULL \n" .
+          "         ELSE \n" .
+          "          q.path || ':'||q.class_name||' = {' || chr(13) || chr(10) \n" .
+          "       END || CASE \n" .
+          "         WHEN ord = 0 THEN \n" .
+          "          '  ' || q.name || ' = ' || CASE \n" .
+          "            WHEN q.value_component_id IS NOT NULL THEN \n" .
+          "             '-> ' || q.path2 \n" .
+          "            ELSE \n" .
+          "             q.value \n" .
+          "          END \n" .
+          "         ELSE \n" .
+          "          '  ' || q.name || ' = ' || CASE \n" .
+          "            WHEN q.value_component_id IS NOT NULL THEN \n" .
+          "             '-> ' || q.path2 || '.' || q.method_name \n" .
+          "            ELSE \n" .
+          "             q.value \n" .
+          "          END || CASE \n" .
+          "            WHEN q.parameters IS NOT NULL THEN \n" .
+          "             '(' || q.parameters || ')' \n" .
+          "            ELSE \n" .
+          "             '' \n" .
+          "          END \n" .
+          "       END || CASE \n" .
+          "         WHEN lead(q.path, \n" .
+          "                   1, \n" .
+          "                   NULL) over(ORDER BY q.path) != q.path THEN \n" .
+          "          chr(13) || chr(10) || '}' || chr(13) || chr(10) \n" .
+          "         ELSE \n" .
+          "          NULL \n" .
+          "       END AS text \n" .
+          "  FROM (SELECT tp.route, \n" .
+          "               tp.path, \n" .
+          "               0                     AS ord, \n" .
+          "               cp.name, \n" .
+          "               cp.value, \n" .
+          "               cp.value_component_id, \n" .
+          "               tp2.path              AS path2, \n" .
+          "               NULL                  AS method_name, \n" .
+          "               NULL                  AS PARAMETERS, \n" .
+          "               tp.component_order, \n" .
+          "               tp.class_name \n" .
+          "          FROM app_tree_path_v tp \n" .
+          "          JOIN app_component_properties_v cp ON cp.component_id = tp.id \n" .
+          "          LEFT OUTER JOIN app_tree_path_v tp2 ON tp2.id = cp.value_component_id \n" .
+          "         WHERE (cp.value IS NOT NULL OR tp2.id IS NOT NULL) \n" .
+          "           AND coalesce(tp.route,'application')='" . $route . "' \n" .
+          "        UNION \n" .
+          "        SELECT tp.route, \n" .
+          "               tp.path, \n" .
+          "               1                     AS ord, \n" .
+          "               cp.name, \n" .
+          "               cp.value, \n" .
+          "               cp.value_component_id, \n" .
+          "               tp2.path              AS path2, \n" .
+          "               cp.method_name, \n" .
+          "               cp.parameters, \n" .
+          "               tp.component_order, \n" .
+          "               tp.class_name \n" .
+          "          FROM app_tree_path_v tp \n" .
+          "          JOIN app_component_events_v cp ON cp.component_id = tp.id \n" .
+          "          LEFT OUTER JOIN app_tree_path_v tp2 ON tp2.id = cp.value_component_id \n" .
+          "         WHERE (cp.value IS NOT NULL OR tp2.id IS NOT NULL) \n" .
+          "           AND coalesce(tp.route,'application')='" . $route . "') q \n" .
+          " ORDER BY q.path, \n" .
+          "          q.ord, \n" .
+          "          q.component_order, \n" .
+          "          q.name \n";
+        
+        $sourcecode_ = array();
+        $this->builder_db->query(RT_ALL_FIRST_COLUMN_VALUES, $sourcecodesql, $sourcecode_);
+        $routeSourceCode = implode("\n", $sourcecode_);
+      }
+      
+      return [$routeCachePHP, $routeSourceCode];
+    }
+    
+    /**
+     * Route source code (.tcs, the SVN backup of the application definition) is generated only
+     * when a working dir is configured and TholosBuilder.GenerateSourceCode is not switched off
+     */
+    private function compileSourceCodeEnabled(): bool {
+      return Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")
+        && Eisodos::$parameterHandler->neq("TholosBuilder.GenerateSourceCode", "F");
+    }
+    
+    /**
+     * Groups rows by their "id" column in one pass (the id itself is removed from the rows)
+     */
+    private function compileGroupById(array $rows): array {
+      $grouped = array();
+      foreach ($rows as $row) {
+        $id = $row["id"];
+        unset($row["id"]);
+        $grouped[$id][] = $row;
+      }
+      
+      return $grouped;
+    }
+    
+    /**
+     * Writes a route's cache file and, if configured, its source file into the user's working dir
+     */
+    private function compileWriteRoute(string $route, string $routeCachePHP, string $routeSourceCode): void {
+      $routeFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationCacheDir") . $route . ".tcd", 'wb');
+      fwrite($routeFile, $routeCachePHP);
+      fclose($routeFile);
+      if ($this->compileSourceCodeEnabled()) {
+        $sourceWorkingDir = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name");
+        if (!is_dir($sourceWorkingDir) && !mkdir($sourceWorkingDir) && !is_dir($sourceWorkingDir)) {
+          throw new RuntimeException(sprintf('Directory "%s" was not created', $sourceWorkingDir));
+        }
+        $routeSourceFile = fopen(Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name") . "/" . $route . ".tcs", 'wb');
+        fwrite($routeSourceFile, $routeSourceCode);
+        fclose($routeSourceFile);
+      }
     }
     
     /* wizard */
@@ -3334,70 +3507,76 @@
           throw new RuntimeException("Message can not be empty");
         }
         
-        foreach (array_unique(explode(",", Eisodos::$parameterHandler->getParam("p_routes"))) as $route) {
-          $sourcefile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs";
-          $destfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
-          if (file_exists($sourcefile)) {
-            copy($sourcefile, $destfile);
-            $result .= "Copying\n" . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs to\n" .
-              Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs" . "\n";
-            $tcsfiles .= Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
+        if ($this->compileSourceCodeEnabled()) {
+          
+          foreach (array_unique(explode(",", Eisodos::$parameterHandler->getParam("p_routes"))) as $route) {
+            $sourcefile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs";
+            $destfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
+            if (file_exists($sourcefile)) {
+              copy($sourcefile, $destfile);
+              $result .= "Copying\n" . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/" . $route . ".tcs to\n" .
+                Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs" . "\n";
+              $tcsfiles .= Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . $route . ".tcs";
+            }
           }
-        }
         
-        if ($tcsfiles == "") {
-          throw new RuntimeException("Nothing to commit");
-        }
-        
-        $commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log";
-        if (!is_dir($commitLogDirectory) && !mkdir($commitLogDirectory) && !is_dir($commitLogDirectory)) {
-          throw new RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
-        }
-        $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/" . date("YmdHis") . ".msg";
-        $result .= "\nWriting message file\n  " . $logfile . "\n";
-        $file = fopen($logfile, "wb");
-        if ($file === false) {
-          throw new RuntimeException("Can not write log file");
-        }
-        fwrite($file, Eisodos::$parameterHandler->getParam("p_message"));
-        fclose($file);
-        
-        if (Eisodos::$parameterHandler->getParam("TholosBuilder.SVNBinary", "") !== "") {
-          
-          $result .= "\nGetting SVN authorization information\n";
-          
-          $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG.USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
-          $svn = array();
-          if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) {
-            throw new RuntimeException("You are not logged in!");
+          if ($tcsfiles == "") {
+            throw new RuntimeException("Nothing to commit");
           }
+        
+          $commitLogDirectory = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log";
+          if (!is_dir($commitLogDirectory) && !mkdir($commitLogDirectory) && !is_dir($commitLogDirectory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $commitLogDirectory));
+          }
+          $logfile = Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceWorkingDir") . Eisodos::$parameterHandler->getParam("user_name", "") . "/commit-log/" . date("YmdHis") . ".msg";
+          $result .= "\nWriting message file\n  " . $logfile . "\n";
+          $file = fopen($logfile, "wb");
+          if ($file === false) {
+            throw new RuntimeException("Can not write log file");
+          }
+          fwrite($file, Eisodos::$parameterHandler->getParam("p_message"));
+          fclose($file);
+        
+          if (Eisodos::$parameterHandler->getParam("TholosBuilder.SVNBinary", "") !== "") {
           
-          $result .= "  Done.\n";
+            $result .= "\nGetting SVN authorization information\n";
           
-          $svncommand1 = "cd " . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . ' && svn st | grep ? | cut -d? -f2 | xargs svn add';
-          $svncommand2 = Eisodos::$parameterHandler->getParam("TholosBuilder.SVNBinary", "") . ' commit --non-interactive --no-auth-cache --username ' . $svn["svn_username"] . ' --password ' . $svn["svn_password"] .
-            ' --file ' . $logfile .
-            ' ' . $tcsfiles . ' 2>&1';
+            $sql = "SELECT SVN_USERNAME, SVN_PASSWORD FROM APP_USERS WHERE ID = APP_SESSION_PKG.USER_ID AND SVN_USERNAME IS NOT NULL AND SVN_PASSWORD IS NOT NULL";
+            $svn = array();
+            if (!$this->builder_db->query(RT_FIRST_ROW, $sql, $svn)) {
+              throw new RuntimeException("You are not logged in!");
+            }
           
-          $result .= "\nRunning svn commands\n\n" .
-            $svncommand1 . "\n\n";
+            $result .= "  Done.\n";
           
-          $output = shell_exec($svncommand1);
+            $svncommand1 = "cd " . Eisodos::$parameterHandler->getParam("TholosBuilder.ApplicationSourceDir") . ' && svn st | grep ? | cut -d? -f2 | xargs svn add';
+            $svncommand2 = Eisodos::$parameterHandler->getParam("TholosBuilder.SVNBinary", "") . ' commit --non-interactive --no-auth-cache --username ' . $svn["svn_username"] . ' --password ' . $svn["svn_password"] .
+              ' --file ' . $logfile .
+              ' ' . $tcsfiles . ' 2>&1';
           
-          $result .= $output . "\n\n";
+            $result .= "\nRunning svn commands\n\n" .
+              $svncommand1 . "\n\n";
           
-          $result .= $svncommand2 . "\n\n";
+            $output = shell_exec($svncommand1);
           
-          $output = shell_exec($svncommand2);
+            $result .= $output . "\n\n";
           
-          $result .= $output . "\n\n";
+            $result .= $svncommand2 . "\n\n";
           
-          if (D_pos("Commit failed", $output)) {
-            throw new RuntimeException("Commit failed");
+            $output = shell_exec($svncommand2);
+          
+            $result .= $output . "\n\n";
+          
+            if (D_pos("Commit failed", $output)) {
+              throw new RuntimeException("Commit failed");
+            }
+          
+          } else {
+            $result .= "\n\n" . 'SVN is disabled' . "\n\n";
           }
           
         } else {
-          $result .= "\n\n" . 'SVN is disabled' . "\n\n";
+          $result .= "\n\n" . 'Source code generation is disabled, nothing to commit to SVN' . "\n\n";
         }
         
         $result .= "Setting commit flag for the tasks\n\n";

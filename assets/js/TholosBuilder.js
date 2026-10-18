@@ -1126,6 +1126,10 @@ function confirmBuild() {
 }
 
 function compile(all) {
+  if (window.__TholosBuilderCompileProgress === 'T') {
+    compileWithProgress(all);
+    return;
+  }
   showLoading($('#edit_frame').find('.content'));
   $.ajax({
     url: __TholosBuilderAppUrl,
@@ -1144,6 +1148,93 @@ function compile(all) {
     },
     error: function (response, textStatus, errorThrown) {
 
+    },
+    timeout: 1800000
+  });
+}
+
+/* step by step compilation (TholosBuilder.CompileProgress=T), lists the compiled routes one by one */
+
+function compileWithProgress(all) {
+  var content = $('#edit_frame').find('.content');
+  var card = $('<div class="wiz-card card tb-compile-progress">' +
+    '<div class="card-header"><h5><i class="fa-regular fa-gears"></i><span class="tb-compile-title"></span></h5></div>' +
+    '<div class="card-body">' +
+    '<div class="progress mb-2"><div class="progress-bar" style="width:0%"></div></div>' +
+    '<ul class="tb-compile-list list-unstyled mb-0"></ul>' +
+    '</div>' +
+    '</div>');
+  card.find('.tb-compile-title').text('Collecting changed routes...');
+  card.find('.tb-compile-list').html('<li><span class="tb-compile-icon"><i class="fa-regular fa-spinner fa-spin"></i></span><span>Collecting changed routes...</span></li>');
+  content.empty().append(card);
+  compileStep('step=prepare&compileall=' + (all), function (data) {
+    card.find('.tb-compile-list').empty();
+    compileNextRoute(card, data.routes || [], 0, 0);
+  }, function (errormsg) {
+    card.remove();
+    bootbox.alert(errormsg);
+  });
+}
+
+function compileNextRoute(card, routes, index, errors) {
+  card.find('.tb-compile-title').text('Compiling ' + Math.min(index + 1, routes.length) + ' / ' + routes.length);
+  card.find('.progress-bar').css('width', (routes.length ? Math.round(index / routes.length * 100) : 100) + '%');
+
+  if (index >= routes.length) {
+    compileFinish(card, routes, errors);
+    return;
+  }
+
+  var row = $('<li><span class="tb-compile-icon"><i class="fa-regular fa-spinner fa-spin"></i></span>' +
+    '<span class="tb-compile-route"></span><span class="tb-compile-time"></span></li>');
+  row.find('.tb-compile-route').text(routes[index]);
+  card.find('.tb-compile-list').append(row);
+  row[0].scrollIntoView({block: 'nearest'});
+
+  compileStep('step=route&route=' + encodeURIComponent(routes[index]), function (data) {
+    row.addClass('is-done');
+    row.find('.tb-compile-icon').html('<i class="fa-regular fa-circle-check"></i>');
+    row.find('.tb-compile-time').text(data.time + ' s');
+    compileNextRoute(card, routes, index + 1, errors);
+  }, function (errormsg) {
+    row.addClass('is-error');
+    row.find('.tb-compile-icon').html('<i class="fa-regular fa-circle-xmark"></i>');
+    row.append($('<div class="tb-compile-error"></div>').text(errormsg));
+    compileNextRoute(card, routes, index + 1, errors + 1);
+  });
+}
+
+function compileFinish(card, routes, errors) {
+  card.find('.tb-compile-title').text('Compiled ' + (routes.length - errors) + ' / ' + routes.length + ' routes' +
+    (errors ? ', ' + errors + ' failed' : ''));
+  compileStep('step=finish', function (data) {
+    card.after(data.html);
+    if (errors) {
+      toastr["warning"]("Compiled with " + errors + " failed route(s)");
+    } else {
+      toastr["success"]("Compiled");
+    }
+  }, function (errormsg) {
+    bootbox.alert(errormsg);
+  });
+}
+
+function compileStep(params, onSuccess, onError) {
+  $.ajax({
+    url: __TholosBuilderAppUrl,
+    type: 'post',
+    dataType: 'json',
+    data: 'action=compile3&' + params,
+    contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+    success: function (data) {
+      if (data.success == 'OK') {
+        onSuccess(data);
+      } else {
+        onError(data.errormsg);
+      }
+    },
+    error: function (response, textStatus, errorThrown) {
+      onError(textStatus + (errorThrown ? ': ' + errorThrown : ''));
     },
     timeout: 1800000
   });
