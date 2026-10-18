@@ -2007,11 +2007,11 @@
     
     /**
      * Route source code (.tcs, the SVN backup of the application definition) is generated only
-     * when a working dir is configured and TholosBuilder.GenerateSourceCode is not switched off
+     * when a working dir is configured and TholosBuilder.GenerateSourceCode=T (default F)
      */
     private function compileSourceCodeEnabled(): bool {
       return Eisodos::$parameterHandler->neq("TholosBuilder.ApplicationSourceWorkingDir", "")
-        && Eisodos::$parameterHandler->neq("TholosBuilder.GenerateSourceCode", "F");
+        && Eisodos::$parameterHandler->getParam("TholosBuilder.GenerateSourceCode", "F") === "T";
     }
     
     /**
