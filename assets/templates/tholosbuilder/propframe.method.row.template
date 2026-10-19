@@ -31,7 +31,7 @@ select tp.short_path as referer_component, cte.name as event_name, ace.component
                            join app_component_properties cp on cp.component_id = c.id
                            join def_properties p on p.id = cp.property_id and lower(p.name) = 'name') n
                   start with n.id in (select e.component_id from app_component_events e where e.value_component_id=$p_component_id and e.value_method_id=$sqlid)
-                connect by prior n.parent_id = n.id)
+                connect by nocycle prior n.parent_id = n.id)
           group by rid, d
           having max(top_parent_id) is null) tp on tp.rid = ace.component_id
  where ace.value_component_id=$p_component_id

@@ -20,11 +20,29 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.rowcomponent;
 ROWNULL=tholosbuilder/search.rownull;
 SQL=
-select tpv.id, tpv.name_with_type, tpv.path, null as component_name, null as value,
-       tpv.route_id, tpv.route
-  from app_tree_path_v tpv
- where lower(tpv.name_with_type) like lower('%$searchFor%')
- order by tpv.route, tpv.path
+with named as (select /*+ inline */ c.id, c.parent_id, cp.value as name, ct.class_name
+                 from app_components c
+                 join def_component_types ct on ct.id = c.component_type_id
+                 join app_component_properties cp on cp.component_id = c.id
+                 join def_properties p on p.id = cp.property_id and lower(p.name) = 'name'),
+     hits as (select n.id as component_id from named n where lower(n.name || ':' || n.class_name) like lower($searchForSQL)),
+     tp as (select rid as id,
+                   max(case when lvl = 1 then name || ':' || class_name end) as name_with_type,
+                   listagg(name, '.') within group (order by lvl desc) as path,
+                   max(case when lvl = d - 1 then name end) as route,
+                   max(case when lvl = d - 1 then id end) as route_id
+              from (select connect_by_root(n.id) as rid, level as lvl, n.id, n.name, n.class_name,
+                           count(*) over (partition by connect_by_root(n.id)) as d,
+                           case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                      from named n
+                     start with n.id in (select component_id from hits)
+                   connect by nocycle prior n.parent_id = n.id)
+             group by rid, d
+            having max(top_parent_id) is null)
+select tp.id, tp.name_with_type, tp.path, null as component_name, null as value,
+       tp.route_id, tp.route
+  from tp
+ order by tp.route, tp.path
 %SQL%>
         </tbody>
       </table>
@@ -43,13 +61,59 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.row;
 ROWNULL=tholosbuilder/search.rownull;
 SQL=
-select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'||cpv.value||'</pre>' as value,
-       tpv.route_id, tpv.route
-  from app_component_properties_v cpv,
-       app_tree_path_v tpv
- where lower(cpv.value) like lower('%$searchFor%')
-       and tpv.id=cpv.component_id
- order by tpv.route, tpv.path, cpv.name
+with named as (select /*+ inline */ c.id, c.parent_id, cp.value as name, ct.class_name
+                 from app_components c
+                 join def_component_types ct on ct.id = c.component_type_id
+                 join app_component_properties cp on cp.component_id = c.id
+                 join def_properties p on p.id = cp.property_id and lower(p.name) = 'name'),
+     ref_name as (select /*+ inline */ rp.component_id, rp.value
+                    from app_component_properties rp
+                    join def_properties p on p.id = rp.property_id and lower(p.name) = 'name'),
+     stored as (select /*+ no_merge */ acp.component_id, acp.property_id, rn.value
+                  from ref_name rn
+                  join app_component_properties acp on acp.value_component_id = rn.component_id
+                 where lower(rn.value) like lower($searchForSQL)
+                union all
+                select /*+ no_merge */ acp.component_id, acp.property_id, acp.value
+                  from app_component_properties acp
+                 where lower(acp.value) like lower($searchForSQL)
+                   and not exists (select 1 from ref_name rn where rn.component_id = acp.value_component_id)),
+     ctp as (select /*+ inline */ root_component_id, id, name, default_value
+               from def_component_type_prop_v
+              where disabled = 'N'),
+     hits as (select /*+ materialize */ c.id as component_id, ctp.name, s.value
+                from stored s
+                join app_components c on c.id = s.component_id
+                join ctp on ctp.root_component_id = c.component_type_id and ctp.id = s.property_id
+              union all
+              select c.id as component_id, ctp.name, ctp.default_value as value
+                from ctp
+                join app_components c on c.component_type_id = ctp.root_component_id
+               where lower(ctp.default_value) like lower($searchForSQL)
+                 and not exists (select 1
+                                   from app_component_properties acp
+                                  where acp.component_id = c.id
+                                    and acp.property_id = ctp.id
+                                    and (acp.value is not null
+                                         or exists (select 1 from ref_name rn where rn.component_id = acp.value_component_id)))),
+     tp as (select rid as id,
+                   max(case when lvl = 1 then name || ':' || class_name end) as name_with_type,
+                   listagg(name, '.') within group (order by lvl desc) as path,
+                   max(case when lvl = d - 1 then name end) as route,
+                   max(case when lvl = d - 1 then id end) as route_id
+              from (select connect_by_root(n.id) as rid, level as lvl, n.id, n.name, n.class_name,
+                           count(*) over (partition by connect_by_root(n.id)) as d,
+                           case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                      from named n
+                     start with n.id in (select component_id from hits)
+                   connect by nocycle prior n.parent_id = n.id)
+             group by rid, d
+            having max(top_parent_id) is null)
+select tp.id, tp.name_with_type, tp.path, hits.name as component_name, '<pre>'||hits.value||'</pre>' as value,
+       tp.route_id, tp.route
+  from hits
+  join tp on tp.id = hits.component_id
+ order by tp.route, tp.path, hits.name
 %SQL%>
         </tbody>
       </table>
@@ -68,13 +132,35 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.row;
 ROWNULL=tholosbuilder/search.rownull;
 SQL=
-select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'||cpv.value||'</pre>' as value,
-       tpv.route_id, tpv.route
-  from app_component_events_v cpv,
-       app_tree_path_v tpv
- where lower(cpv.value) like lower('%$searchFor%')
-       and tpv.id=cpv.component_id
- order by tpv.route, tpv.path, cpv.name
+with named as (select /*+ inline */ c.id, c.parent_id, cp.value as name, ct.class_name
+                 from app_components c
+                 join def_component_types ct on ct.id = c.component_type_id
+                 join app_component_properties cp on cp.component_id = c.id
+                 join def_properties p on p.id = cp.property_id and lower(p.name) = 'name'),
+     hits as (select c.id as component_id, cte.name, ace.value as value
+                from app_component_events ace
+                join app_components c on c.id = ace.component_id
+                join def_component_type_event_v cte on cte.root_component_id = c.component_type_id
+                                                   and cte.id = ace.event_id
+               where lower(ace.value) like lower($searchForSQL)),
+     tp as (select rid as id,
+                   max(case when lvl = 1 then name || ':' || class_name end) as name_with_type,
+                   listagg(name, '.') within group (order by lvl desc) as path,
+                   max(case when lvl = d - 1 then name end) as route,
+                   max(case when lvl = d - 1 then id end) as route_id
+              from (select connect_by_root(n.id) as rid, level as lvl, n.id, n.name, n.class_name,
+                           count(*) over (partition by connect_by_root(n.id)) as d,
+                           case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                      from named n
+                     start with n.id in (select component_id from hits)
+                   connect by nocycle prior n.parent_id = n.id)
+             group by rid, d
+            having max(top_parent_id) is null)
+select tp.id, tp.name_with_type, tp.path, hits.name as component_name, '<pre>'||hits.value||'</pre>' as value,
+       tp.route_id, tp.route
+  from hits
+  join tp on tp.id = hits.component_id
+ order by tp.route, tp.path, hits.name
 %SQL%>
         </tbody>
       </table>
@@ -93,13 +179,35 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/search.row;
 ROWNULL=tholosbuilder/search.rownull;
 SQL=
-select tpv.id, tpv.name_with_type, tpv.path, cpv.name as component_name, '<pre>'||cpv.parameters||'</pre>' as value,
-       tpv.route_id, tpv.route
-  from app_component_events_v cpv,
-       app_tree_path_v tpv
- where lower(cpv.parameters) like lower('%$searchFor%')
-       and tpv.id=cpv.component_id
- order by tpv.route, tpv.path, cpv.name
+with named as (select /*+ inline */ c.id, c.parent_id, cp.value as name, ct.class_name
+                 from app_components c
+                 join def_component_types ct on ct.id = c.component_type_id
+                 join app_component_properties cp on cp.component_id = c.id
+                 join def_properties p on p.id = cp.property_id and lower(p.name) = 'name'),
+     hits as (select c.id as component_id, cte.name, ace.parameters as value
+                from app_component_events ace
+                join app_components c on c.id = ace.component_id
+                join def_component_type_event_v cte on cte.root_component_id = c.component_type_id
+                                                   and cte.id = ace.event_id
+               where lower(ace.parameters) like lower($searchForSQL)),
+     tp as (select rid as id,
+                   max(case when lvl = 1 then name || ':' || class_name end) as name_with_type,
+                   listagg(name, '.') within group (order by lvl desc) as path,
+                   max(case when lvl = d - 1 then name end) as route,
+                   max(case when lvl = d - 1 then id end) as route_id
+              from (select connect_by_root(n.id) as rid, level as lvl, n.id, n.name, n.class_name,
+                           count(*) over (partition by connect_by_root(n.id)) as d,
+                           case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                      from named n
+                     start with n.id in (select component_id from hits)
+                   connect by nocycle prior n.parent_id = n.id)
+             group by rid, d
+            having max(top_parent_id) is null)
+select tp.id, tp.name_with_type, tp.path, hits.name as component_name, '<pre>'||hits.value||'</pre>' as value,
+       tp.route_id, tp.route
+  from hits
+  join tp on tp.id = hits.component_id
+ order by tp.route, tp.path, hits.name
 %SQL%>
         </tbody>
       </table>

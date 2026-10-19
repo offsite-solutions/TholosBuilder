@@ -635,6 +635,8 @@
     private function searchApp(): void {
       
       $responseArray['success'] = 'OK';
+      // quoted SQL literal of the LIKE pattern, the search term may contain apostrophes
+      Eisodos::$parameterHandler->setParam("searchForSQL", $this->builder_db->nullStr("%" . Eisodos::$parameterHandler->getParam("searchfor") . "%"));
       $responseArray['html'] = Eisodos::$templateEngine->getTemplate($this->templateFolder . "search.main", array(), false);
       header('Content-type: application/json');
       Eisodos::$templateEngine->addToResponse(json_encode($responseArray, JSON_THROW_ON_ERROR));
@@ -1808,7 +1810,7 @@
         "                                                 WHERE ace.value_component_id IS NOT NULL \n" .
         $routeFilter .
         "                                               ) \n" .
-        "                          CONNECT BY PRIOR n.parent_id = n.id) \n" .
+        "                          CONNECT BY NOCYCLE PRIOR n.parent_id = n.id) \n" .
         "                    GROUP BY rid) rp ON rp.rid = ace.value_component_id \n" .
         "  LEFT OUTER JOIN def_methods dm ON dm.id = ace.value_method_id \n" .
         " WHERE (ace.value IS NOT NULL OR ace.value_method_id IS NOT NULL) \n" .

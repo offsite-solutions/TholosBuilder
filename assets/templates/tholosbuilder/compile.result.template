@@ -23,14 +23,39 @@ Compilation time: $CompilationTime seconds</pre>
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/compile.mandatoryproperties;
 SQL=
-select tpv.id,tpv.name_with_type, tpv.path, cpv.name as component_name
-  from app_component_properties_v cpv,
-       app_tree_path_v tpv
- where (cpv.value is null and cpv.value_component_id is null)
-       and cpv.mandatory!='N'
-       and tpv.id=cpv.component_id
-       and (tpv. route is null or tpv.route not like '\_%' escape '\')
- order by tpv.route, tpv.path, cpv.name
+with named as (select /*+ inline */ c.id, c.parent_id, cp.value as name, ct.class_name
+                 from app_components c
+                 join def_component_types ct on ct.id = c.component_type_id
+                 join app_component_properties cp on cp.component_id = c.id
+                 join def_properties p on p.id = cp.property_id and lower(p.name) = 'name'),
+     hits as (select c.id as component_id, ctp.name
+                from def_component_type_prop_v ctp
+                join app_components c on c.component_type_id = ctp.root_component_id
+               where ctp.disabled = 'N'
+                 and ctp.mandatory != 'N'
+                 and ctp.default_value is null
+                 and not exists (select 1
+                                   from app_component_properties acp
+                                  where acp.component_id = c.id
+                                    and acp.property_id = ctp.id
+                                    and (acp.value is not null or acp.value_component_id is not null))),
+     tp as (select rid as id,
+                   max(case when lvl = 1 then name || ':' || class_name end) as name_with_type,
+                   listagg(name, '.') within group (order by lvl desc) as path,
+                   max(case when lvl = d - 1 then name end) as route
+              from (select connect_by_root(n.id) as rid, level as lvl, n.id, n.name, n.class_name,
+                           count(*) over (partition by connect_by_root(n.id)) as d,
+                           case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                      from named n
+                     start with n.id in (select component_id from hits)
+                   connect by nocycle prior n.parent_id = n.id)
+             group by rid, d
+            having max(top_parent_id) is null)
+select tp.id, tp.name_with_type, tp.path, hits.name as component_name
+  from hits
+  join tp on tp.id = hits.component_id
+ where (tp.route is null or tp.route not like '\_%' escape '\')
+ order by tp.route, tp.path, hits.name
 %SQL%>
       </tbody>
     </table>

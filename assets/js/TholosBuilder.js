@@ -524,7 +524,7 @@ function searchApp(searchFor_) {
     url: __TholosBuilderAppUrl,
     type: 'post',
     dataType: 'json',
-    data: 'action=searchApp&searchfor=' + searchFor_,
+    data: 'action=searchApp&searchfor=' + encodeURIComponent(searchFor_),
     contentType: "application/x-www-form-urlencoded;charset=UTF-8",
     success: function (data) {
       if (data.success == 'OK') {

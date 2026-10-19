@@ -15,11 +15,11 @@ with named as (select c.id, c.parent_id, c.component_type_id, c.creation_order, 
      component_route as (select w.id from named w
                           where w.parent_id = (select id from app_root)
                           start with w.id = $p_component_id
-                        connect by prior w.parent_id = w.id),
+                        connect by nocycle prior w.parent_id = w.id),
      value_route as (select w.id from named w
                       where w.parent_id = (select id from app_root)
                       start with w.id = (select value_component_id from q)
-                    connect by prior w.parent_id = w.id),
+                    connect by nocycle prior w.parent_id = w.id),
      t as (select n.id, n.component_type_id, connect_by_root(n.id) as route_id, rownum as component_order,
                   (select name from app_root) || sys_connect_by_path(n.name, '.') as path
              from named n

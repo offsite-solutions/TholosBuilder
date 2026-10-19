@@ -23,7 +23,7 @@ select cp.component_id, cp.name, cp.l_name, cp.type, cp.type_desc, cp.value,
                                  start with n.id in (select acp.value_component_id
                                                        from app_component_properties acp
                                                       where acp.component_id=$p_component_id~='-1';)
-                               connect by prior n.parent_id = n.id)
+                               connect by nocycle prior n.parent_id = n.id)
                          group by rid, d) tp on tp.rid=cp.value_component_id
  where cp.component_id=$p_component_id~='-1';
        and ('$p_property_id~='-1';'='-1' or cp.property_id=$p_property_id~='-1';)

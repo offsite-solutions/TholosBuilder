@@ -26,7 +26,7 @@ select c.id as component_id, cte.name, lower(cte.name) as l_name, cte.type, ace.
                             start with n.id in (select e.value_component_id
                                                   from app_component_events e
                                                  where e.component_id=$p_component_id~='-1';)
-                          connect by prior n.parent_id = n.id)
+                          connect by nocycle prior n.parent_id = n.id)
                     group by rid, d) sp on sp.rid = ace.value_component_id
   left outer join def_methods dm on dm.id = ace.value_method_id
  where c.id=$p_component_id~='-1';

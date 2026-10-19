@@ -22,7 +22,7 @@ select tp.short_path,tp.class_name,ah2.component_id
                            join app_component_properties cp on cp.component_id = c.id
                            join def_properties p on p.id = cp.property_id and lower(p.name) = 'name') n
                   start with n.id in (select h2.component_id from app_help h1 join app_help h2 on h2.help_id=h1.id where h1.component_id=$p_component_id~='-1';)
-                connect by prior n.parent_id = n.id)
+                connect by nocycle prior n.parent_id = n.id)
           group by rid, d
           having max(top_parent_id) is null) tp on tp.rid=ah2.component_id
  where ah1.component_id=$p_component_id~='-1';
