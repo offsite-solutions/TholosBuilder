@@ -1749,25 +1749,44 @@
     }
     
     /**
-     * Routes changed since LAST_COMPILATION_TIME or touched by the user's open tasks
+     * Routes changed since LAST_COMPILATION_TIME or touched by the user's open tasks.
+     * Same routes as app_routes_v (+ app_tree_path_v for the tasks), but starts from the changed
+     * components, properties and events and walks up to their route, instead of building the whole
+     * application tree and joining every property with every event of each component.
+     * src=1: changed since the last compilation (the root itself is the 'application' route),
+     * src=0: only touched by a task (the root has no route there).
      */
     private function compileGetRoutes(): array {
-      
+
+      $since = "to_date('" . Eisodos::$parameterHandler->getParam("LAST_COMPILATION_TIME", "2000-01-01 00:00:00") . "','YYYY-MM-DD HH24:MI:SS')";
+
       /* TRoutes */
-      $sql = " select distinct route from (\n" .
-        " select route \n" .
-        "  from app_routes_v a \n" .
-        " where to_char(a.last_update_date,'YYYY-MM-DD HH24:MI:SS')>='" . Eisodos::$parameterHandler->getParam("LAST_COMPILATION_TIME", "2000-01-01 00:00:00") . "' \n" .
-        " union \n" .
-        " select atp.route \n" .
-        "   from app_tasks at \n" .
-        "   join app_users au on au.id=at.created_by and au.id=app_session_pkg.user_id \n" .
-        "   left outer join app_changes ac on at.id=ac.task_id \n" .
-        "   left outer join app_tree_path_v atp on ac.component_id=atp.id \n" .
-        "  where at.committed is null \n" .
-        "        and at.closed='N'  \n" .
-        "  ) \n" .
-        " where route is not null \n" .
+      $sql = "select distinct route from ( \n" .
+        "select rid, \n" .
+        "       case when max(lvl) = 1 then case when max(src) = 1 then 'application' end \n" .
+        "            else max(case when parent_id is not null and lvl = top - 1 then name end) end AS route, \n" .
+        "       max(case when parent_id is null then 1 else 0 end) AS complete \n" .
+        "  from (select w.*, max(w.lvl) over (partition by w.rid) AS top \n" .
+        "          from (select connect_by_root(n.id) AS rid, connect_by_root(s.src) AS src, level AS lvl, n.name, n.parent_id \n" .
+        "                  from (" . $this->compileNamedComponentsSQL() . ") n \n" .
+        "                  left outer join (select id, max(src) AS src \n" .
+        "                                     from (select c.id, 1 AS src from app_components c where c.last_update_date >= " . $since . " \n" .
+        "                                           union all \n" .
+        "                                           select cp.component_id, 1 from app_component_properties cp where cp.last_update_date >= " . $since . " \n" .
+        "                                           union all \n" .
+        "                                           select ce.component_id, 1 from app_component_events ce where ce.last_update_date >= " . $since . " \n" .
+        "                                           union all \n" .
+        "                                           select ac.component_id, 0 \n" .
+        "                                             from app_tasks at \n" .
+        "                                             join app_users au on au.id=at.created_by and au.id=app_session_pkg.user_id \n" .
+        "                                             join app_changes ac on ac.task_id=at.id \n" .
+        "                                            where at.committed is null \n" .
+        "                                                  and at.closed='N') \n" .
+        "                                    group by id) s on s.id = n.id \n" .
+        "                 start with s.id is not null \n" .
+        "                 connect by nocycle prior n.parent_id = n.id) w) \n" .
+        " group by rid) \n" .
+        " where complete = 1 and route is not null \n" .
         " order by 1";
       
       $routes = array();
