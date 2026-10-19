@@ -5,18 +5,39 @@
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/sqls.select;
 SQL=
-select id, path as text,
-       case when q.value_component_id=atp.id then 'selected' else '' end as selected
-  from app_tree_path_v atp
-  left outer join (select value_component_id from app_component_properties ap where ap.id=$p_link_id~='-1';) q on 1=1
-where atp.component_type_id in ( select ct.id
+with named as (select c.id, c.parent_id, c.component_type_id, c.creation_order, cp.value as name
+                 from app_components c
+                 join def_component_types ct on ct.id = c.component_type_id
+                 join app_component_properties cp on cp.component_id = c.id
+                 join def_properties p on p.id = cp.property_id and lower(p.name) = 'name'),
+     app_root as (select id, name from named where parent_id is null),
+     q as (select value_component_id from app_component_properties ap where ap.id=$p_link_id~='-1';),
+     component_route as (select w.id from named w
+                          where w.parent_id = (select id from app_root)
+                          start with w.id = $p_component_id
+                        connect by prior w.parent_id = w.id),
+     value_route as (select w.id from named w
+                      where w.parent_id = (select id from app_root)
+                      start with w.id = (select value_component_id from q)
+                    connect by prior w.parent_id = w.id),
+     t as (select n.id, n.component_type_id, connect_by_root(n.id) as route_id, rownum as component_order,
+                  (select name from app_root) || sys_connect_by_path(n.name, '.') as path
+             from named n
+            start with n.id in (select id from component_route union all select id from value_route)
+          connect by prior n.id = n.parent_id
+            order siblings by n.creation_order)
+select t.id, t.path as text,
+       case when q.value_component_id=t.id then 'selected' else '' end as selected
+  from t
+  left outer join q on 1=1
+ where t.component_type_id in ( select ct.id
                                     from def_component_types ct
                                     connect by prior  ct.id = ct.ancestor_id
                                     start with ct.id=(select component_type_id from def_properties p where p.id=$p_property_id)
                                  )
-      and (atp.route=(select route from app_tree_path_v atp2 where atp2.id=$p_component_id)
-           or atp.id=q.value_component_id)
-order by component_order
+       and (t.route_id in (select id from component_route)
+            or t.id=q.value_component_id)
+ order by t.component_order
 %SQL%>
 <!-- <option value="">------------------------------------------</option>
 %SQL%

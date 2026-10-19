@@ -657,9 +657,16 @@
           "       t.name as name, \n" .
           "       t.class_name as type, \n" .
           "       t.version \n" .
-          "  from APP_TREE_PATH_V t \n" .
-          " where parent_id is null \n " .
-          " or route_id in (" . Eisodos::$parameterHandler->getParam("route_filter", "-1") . ") ",
+          "  from (select c.id, c.parent_id, c.version, c.creation_order, cp.value as name, ct.class_name \n" .
+          "          from app_components c \n" .
+          "          join def_component_types ct on ct.id = c.component_type_id \n" .
+          "          join app_component_properties cp on cp.component_id = c.id \n" .
+          "          join def_properties p on p.id = cp.property_id and lower(p.name) = 'name') t \n" .
+          // walks only the root and the selected routes' subtrees, app_tree_path_v builds the whole application tree
+          " start with t.parent_id is null \n" .
+          "connect by prior t.id = t.parent_id \n" .
+          "       and (prior t.parent_id is not null or t.id in (" . Eisodos::$parameterHandler->getParam("route_filter", "-1") . ")) \n" .
+          " order siblings by t.creation_order",
           $apptree_);
         
         $responseArray['tree'] = json_encode($apptree_, JSON_THROW_ON_ERROR);
@@ -3914,11 +3921,14 @@
     #[NoReturn]
     private function showRoutes(): void {
       $responseArray['success'] = 'OK';
-      $sql = "select id, name \n" .
-        " from app_tree_v a \n" .
-        " where class_name='TRoute' \n" .
-        "       or (a.class_name <> 'TRoute' and parent_id=(select id from app_components ac where ac.parent_id is null)) \n" .
-        " order by lower(name)";
+      // children of the application root (route_id of the tree), without building the whole tree as app_tree_v does
+      $sql = "select c.id, cp.value as name \n" .
+        "  from app_components c \n" .
+        "  join app_component_properties cp on cp.component_id = c.id \n" .
+        "  join def_properties p on p.id = cp.property_id and lower(p.name) = 'name' \n" .
+        " where c.enabled = 'Y' \n" .
+        "   and c.parent_id = (select r.id from app_components r where r.parent_id is null) \n" .
+        " order by lower(cp.value)";
       $back = array();
       $route_filter = array();
       $route_filter[] = "-1";

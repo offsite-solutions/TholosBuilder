@@ -3,8 +3,27 @@ DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/propframe.help.referencingrow;
 SQL=
 select tp.short_path,tp.class_name,ah2.component_id
-  from app_tree_path_v tp, app_help ah1, app_help ah2
+  from app_help ah1
+  join app_help ah2 on ah2.help_id=ah1.id
+  join (select rid,
+                case when max(top_parent_id) is null then
+                     max(case when lvl = d - 1 then name end) ||
+                     case when d > 2 then '/' || max(case when lvl = d - 2 then name end) end ||
+                     case when d = 4 then '/' || max(case when lvl = 1 then name end)
+                          when d > 4 then '/.../' || max(case when lvl = 1 then name end) end
+                end as short_path,
+                max(case when lvl = 1 then class_name end) as class_name
+           from (select connect_by_root(n.id) as rid, level as lvl, n.name, n.class_name,
+                        count(*) over (partition by connect_by_root(n.id)) as d,
+                        case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                   from (select c.id, c.parent_id, cp.value as name, ct.class_name
+                           from app_components c
+                           join def_component_types ct on ct.id = c.component_type_id
+                           join app_component_properties cp on cp.component_id = c.id
+                           join def_properties p on p.id = cp.property_id and lower(p.name) = 'name') n
+                  start with n.id in (select h2.component_id from app_help h1 join app_help h2 on h2.help_id=h1.id where h1.component_id=$p_component_id~='-1';)
+                connect by prior n.parent_id = n.id)
+          group by rid, d
+          having max(top_parent_id) is null) tp on tp.rid=ah2.component_id
  where ah1.component_id=$p_component_id~='-1';
-       and ah2.help_id=ah1.id
-       and tp.id=ah2.component_id
 %SQL%>

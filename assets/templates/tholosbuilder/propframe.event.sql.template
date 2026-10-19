@@ -2,9 +2,34 @@
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/propframe.event.row;
 SQL=
-select component_id, name, l_name, type, value, value_component_id, method_name, short_path, event_id, link_id, version, parameters
-  from app_component_events_v ce
- where ce.component_id=$p_component_id~='-1';
-       and ('$p_event_id~='-1';'='-1' or ce.event_id=$p_event_id~='-1';)
+select c.id as component_id, cte.name, lower(cte.name) as l_name, cte.type, ace.value,
+       ace.value_component_id, dm.name as method_name, sp.short_path, cte.id as event_id,
+       ace.id as link_id, ace.version, ace.parameters
+  from app_components c
+  join def_component_type_event_v cte on cte.root_component_id = c.component_type_id
+  left outer join app_component_events ace on ace.event_id = cte.id and ace.component_id = c.id
+  left outer join (select rid,
+                          case when max(top_parent_id) is null then
+                               max(case when lvl = d - 1 then name end) ||
+                               case when d > 2 then '/' || max(case when lvl = d - 2 then name end) end ||
+                               case when d = 4 then '/' || max(case when lvl = 1 then name end)
+                                    when d > 4 then '/.../' || max(case when lvl = 1 then name end) end
+                          end as short_path
+                     from (select connect_by_root(n.id) as rid, level as lvl, n.name,
+                                  count(*) over (partition by connect_by_root(n.id)) as d,
+                                  case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                             from (select c2.id, c2.parent_id, cp.value as name
+                                     from app_components c2
+                                     join def_component_types ct on ct.id = c2.component_type_id
+                                     join app_component_properties cp on cp.component_id = c2.id
+                                     join def_properties p on p.id = cp.property_id and lower(p.name) = 'name') n
+                            start with n.id in (select e.value_component_id
+                                                  from app_component_events e
+                                                 where e.component_id=$p_component_id~='-1';)
+                          connect by prior n.parent_id = n.id)
+                    group by rid, d) sp on sp.rid = ace.value_component_id
+  left outer join def_methods dm on dm.id = ace.value_method_id
+ where c.id=$p_component_id~='-1';
+       and ('$p_event_id~='-1';'='-1' or cte.id=$p_event_id~='-1';)
  order by 4,3
 %SQL%>

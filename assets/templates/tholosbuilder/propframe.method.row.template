@@ -10,10 +10,30 @@
 DB=Tholos.DefinitionDBIndex;
 ROW=tholosbuilder/propframe.method.referer;
 SQL=
-select tp.short_path as referer_component, ce.name as event_name, tp.id as referer_id
-  from app_tree_path_v tp,
-       app_component_events_v ce
- where ce.value_component_id=$p_component_id
-       and ce.value_method_id=$sqlid
-       and tp.id=ce.component_id
+select tp.short_path as referer_component, cte.name as event_name, ace.component_id as referer_id
+  from app_component_events ace
+  join app_components c on c.id = ace.component_id
+  join def_component_type_event_v cte on cte.root_component_id = c.component_type_id and cte.id = ace.event_id
+  join (select rid,
+                case when max(top_parent_id) is null then
+                     max(case when lvl = d - 1 then name end) ||
+                     case when d > 2 then '/' || max(case when lvl = d - 2 then name end) end ||
+                     case when d = 4 then '/' || max(case when lvl = 1 then name end)
+                          when d > 4 then '/.../' || max(case when lvl = 1 then name end) end
+                end as short_path,
+                max(case when lvl = 1 then class_name end) as class_name
+           from (select connect_by_root(n.id) as rid, level as lvl, n.name, n.class_name,
+                        count(*) over (partition by connect_by_root(n.id)) as d,
+                        case when connect_by_isleaf = 1 then n.parent_id end as top_parent_id
+                   from (select c.id, c.parent_id, cp.value as name, ct.class_name
+                           from app_components c
+                           join def_component_types ct on ct.id = c.component_type_id
+                           join app_component_properties cp on cp.component_id = c.id
+                           join def_properties p on p.id = cp.property_id and lower(p.name) = 'name') n
+                  start with n.id in (select e.component_id from app_component_events e where e.value_component_id=$p_component_id and e.value_method_id=$sqlid)
+                connect by prior n.parent_id = n.id)
+          group by rid, d
+          having max(top_parent_id) is null) tp on tp.rid = ace.component_id
+ where ace.value_component_id=$p_component_id
+       and ace.value_method_id=$sqlid
 %SQL%>
