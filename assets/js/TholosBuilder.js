@@ -1107,10 +1107,6 @@ function showComponentTypeDocumentation() {
   });
 }
 
-function downloadComponentTypeDocumentation() {
-  document.location.href = __TholosBuilderAppUrl + '?action=downloadComponentTypeDocumentation';
-}
-
 function confirmBuild() {
   bootbox.confirm({
     title: 'Confirm full build',
