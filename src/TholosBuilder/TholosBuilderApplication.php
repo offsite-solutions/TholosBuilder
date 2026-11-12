@@ -2125,7 +2125,7 @@
         
         $this->project_db->bind($boundVariables, "p_trans_root", "text", mb_strtoupper($transroot));
         $this->project_db->bind($boundVariables, "p_query", "text", $component_SQL);
-        $this->project_db->bind($boundVariables, "p_columns", "text", "");
+        $this->project_db->bind($boundVariables, "p_columns", "clob", '', 'OUT');
         $this->project_db->bind($boundVariables, "p_error_msg", "text", "");
         $this->project_db->bind($boundVariables, "p_error_code", "integer", "");
         $resultArray = array();
